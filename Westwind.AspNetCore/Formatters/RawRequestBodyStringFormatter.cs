@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Net.Http.Headers;
 
 namespace Westwind.AspNetCore.Formatters
 {
-
     /// <summary>
     /// Formatter that allows content of type text/plain and application/octet stream
     /// or no content type to be parsed to raw data. Allows for a single input parameter
