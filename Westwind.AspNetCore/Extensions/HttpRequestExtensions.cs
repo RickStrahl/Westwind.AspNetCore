@@ -38,6 +38,8 @@ namespace Westwind.AspNetCore.Extensions
                 await request.Body.CopyToAsync(ms);
                 return ms.ToArray();
             }
+
+            
         }
     }
 }
