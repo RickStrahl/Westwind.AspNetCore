@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Westwind.Utilities;
 
-namespace Westwind.Web.Mvc
+namespace Westwind.AspNetCore.Components
 {
     /// <summary>
     /// An error display component that allows rich rendering of individual messages
@@ -18,18 +18,42 @@ namespace Westwind.Web.Mvc
     /// .errordisplay, errordisplay-text, errordisplay-warning-icon, errordisplay-info-icon
     /// The icon links link to images.
     /// </summary>
-    public class ErrorDisplay
+    public class ErrorDisplayModel
     {        
         /// <summary>
         /// The message that is displayed
         /// </summary>
-        public string Message
-        {
-            get { return _message; }
-            set { _message = value; }
-        }
-        private string _message = null;
+        public string Message { get; set; }
 
+
+        public string Header { get; set; }
+
+
+        /// <summary>
+        /// Name of an font-awesome icon to display
+        /// 'warning', 'error', 'info', 'success' have special
+        /// meaning and display custom colors
+        /// </summary>
+        public string Icon { get; set; } = "warning";
+
+        public string AlertClass { get; set; } = "warning";
+
+        /// <summary>
+        /// Flag that determines whether the message is displayed
+        /// as HTML or as text. By default message is encoded as text (false).
+        /// </summary>
+        public bool MessageAsRawHtml { get; set; } = false;
+
+        /// <summary>
+        /// Flag that determines whether the message is displayed
+        /// as HTML or as text. By default message is encoded as text (false).
+        /// </summary>
+        public bool HeaderAsRawHtml { get; set; } = false;
+
+        /// <summary>
+        /// Determines whether the alert can be closed
+        /// </summary>
+        public bool Dismissable { get; set; } = false;
 
         /// <summary>
         /// Determines whether there is a message present.
@@ -45,17 +69,7 @@ namespace Westwind.Web.Mvc
             }
         }
 
-        /// <summary>
-        /// Flag that determines whether the message is displayed
-        /// as HTML or as text. By default message is encoded as text (true).
-        /// </summary>
-        public bool HtmlEncodeMessage
-        {
-            get { return _HtmlEncodeMessage; }
-            set { _HtmlEncodeMessage = value; }
-        }
-        private bool _HtmlEncodeMessage = true;
-
+ 
 
         /// <summary>
         /// Timeout in milliseconds before the error display is hidden
@@ -74,90 +88,56 @@ namespace Westwind.Web.Mvc
             
                 return _DisplayErrors; 
             }
-        }
+        }        
         private ValidationErrorCollection _DisplayErrors = null;
 
-
-        StringBuilder writer = new StringBuilder();
         bool visible = false;
 
-        public ErrorDisplayTypes ErrorDisplayType = ErrorDisplayTypes.Error;
+        
 
-        protected void RenderTop(int width, bool center)
+        public void ShowError(string errorMessage, string header = null)
         {
-            writer.Length = 0;
-
-            writer.Append("<div class=\"errordisplay\" ");            
-
-            if (width != 0)
-                writer.Append("style=\"width: " + width.ToString() +"px;");
-            if (center)
-                writer.Append("margin-left: auto; margin-right: auto");
-            writer.Append("\"");
-
-            writer.Append(" />\r\n");
-        }
-
-        protected void RenderBottom()
-        {            
-            // close out the dialog
-            writer.AppendLine("</div>");
-        }
-
-        protected void RenderDisplayErrors()
-        {
-            if (DisplayErrors.Count > 0)
-            {
-                writer.AppendLine("<hr/>");
-                writer.AppendLine(DisplayErrors.ToHtml());                
-            }
-        }
-
-        /// <summary>
-        /// Method 
-        /// </summary>
-        /// <param name="width"></param>
-        /// <param name="center"></param>
-        /// <returns></returns>
-        public HtmlString Render(int width = 400, bool center = true)
-        {
-            if (!visible || !HasMessage) 
-                return new HtmlString(string.Empty);
-
-            RenderTop(width, center);
-
-            if (ErrorDisplayType == ErrorDisplayTypes.Error)
-                writer.AppendLine(" <div class=\"errordisplay-warning-icon\"></div>");
-            else
-                writer.AppendLine(" <div class=\"errordisplay-info-icon\"></div>");
-
-            writer.AppendLine("<div class=\"errordisplay-text\">");
-            
-            writer.AppendLine(  HtmlEncodeMessage ? HttpUtility.HtmlEncode(Message) : Message);
-            RenderDisplayErrors();
-            
-            writer.AppendLine("</div>");
-
-            RenderBottom();
-
-            return new HtmlString(writer.ToString());
-        }
-
-
-        public void ShowError(string errorMessage)
-        {
-            ErrorDisplayType = ErrorDisplayTypes.Error;
+            Icon = "error";
             Message = errorMessage;
+            if (!string.IsNullOrEmpty(header))
+                Header = header;
+
             visible = true;
         }
 
-
-        public void ShowMessage(string message)
+        public void ShowWarning(string errorMessage, string header = null)
         {
-            ErrorDisplayType = ErrorDisplayTypes.Message;
-            Message = message;
+            Icon = "warning";
+            AlertClass = "warning";
+            Message = errorMessage;
+            if (!string.IsNullOrEmpty(header))
+                Header = header;
+
             visible = true;
         }
+
+        public void ShowInfo(string message,string header = null)
+        {
+            Icon = "info";
+            AlertClass = "info";
+            Message = message;
+            if (!string.IsNullOrEmpty(header))
+                Header = header;
+
+            visible = true;
+        }
+
+        public void ShowSuccess(string message, string header = null)
+        {
+            Icon = "success";
+            AlertClass = "success";
+            Message = message;
+            if (!string.IsNullOrEmpty(header))
+                Header = header;
+
+            visible = true;
+        }
+
 
         /// <summary>
         /// Adds ModelState errors to the validationErrors
@@ -202,9 +182,4 @@ namespace Westwind.Web.Mvc
         }
     }
 
-    public enum ErrorDisplayTypes
-    {
-        Error,
-        Message
-    }
 }
