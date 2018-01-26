@@ -11,8 +11,8 @@ namespace Westwind.AspNetCore.Formatters
     /// or no content type to be parsed to raw data. Allows for a single input parameter
     /// in the form of:
     /// 
-    /// public string RawString([FromBody] string data)
-    /// public byte[] RawData([FromBody] byte[] data)
+    /// public string RawString([FromBody] string data) (text/plain)
+    /// public byte[] RawData([FromBody] byte[] data)  (application/octet-stream)
     /// </summary>
     public class RawRequestBodyFormatter : InputFormatter
     {

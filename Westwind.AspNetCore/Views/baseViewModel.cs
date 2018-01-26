@@ -1,10 +1,11 @@
+using Westwind.AspNetCore.Components;
+using Westwind.Web;
 
-using System.Web;
-namespace Westwind.Web.Mvc
+namespace Westwind.AspNetCore
 {
     public class BaseViewModel
     {
-        public ErrorDisplay ErrorDisplay = null;
+        public ErrorDisplayModel ErrorDisplay = null;
         public UserState UserState = null;        
         public string PageTitle = null;
 

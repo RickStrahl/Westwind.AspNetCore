@@ -1,8 +1,10 @@
 ﻿
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Westwind.Utilities;
 
 namespace Westwind.Web
@@ -19,8 +21,6 @@ namespace Westwind.Web
     /// </summary>    
     public class UserState
     {
-        
-
         public UserState()
         {
         
@@ -50,7 +50,8 @@ namespace Westwind.Web
         /// The users admin status
         /// </summary>
         public bool IsAdmin { get; set; }
-
+        
+        
         /// <summary>
         /// Returns the User Id as an int if convertiable
         /// </summary>
@@ -181,7 +182,7 @@ namespace Westwind.Web
         /// </summary>
         /// <returns></returns>
         public static UserState CreateFromFormsAuthTicket(HttpContext context)
-        {
+        {            
             var identity = context.User.Identity as ClaimsIdentity;
             if (identity == null)
                 return new UserState();
@@ -206,15 +207,31 @@ namespace Westwind.Web
         public static T CreateFromUserClaims<T>(HttpContext context)
             where T : UserState, new()
         {
-            var identity = context.User.Identity as ClaimsIdentity;
+            var identity = context.User?.Identity as ClaimsIdentity;
             if (identity == null)
-                return new  T();
+                return new T(); // { UserPrincipal = context.User};
 
             var claim = identity.FindFirst("UserState");
             if (claim == null)
-                return new T();
+                return new T(); // { UserPrincipal = context.User};
 
-            return CreateFromString<T>(claim.Value) as T;
+            var state = CreateFromString<T>(claim.Value);
+            //state.UserPrincipal = context.User;
+            return state;
+
+        }
+
+        /// <summary>
+        /// Creates a UserState object from authentication information in the 
+        /// Forms Authentication ticket.
+        /// 
+        /// IsEmpty() will return false if no data was loaded but
+        /// a Userdata object is always returned
+        /// </summary>
+        /// <returns></returns>
+        public static UserState CreateFromUserClaims(HttpContext context)
+        {
+            return CreateFromUserClaims<UserState>(context);            
         }
 
 
