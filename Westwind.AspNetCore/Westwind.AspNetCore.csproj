@@ -1,23 +1,24 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>0.1.0</Version>
+    <Version>3.0.11</Version>
     <Authors>Rick Strahl</Authors>
     <Company>West Wind Technologies</Company>
     <Product>West Wind Web Toolkit</Product>
     <Title>Westwind Web AspNet Core Support Library</Title>
     <Description>Support library for ASP.NET Core and ASP.NET Core MVC.</Description>
-    <Copyright>(c) West Wind Technologies, 2017</Copyright>
+    <Copyright>(c) West Wind Technologies, 2017-2018</Copyright>
     <PackageProjectUrl>https://github.com/RickStrahl/Westwind.AspNetCore/tree/master/Westwind.AspNetCore</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/RickStrahl/Westwind.AspNetCore/tree/master/Westwind.AspNetCore#License</PackageLicenseUrl>
     <RepositoryUrl>https://github.com/RickStrahl/Westwind.AspNetCore/tree/master/Westwind.AspNetCore</RepositoryUrl>
-    <RepositoryType>Git</RepositoryType>
-    <PackageTags />
+    <RepositoryType>Github</RepositoryType>
+    <PackageTags>Westwind AspNetCore Web</PackageTags>
+    <PackageIconUrl>http://www.west-wind.com/westwindToolkit/images/WestwindWebToolkit_128x128.png</PackageIconUrl>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Html.Abstractions" Version="2.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Formatters.Json" Version="2.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Formatters.Json" Version="2.0.1" />
     <PackageReference Include="Westwind.Utilities" Version="3.0.10" />
   </ItemGroup>
   <ItemGroup>

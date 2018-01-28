@@ -19,12 +19,7 @@ namespace Westwind.AspNetCore
     /// ErrorDisplay objects that are preinitialized.
     /// </summary>
     public class BaseController : Controller
-    {
-        /// <summary>
-        /// Contains User state information retrieved from the authentication system
-        /// </summary>
-        public UserState UserState { get; set; } = new UserState();
-
+    {        
         /// <summary>
         /// ErrorDisplay control that holds page level error information
         /// </summary>
@@ -34,8 +29,7 @@ namespace Westwind.AspNetCore
                
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-            Initialize(context);
-           
+            Initialize(context);           
             base.OnActionExecuting(context);
         }
 
@@ -43,39 +37,10 @@ namespace Westwind.AspNetCore
         /// Initialize the controller by setting up UserState and ErrorDisplay
         /// </summary>
         protected virtual void Initialize(ActionExecutingContext context)
-        {
-            CreateUserState();
-            
-            // have to explicitly add this so Master can see untyped value
-            ViewBag.UserState = UserState;
+        {                        
             ViewBag.ErrorDisplay = ErrorDisplay;
         }
         
-
-        /// <summary>
-        /// Override this method to create custom overridden userstate
-        /// object instances.
-        /// </summary>
-        /// <returns></returns>
-        protected virtual void CreateUserState()
-        {
-            CreateUserState<UserState>();            
-        }
-
-        /// <summary>
-        /// Override this method to create custom overridden userstate
-        /// object instances.
-        /// </summary>
-        /// <returns></returns>
-        protected virtual void CreateUserState<TUserState>()
-            where TUserState: UserState, new()
-        {            
-            // Grab the user's login information from FormsAuth            
-            if (User.Identity != null && User.Identity is ClaimsIdentity)
-                UserState = UserState.CreateFromUserClaims<TUserState>(this.HttpContext);
-            else
-                UserState = new TUserState();
-        }
 
 
         /// <summary>
@@ -96,7 +61,6 @@ namespace Westwind.AspNetCore
             {
                 BaseViewModel baseModel = model as BaseViewModel;
                 baseModel.ErrorDisplay = ErrorDisplay;
-                baseModel.UserState = UserState;
             }
 
             return model;
@@ -116,7 +80,6 @@ namespace Westwind.AspNetCore
 
             BaseViewModel baseModel = model as BaseViewModel;
             baseModel.ErrorDisplay = ErrorDisplay;
-            baseModel.UserState = UserState;
         }
 
         
