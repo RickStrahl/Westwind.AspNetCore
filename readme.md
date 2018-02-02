@@ -4,6 +4,19 @@
 
 This is a small helper package that provides a number of small helper and extension classes that facilitate common operations in ASP.NET Core and MVC applications.
 
+### Installation
+You can install the package [from NuGet](https://www.nuget.org/packages/Westwind.AspNetCore/):
+
+
+```
+PM> install-package westwind.aspnetcore
+```
+
+or the `dotnet` command line:
+
+```
+dotnet add package westwind.aspnetcore
+```
 
 ### Features
 
