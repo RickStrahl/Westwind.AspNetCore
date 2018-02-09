@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
@@ -91,5 +92,29 @@ namespace Westwind.AspNetCore.Extensions
                 .Replace("\\", slash)
                 .Replace(slash + slash, slash);            
         }
+
+
+        /// <summary>
+        /// Returns a value based on a key against the Form, Query and Session collections
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public static string Params(this HttpRequest request, string key)
+        {
+            string value = request.Form[key].FirstOrDefault();
+            if (string.IsNullOrEmpty(value))
+                value = request.Query[key].FirstOrDefault();            
+            if (string.IsNullOrEmpty(value))            
+                value = request.HttpContext.Session.GetString(key);
+            
+            return value;
+        }
+
+        /// TODO: Create a generic way to retrieve the route dictionary
+        //public static string GetRouteValue(this HttpRequest request, string routeKey)
+        //{
+        //      throw new NotImplementedException();
+        //}
     }
 }
