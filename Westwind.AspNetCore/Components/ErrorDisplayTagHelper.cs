@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Text;
 using Microsoft.AspNetCore.Razor.TagHelpers;
+using Westwind.Utilities;
 
 namespace Westwind.AspNetCore.Components
 {
@@ -169,6 +171,13 @@ namespace Westwind.AspNetCore.Components
                     "<hr/>\r\n" +
                     $"{messageText}\r\n");
             }
+
+            if (errorDisplay.DisplayErrors.Count > 0)
+            {
+                sb.AppendLine("<hr/>");
+                sb.AppendLine(errorDisplay.DisplayErrors.ToHtml());                
+            }
+
             output.Content.SetHtmlContent(sb.ToString());
         }
     }
