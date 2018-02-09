@@ -13,7 +13,15 @@ namespace Westwind.AspNetCore.Formatters
     /// 
     /// public string RawString([FromBody] string data) (text/plain)
     /// public byte[] RawData([FromBody] byte[] data)  (application/octet-stream)
+    /// 
+    /// Add to MVC processing with:
+    /// 
+    /// services.AddMvc(o =&gt; o.InputFormatters.Insert(0, new RawRequestBodyFormatter()));
+    /// 
+    /// More info:
+    /// https://weblog.west-wind.com/posts/2017/Sep/14/Accepting-Raw-Request-Body-Content-in-ASPNET-Core-API-Controllers
     /// </summary>
+    /// 
     public class RawRequestBodyFormatter : InputFormatter
     {
         public RawRequestBodyFormatter()
