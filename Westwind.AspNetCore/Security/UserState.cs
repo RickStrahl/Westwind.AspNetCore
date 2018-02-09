@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Westwind.Utilities;
 
 namespace Westwind.Web

@@ -23,11 +23,10 @@ namespace Westwind.AspNetCore.Security
     /// ```cs
     /// public class AppUser : AppUserBase
     /// {
-    ///    public AppUser(ClaimsPrincipal user) : base(user)
-    ///   { }
+    ///   public AppUser(ClaimsPrincipal user) : base(user) { }
     ///
     ///   public string Email => GetClaim("Username");
-    ///   public string Fullname => GetClaim("Fullname);
+    ///   public string Fullname => GetClaim("Fullname");
     ///   public string UserId => GetClaim("UserId");
     ///   public bool IsAdmin => HasRole("Admin");
     /// }    
@@ -56,7 +55,7 @@ namespace Westwind.AspNetCore.Security
         public IEnumerable<Claim> Claims => User?.Claims;
 
         #region Claims Validation
-        public bool IsAuthenticated()
+        public virtual bool IsAuthenticated()
         {
             if (User == null || User.Identity == null)
                 return false;
@@ -64,7 +63,7 @@ namespace Westwind.AspNetCore.Security
             return User.Identity.IsAuthenticated;
         }
 
-        public bool IsEmpty()
+        public virtual bool IsEmpty()
         {
             return User?.Identity == null;
         }
@@ -128,6 +127,7 @@ namespace Westwind.AspNetCore.Security
             context.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         }
         #endregion
+
     }
 }
 
@@ -136,7 +136,7 @@ namespace Westwind.AspNetCore.Security
 //{
 //    public static class ClaimsPrincipalExtensions
 //    {
-//        public static AppUser GetAppUser(this ClaimsPrincipal user)
+//        public static MyAppUser GetAppUser(this ClaimsPrincipal user)
 //        {
 //            return new AppUser(user);
 //        }
