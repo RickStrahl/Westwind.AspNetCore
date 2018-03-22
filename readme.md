@@ -1,20 +1,18 @@
-# Westwind.AspNetCore
-
 #### ASP.NET Core Utility library that provides helpers, formatters and extensions for ASP.NET Core
 
 This is a small helper package that provides a number of small helper and extension classes that facilitate common operations in ASP.NET Core and MVC applications.
 
 ### Installation
-You can install the package [from NuGet](https://www.nuget.org/packages/Westwind.AspNetCore/):
+You can install the package [from NuGet](https://www.nuget.org/packages/Westwind.AspNetCore/) in Visual Studio:
 
 
-```
+```ps
 PM> install-package westwind.aspnetcore
 ```
 
 or the `dotnet` command line:
 
-```
+```ps
 dotnet add package westwind.aspnetcore
 ```
 
@@ -42,9 +40,8 @@ In most MVC applications you need some sort of error display and this ErrorDispl
 #### General ASP.NET Core
 
 * **HttpRequest Extensions**  
-Helpers for:
-* `GetBodyStringAsync()` and `GetRawBodyBytesAsync()`  - retrieve raw non-JSON content
-* `MapPath()` - Map virtual path to physical path on disk
-* `Params()` - Return an item from Form, Query or Session collections.
+    * `GetBodyStringAsync()` and `GetRawBodyBytesAsync()`  - retrieve raw non-JSON content
+    * `MapPath()` - Map virtual path to physical path on disk
+    * `Params()` - Return an item from Form, Query or Session collections.
 
 

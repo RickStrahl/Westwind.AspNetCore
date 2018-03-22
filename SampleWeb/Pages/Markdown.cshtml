@@ -1,0 +1,86 @@
+﻿@page
+@model MarkdownModel
+@using Westwind.AspNetCore.Markdown
+
+@section Headers {
+    <style>
+        h3 {
+            margin-top: 50px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        /* vs2015 theme specific*/
+        pre {
+            background: #1E1E1E;
+            color: #eee;
+            padding: 0.7em !important;
+            overflow-x: auto;
+            white-space: pre;
+            word-break: normal;
+            word-wrap: normal;
+        }
+
+            pre > code {
+                white-space: pre;
+            }
+    </style>
+}
+
+<h3>Markdown TagHelper Block</h3>
+<markdown normalize-whitespace="true">
+    #### This is Markdown text inside of a Markdown block
+
+    * Item 1
+    * Item 2
+
+    Crazy it is.
+
+    ```cs
+    // this c# is a code block
+    for (int i = 0; i < lines.Length; i++)
+    {
+    line1 = lines[i];
+    if (!string.IsNullOrEmpty(line1))
+    break;
+    }
+    ```
+</markdown>
+
+<h3>Markdown Model Binding</h3>
+<markdown normalize-whitespace="true" markdown="MarkdownText" />
+
+<h3>Markdown Parsing in Razor HTML  with Markdown.ParseHtmlString()</h3>
+@Markdown.ParseHtmlString("This is **Markdown Text** using the `@Markdown.ParseHtmlString()` and `Markdown.Parse()` methods.")
+
+<markdown>
+    ```html
+    <div>
+        @@Markdown.ParseHtmlString("This is **Markdown Text** using the `@@Markdown.ParseHtmlString()` method.")
+    </div>
+    ```
+</markdown>
+
+
+<h3>Markdown Parsing in code with Markdown.Parse()</h3>
+
+<markdown>
+    ##### Parse Html in Code:
+    ```cs
+    var html = Markdown.Parse("This is **Markdown** Text.")
+    ```
+</markdown>
+
+
+@section Scripts {
+    <script src="~/lib/highlightjs/highlight.pack.js"></script>
+    <link href="~/lib/highlightjs/styles/vs2015.css" rel="stylesheet" />
+    <script>
+        setTimeout(function () {
+            var pres = document.querySelectorAll("pre>code");
+            for (var i = 0; i < pres.length; i++) {
+                hljs.highlightBlock(pres[i]);
+            }
+        });
+
+    </script>
+}
