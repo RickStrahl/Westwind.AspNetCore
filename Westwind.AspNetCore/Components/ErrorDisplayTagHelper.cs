@@ -122,9 +122,11 @@ namespace Westwind.AspNetCore.Components
 
             if (icon == "info")
                 icon = "info-circle";
+            if (icon == "warning")
+                icon = "exclamation-triangle";
             if (icon == "danger")
             {
-                icon = "warning";
+                icon = "exclamation-triangle";
                 if (string.IsNullOrEmpty(alertClass))
                     alertClass = "alert-danger";
             }
@@ -172,10 +174,13 @@ namespace Westwind.AspNetCore.Components
                     $"{messageText}\r\n");
             }
 
-            if (errorDisplay.DisplayErrors.Count > 0)
+            if (errorDisplay != null)
             {
-                sb.AppendLine("<hr/>");
-                sb.AppendLine(errorDisplay.DisplayErrors.ToHtml());                
+                if (errorDisplay.DisplayErrors.Count > 0)
+                {
+                    sb.AppendLine("<hr/>");
+                    sb.AppendLine(errorDisplay.DisplayErrors.ToHtml());
+                }
             }
 
             output.Content.SetHtmlContent(sb.ToString());

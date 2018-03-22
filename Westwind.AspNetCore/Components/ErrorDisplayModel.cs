@@ -68,8 +68,7 @@ namespace Westwind.AspNetCore.Components
                 return !string.IsNullOrEmpty(Message);
             }
         }
-
- 
+        
 
         /// <summary>
         /// Timeout in milliseconds before the error display is hidden
@@ -79,17 +78,7 @@ namespace Westwind.AspNetCore.Components
         /// <summary>
         /// Holds a modelstate errors collection
         /// </summary>
-        public ValidationErrorCollection DisplayErrors
-        {
-            get 
-            {
-                if (_DisplayErrors == null)
-                    _DisplayErrors = new ValidationErrorCollection();
-            
-                return _DisplayErrors; 
-            }
-        }        
-        private ValidationErrorCollection _DisplayErrors = null;
+        public ValidationErrorCollection DisplayErrors { get; set; } = new ValidationErrorCollection();
 
         bool visible = false;
 
@@ -97,7 +86,7 @@ namespace Westwind.AspNetCore.Components
 
         public void ShowError(string errorMessage, string header = null)
         {
-            Icon = "error";
+            Icon = "warning";
             Message = errorMessage;
             if (!string.IsNullOrEmpty(header))
                 Header = header;
