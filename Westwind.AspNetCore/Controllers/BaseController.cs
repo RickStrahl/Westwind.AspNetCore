@@ -24,8 +24,6 @@ namespace Westwind.AspNetCore
         /// ErrorDisplay control that holds page level error information
         /// </summary>
         public ErrorDisplayModel ErrorDisplay = new ErrorDisplayModel();
-
-
                
         public override void OnActionExecuting(ActionExecutingContext context)
         {
@@ -41,7 +39,6 @@ namespace Westwind.AspNetCore
             ViewBag.ErrorDisplay = ErrorDisplay;
         }
         
-
 
         /// <summary>
         /// Creates or updates a ViewModel and adds values to some of the
@@ -105,7 +102,7 @@ namespace Westwind.AspNetCore
         /// <param name="errorMessage">Message of the error to return</param>
         /// <param name="statusCode">Optional status code.</param>
         /// <returns></returns>
-        public JsonResult ReturnJsonError(string errorMessage, int statusCode = 500)
+        public JsonResult JsonError(string errorMessage, int statusCode = 500)
         {
             Response.Clear();
             Response.StatusCode = statusCode;
