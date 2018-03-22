@@ -93,6 +93,15 @@ namespace Westwind.AspNetCore.Extensions
                 .Replace(slash + slash, slash);            
         }
 
+        /// <summary>
+        /// Returns the absolute Url of the current request as a string.
+        /// </summary>
+        /// <param name="request"></param>
+        public static string GetUrl(this HttpRequest request)
+        {                        
+            return $"{request.Scheme}://{request.Host}{request.Path}{request.QueryString}";
+        }
+
 
         /// <summary>
         /// Returns a value based on a key against the Form, Query and Session collections
