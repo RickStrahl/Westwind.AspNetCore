@@ -40,7 +40,7 @@ namespace Westwind.AspNetCore.Markdown
 {
 
     /// <summary>
-    /// Wrapper around the CommonMark.NET parser that provides a cached
+    /// Wrapper around the MarkDig parser that provides a cached
     /// instance of the Markdown parser. Hooks up custom processing.
     /// </summary>
     public class  MarkdownParserMarkdig : MarkdownParserBase
@@ -76,9 +76,7 @@ namespace Westwind.AspNetCore.Markdown
 
             var html = htmlWriter.ToString();
             
-            html = ParseFontAwesomeIcons(html);
-
-            //if (!mmApp.Configuration.MarkdownOptions.AllowRenderScriptTags)
+            html = ParseFontAwesomeIcons(html);            
             html = ParseScript(html);  
                       
             return html;
@@ -117,6 +115,7 @@ namespace Westwind.AspNetCore.Markdown
 
                 return builder;
             }
+            
             
             // let the passed in action configure the builder
             builder = new MarkdownPipelineBuilder();

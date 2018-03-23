@@ -99,15 +99,6 @@ namespace Westwind.AspNetCore.Markdown
             return html;
         }
 
-        /// <summary>
-        /// Replaces all links with target="top" links
-        /// </summary>
-        /// <param name="html"></param>
-        /// <returns></returns>
-        protected string ParseExternalLinks(string html)
-        {
-            return html.Replace("<a href=", "<a target=\"top\" href=");
-        }
 
     }
 }

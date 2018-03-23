@@ -4,7 +4,6 @@ namespace Westwind.AspNetCore.Markdown
 {
     public static class Markdown
     {
-        #region Static Helpers 
 
         /// <summary>
         /// Renders raw markdown from string to HTML
@@ -33,7 +32,5 @@ namespace Westwind.AspNetCore.Markdown
         {
             return new HtmlString(Parse(markdown, usePragmaLines, forceReload));
         }
-
-        #endregion
     }
 }

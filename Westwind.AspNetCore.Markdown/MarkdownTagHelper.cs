@@ -7,42 +7,60 @@ using System.Diagnostics;
 
 namespace Westwind.AspNetCore.Markdown
 {
-    /// <summary>
-    /// An ASP.NET Server control that renders the embedded text as Markdown.
-    /// </summary>
 
+    /// <summary>
+    /// &lt;markdown&gt; TagHelper that lets you embed Markdown text directly
+    /// into your Razor page. Razor expressions are evaluated **before** 
+    /// Markdown is parsed.
+    /// </summary>        
     [HtmlTargetElement("markdown")]
     public class MarkdownTagHelper : TagHelper
     {
+
         /// <summary>
-        /// Tries to strip whitespace before all lines based on the whitespace applied on the first line.")
-        /// </summary>        
+        /// When set to true (default) strips leading white space based
+        /// on the first line of non-empty content. The first line of
+        /// content determines the format of the white spacing and removes
+        /// it from all other lines.
+        /// </summary>
         [HtmlAttributeName("normalize-whitespace")]
         public bool NormalizeWhitespace { get; set; } = true;
 
+        /// <summary>
+        /// Optional Content property that allows you to bind a 
+        /// Markdown model expression to the content. 
+        /// 
+        /// This Markdown content takes priority over the 
+        /// body content of the control.
+        /// </summary>
         [HtmlAttributeName("markdown")]
         public ModelExpression Markdown { get; set; }
 
+
+
+        /// <summary>
+        /// Process markdown and generate HTML output
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="output"></param>
+        /// <returns></returns>
         public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
             await base.ProcessAsync(context, output);
 
-            string text = null;
+            string content = null;
             if (Markdown != null)
-                text = Markdown.Model?.ToString();
+                content = Markdown.Model?.ToString();
 
-            if (text == null)
-            {
-                var content = await output.GetChildContentAsync();
-                text = content.GetContent();
-            }
-            
-            if (string.IsNullOrEmpty(text))
+            if (content == null)            
+                content = (await output.GetChildContentAsync()).GetContent();
+
+            if (string.IsNullOrEmpty(content))
                 return;
 
-            text = text.Trim('\n', '\r');
+            content = content.Trim('\n', '\r');
 
-            string markdown = NormalizeWhiteSpaceText(text);            
+            string markdown = NormalizeWhiteSpaceText(content);            
 
             var parser = MarkdownParserFactory.GetParser();
             var html = parser.Parse(markdown);
