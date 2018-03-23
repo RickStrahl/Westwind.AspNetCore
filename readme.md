@@ -16,6 +16,21 @@ or the `dotnet` command line:
 dotnet add package westwind.aspnetcore
 ```
 
+There is also a separate package for [Westwind.AspNetCore.Markdown](https://www.nuget.org/packages/Westwind.AspNetCore.Markdown) which provides a Markdown TagHelper and Markdown Parsing services:
+
+```ps
+PM> install-package westwind.aspnetcore.markdown
+```
+
+or the `dotnet` command line:
+
+```ps
+dotnet add package westwind.aspnetcore.markdown
+```
+
+For more info please see:
+* [Westwind.AspNetCore.Markdown](https://github.com/RickStrahl/Westwind.AspNetCore/tree/master/Westwind.AspNetCore.Markdown/readme.md)
+
 ### Features
 
 #### Api Functionality
