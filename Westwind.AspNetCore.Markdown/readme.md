@@ -8,6 +8,10 @@ This small package provides Markdown support for your ASP.NET Core applications.
 *  Markdown Parser
     *  Generate HTML to string
     *  Generate HtmlString for Razor usage
+*  Markdown Page Processor Middleware
+    *  Serve .md files as Markdown
+    *  Serve extensionless files as Markdown
+    *  Supports templated Markdown
 *  Uses the [MarkDig Markdown Parser](https://github.com/lunet-io/markdig)
 
 
