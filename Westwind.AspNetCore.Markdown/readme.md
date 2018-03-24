@@ -282,3 +282,9 @@ http://localhost:59805/posts/2018/03/23/MarkdownTagHelper.md
 or if extensionless URLs are configured:
 
 http://localhost:59805/posts/2018/03/23/MarkdownTagHelper
+
+The screenshot below shows the output of this page which is a Markdown blog post I simply copied into a folder along with a couple of support images. This is in a stock ASP.NET Core MVC project without any other changes save a few label updates:
+
+![](MarkdownRenderedPage.png)
+
+Voila generically rendered Markdown content from .md files on disk.
