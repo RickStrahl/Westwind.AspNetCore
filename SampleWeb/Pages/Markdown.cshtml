@@ -1,5 +1,6 @@
 ﻿@page
-@model MarkdownModel
+@model SampleWeb.Pages.MarkdownModel
+@using SampleWeb.Pages
 @using Westwind.AspNetCore.Markdown
 
 @section Headers {
@@ -33,15 +34,15 @@
     * Item 1
     * Item 2
 
-    Crazy it is.
+    The current Time is: **@DateTime.Now.ToString("HH:mm:ss")**
 
     ```cs
     // this c# is a code block
     for (int i = 0; i < lines.Length; i++)
     {
-    line1 = lines[i];
-    if (!string.IsNullOrEmpty(line1))
-    break;
+        line1 = lines[i];
+        if (!string.IsNullOrEmpty(line1))
+            break;
     }
     ```
 </markdown>
@@ -50,7 +51,7 @@
 <markdown normalize-whitespace="true" markdown="MarkdownText" />
 
 <h3>Markdown Parsing in Razor HTML  with Markdown.ParseHtmlString()</h3>
-@Markdown.ParseHtmlString("This is **Markdown Text** using the `@Markdown.ParseHtmlString()` and `Markdown.Parse()` methods.")
+@Markdown.ParseHtmlString("This is **Markdown Text** using the `@Markdown.ParseHtmlString()` method.")
 
 <markdown>
     ```html
