@@ -153,7 +153,7 @@ string html = Markdown.Parse(markdownText)
 ```
 
 ## Markdown Page Processor Middleware
-You can also set up your site to serve Markdown files from disk as self-contained Web pages. You can configure a folder hierarchy for serving `.md` files or extensionless urls that are mapped to underlying .md files and use a master template that renders the HTML.
+You can also set up your site to serve Markdown files from disk as self-contained Web pages. You can configure a folder hierarchy for serving `.md` files or extensionless urls that are mapped to underlying .md files, and use a master MVC View or Page as a template to host the rendered HTML. The template acts as the Site container into which the Markdown is rendered and it can be a self contained page or a Layout content page that works with the same Layout page you use for other site content.
 
 To use this feature you need to do the following:
 
