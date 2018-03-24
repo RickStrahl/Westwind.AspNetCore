@@ -2,17 +2,17 @@
 
 This small package provides Markdown support for your ASP.NET Core applications. It includes:
 
-* A Markdown TagHelper to embed Markdown Content into Pages
-    *  Embed Markdown text content
-    *  Databind Markdown
-*  Markdown Parser
+* **Markdown TagHelper** 
+    *  Embed Markdown Content into Views and Pages
+    *  Databind Markdown text
+*  **Markdown Parser**
     *  Generate HTML to string
     *  Generate HtmlString for Razor usage
-*  Markdown Page Processor Middleware
+*  **Markdown Page Processor Middleware**
     *  Serve .md files as Markdown
     *  Serve extensionless files as Markdown
     *  Supports templated Markdown
-*  Uses the [MarkDig Markdown Parser](https://github.com/lunet-io/markdig)
+*  [Uses the MarkDig Markdown Parser](https://github.com/lunet-io/markdig)
 
 
 ## Installation
@@ -153,3 +153,83 @@ string html = Markdown.Parse(markdownText)
 ```cs
 <div>@Markdown.ParseHtmlString(Model.ProductInfoMarkdown)</div>
 ```
+
+### Markdown Page Processor Middleware
+You can also set up your site to serve Markdown files from disk as self-contained Web pages. You can configure a folder hierarchy for serving `.md` files or extensionless urls that are mapped to underlying .md files and use a master template that renders the HTML.
+
+To use this feature you need to do the following:
+
+* Create a Markdown View Template (prefer: `~/Views/__MarkdownPageTemplate.cshtml`)
+* Use `AddMarkdownPageProcessor()` to configure the page processing
+* Use `UseMarkdownPageProcessor()` to hook up the middleware
+* Create `.md` files for your content
+
+#### Create a Markdown Page View Template
+The first thing that's required is a Markdown Page template that acts as a container for your markdown page on disk. The middleware reads in the Markdown file from disk, renders it to HTML and then uses the template to render the rendered Markdown into the template. 
+
+The `ViewBag.RenderedMarkdown` is an `HtmlString` instance that contains the HTML text. At minimum you can create a page like this:
+
+```html
+@{
+    Layout = "_Layout";
+}
+<div style="margin-top: 40px;">
+    @ViewBag.RenderedMarkdown
+</div>
+```
+
+This template can be a self contained file, or as I am doing here, it can explicitly reference a layout page so that the over layout matches the rest of your site.
+
+Each individual folder hierarchy can have it's own template but all within that group have to use the same layout.
+
+#### Startup Configuration
+As with any middleware components you need to configure the MarkdownPageProcessor middleware and hook it up for processing which is a two step process.
+
+First you need to call `AddMarkdownPageProcessor()` to configure the Markdown processor. You need to specify the folders that the processor is supposed to work on.
+
+```cs
+public void ConfigureServices(IServiceCollection services)
+{
+    services.AddMarkdownPageProcessor(config =>
+    {
+        var folderConfig = config.AddMarkdownProcessingFolder("/posts/");
+        folderConfig.PreProcess = (folder, controller) => { controller.ViewBag.Model = "Custom Data here..."; };
+    });
+    
+    services.AddMvc();
+}
+```
+
+There are additional options including the ability to hook in a pre-processor that's fired on every controller hit. In the example I set a dummy value to the ViewBag that the template could potentially pick up and work with. For applications you might have a stock View model that provides access rights and other user logic that needs to fire to access the page and display the view. Using the `PreProcess` Action hook you can run just about any pre-processing logic and get values into the View if necessary via the `Controller.Viewbag`.
+
+Additionally you also need to hook up the Middleware in the `Configure()` method.
+
+```cs
+public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+{  
+    ...
+    
+    app.UseMarkdownPageProcessor();
+    
+    app.UseStaticFiles();
+    app.UseMvc();
+}
+```        
+
+The `UseMarkdownPageProcessor()` method hooks up the middleware into the pipeline.
+
+#### Create your Markdown Pages
+Finally you need to create your Markdown pages in the folders you configured. Assume for a minute that you hooked up a `Posts` folder for Markdown Processing. The folder refers to the `\wwwroot\Posts` folder in your ASP.NET Core project. You can now create a new markdown file in that folder or any subfolder below it. I'm going to pretend I create blog post in a typical data folder structure. For example:
+
+```
+/Posts/2018/03/25/MarkdownTagHelper.md
+```
+
+I can now access this post using either:
+
+http://localhost:59805/posts/2018/03/23/MarkdownTagHelper.md
+
+or if extensionless URLs are configured:
+
+http://localhost:59805/posts/2018/03/23/MarkdownTagHelper
+
