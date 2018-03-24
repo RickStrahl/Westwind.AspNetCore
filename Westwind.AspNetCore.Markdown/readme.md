@@ -157,15 +157,21 @@ You can also set up your site to serve Markdown files from disk as self-containe
 
 To use this feature you need to do the following:
 
-* Create a Markdown View Template (prefer: `~/Views/__MarkdownPageTemplate.cshtml`)
+* Create a Markdown View Template (default is: `~/Views/__MarkdownPageTemplate.cshtml`)
 * Use `AddMarkdownPageProcessor()` to configure the page processing
 * Use `UseMarkdownPageProcessor()` to hook up the middleware
 * Create `.md` files for your content
 
-### Create a Markdown Page View Template
-The first thing that's required is a Markdown Page template that acts as a container for your markdown page on disk. The middleware reads in the Markdown file from disk, renders it to HTML and then uses the template to render the rendered Markdown into the template. 
+Note that the default template location can be customized for each folder and it can live anywhere including the `Pages` folder.
 
-The `ViewBag.RenderedMarkdown` is an `HtmlString` instance that contains the HTML text. At minimum you can create a page like this:
+### Create a Markdown Page View Template
+The first thing that's required is a Markdown Page template that acts as an HTML page container for your Markdown text. This provides the host HTML document and most likely the common site Chrome you need to display your content in.
+
+The middleware reads in the Markdown file from disk, and then uses a generic MVC controller method call the specified template to render the page containing your Markdown text as the content. Typically the template page is pretty simple and only contains the rendered Markdown plus a reference to a `_Layout` page, but what goes into this template is really up to you.
+
+The actual rendered Markdown content renders into HTML is pushed into the page via  `ViewBag.RenderedMarkdown`, which is an `HtmlString` instance that contains the rendered HTML. 
+
+A minimal template page can do something like this:
 
 ```html
 @{
@@ -176,9 +182,55 @@ The `ViewBag.RenderedMarkdown` is an `HtmlString` instance that contains the HTM
 </div>
 ```
 
-This template can be a self contained file, or as I am doing here, it can explicitly reference a layout page so that the over layout matches the rest of your site.
+This template can be a self contained file, or as I am doing here, it can explicitly reference a `_layout` page so that the  layout matches the rest of your site.
 
-Each individual folder hierarchy can have it's own template but all within that group have to use the same layout.
+A more complete template might also add a code highlighter ([highlightJs](https://highlightjs.org/https://highlightjs.org/) here) and custom styling something more along the lines of this:
+
+```html
+@{
+    Layout = "_Layout";
+}
+@section Headers {
+    <style>
+        h3 {
+            margin-top: 50px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        /* vs2015 theme specific*/
+        pre {
+            background: #1E1E1E;
+            color: #eee;
+            padding: 0.7em !important;
+            overflow-x: auto;
+            white-space: pre;
+            word-break: normal;
+            word-wrap: normal;
+        }
+
+            pre > code {
+                white-space: pre;
+            }
+    </style>
+}
+<div style="margin-top: 40px;">
+    @ViewBag.RenderedMarkdown
+</div>
+
+@section Scripts {
+    <script src="~/lib/highlightjs/highlight.pack.js"></script>
+    <link href="~/lib/highlightjs/styles/vs2015.css" rel="stylesheet" />
+    <script>
+        setTimeout(function () {
+            var pres = document.querySelectorAll("pre>code");
+            for (var i = 0; i < pres.length; i++) {
+                hljs.highlightBlock(pres[i]);
+            }
+        });
+
+    </script>
+}
+```
 
 ### Startup Configuration
 As with any middleware components you need to configure the MarkdownPageProcessor middleware and hook it up for processing which is a two step process.

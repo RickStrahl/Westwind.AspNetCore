@@ -67,7 +67,7 @@ namespace Westwind.AspNetCore.Markdown
             if (path == null)
                 return _next(context);
 
-            bool hasExtension = path.Contains(".");
+            bool hasExtension = !string.IsNullOrEmpty(System.IO.Path.GetExtension(path));
             bool hasMdExtension = path.EndsWith(".md");
             bool isRoot = path == "/";
             bool processAsMarkdown = false;
@@ -149,16 +149,7 @@ namespace Westwind.AspNetCore.Markdown
         /// <returns></returns>
         public static IApplicationBuilder UseMarkdownPageProcessor(this IApplicationBuilder builder)
         {
-            //return builder.UseMiddleware<MarkdownProcessorMiddleware>();
-
-            return builder.UseWhen((context) =>
-            {
-                return true;
-            }, (builder) =>
-             {
-
-             });
-
+            return builder.UseMiddleware<MarkdownProcessorMiddleware>();
         }
     }
 }
