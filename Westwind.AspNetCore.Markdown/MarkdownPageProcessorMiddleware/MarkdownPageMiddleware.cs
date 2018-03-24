@@ -1,4 +1,38 @@
-﻿using System;
+﻿#region License
+/*
+ **************************************************************
+ *  Author: Rick Strahl 
+ *          © West Wind Technologies, 
+ *          http://www.west-wind.com/
+ * 
+ * Created: 3/25/2018
+ *
+ * Permission is hereby granted, free of charge, to any person
+ * obtaining a copy of this software and associated documentation
+ * files (the "Software"), to deal in the Software without
+ * restriction, including without limitation the rights to use,
+ * copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following
+ * conditions:
+ * 
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+ * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+ * OTHER DEALINGS IN THE SOFTWARE.
+ **************************************************************  
+*/
+#endregion
+
+
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -30,22 +64,24 @@ namespace Westwind.AspNetCore.Markdown
         public Task InvokeAsync(HttpContext context)
         {
             var path = context.Request.Path.Value;
-            
             if (path == null)
                 return _next(context);
 
+            bool hasExtension = path.Contains(".");
+            bool hasMdExtension = path.EndsWith(".md");
+            bool isRoot = path == "/";
+            bool processAsMarkdown = false;
+
+            // process any Markdown file that has .md extension explicitly
             foreach (var folder in _configuration.MarkdownProcessingFolders)
             {
-                bool hasMdExtension = path.EndsWith(".md");
-                bool hasExtension = path.Contains(".");
-                bool isRoot = path == "/";
+                if (!path.ToLower().StartsWith(folder.RelativePath.ToLower()))
+                    continue;
 
-                bool processAsMarkdown = false;
-
-                
-
+                if (context.Request.Path.Value.EndsWith(".md", StringComparison.InvariantCultureIgnoreCase))
+                    processAsMarkdown = true;
                 // Root Url = everything is processed (not a good idea)
-                if (isRoot)
+                else if (isRoot)
                 {
                     if (folder.RelativePath != "/")
                         continue;
@@ -53,8 +89,9 @@ namespace Westwind.AspNetCore.Markdown
                     if (folder.ProcessExtensionlessUrls && !hasExtension || hasMdExtension && folder.ProcessMdFiles)
                         processAsMarkdown = true;
                 }
-                else if(path.ToLower().StartsWith(folder.RelativePath.ToLower()) && (folder.ProcessExtensionlessUrls && !hasExtension || hasMdExtension && folder.ProcessMdFiles))
+                else if (path.ToLower().StartsWith(folder.RelativePath.ToLower()) && (folder.ProcessExtensionlessUrls && !hasExtension || hasMdExtension && folder.ProcessMdFiles))
                     processAsMarkdown = true;
+
 
                 if (processAsMarkdown)
                 {
@@ -67,15 +104,6 @@ namespace Westwind.AspNetCore.Markdown
                     // rewrite path to our controller so we can use _layout page
                     context.Request.Path = "/markdownprocessor/markdownpage";
                 }
-
-            }
-
-            if (context.Request.Path.Value.EndsWith(".md", StringComparison.InvariantCultureIgnoreCase))
-            {
-
-                context.Items["MarkdownPath_OriginalPath"] = context.Request.Path.Value;
-                // rewrite path to our controller so we can use _layout page
-                context.Request.Path = "/markdown/markdownpage";
             }
 
             return _next(context);
@@ -121,7 +149,16 @@ namespace Westwind.AspNetCore.Markdown
         /// <returns></returns>
         public static IApplicationBuilder UseMarkdownPageProcessor(this IApplicationBuilder builder)
         {
-            return builder.UseMiddleware<MarkdownProcessorMiddleware>();
+            //return builder.UseMiddleware<MarkdownProcessorMiddleware>();
+
+            return builder.UseWhen((context) =>
+            {
+                return true;
+            }, (builder) =>
+             {
+
+             });
+
         }
     }
 }

@@ -7,6 +7,10 @@ using Westwind.AspNetCore.Markdown;
 
 namespace SampleWeb.Controllers
 {
+
+    /// <summary>
+    /// A generic controll implementation
+    /// </summary>
     public class MarkdownPageProcessorController : Controller
     {
         public MarkdownPageProcessorConfiguration MarkdownProcessorConfig { get; }
@@ -38,11 +42,15 @@ namespace SampleWeb.Controllers
             if (string.IsNullOrEmpty(markdown))
                 return NotFound();
 
-            ViewBag.MarkdownText = Markdown.ParseHtmlString(markdown);
+            ViewBag.RenderedMarkdown = Markdown.ParseHtmlString(markdown);
 
-            folderConfig.PreProcess?.Invoke(folderConfig, this);
+            if (folderConfig != null)
+            {
+                folderConfig.PreProcess?.Invoke(folderConfig, this);
+                return View(folderConfig.ViewTemplate);
+            }
 
-            return View(folderConfig.ViewTemplate);
+            return View(MarkdownPageProcessorConfiguration.DefaultMarkdownViewTemplate);
         }
 
         /// <summary>

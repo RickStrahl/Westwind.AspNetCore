@@ -5,8 +5,14 @@ using System.Collections.Generic;
 
 namespace Westwind.AspNetCore.Markdown
 {
+
+    /// <summary>
+    /// Holds configuration information about the MarkdownPageProcessor
+    /// </summary>
     public class MarkdownPageProcessorConfiguration
     {
+        public const string DefaultMarkdownViewTemplate = "~/Views/__MarkdownPageTemplate.cshtml";
+
         /// <summary>
         /// List of relative virtual folders where any extensionless URL is 
         /// matched to an .md file on disk
@@ -23,8 +29,10 @@ namespace Westwind.AspNetCore.Markdown
         /// <param name="processMdFiles">Process files with an .md extension</param>
         /// <param name="processExtensionlessUrls">Process extensionless Urls as Markdown. Assume matching .md file is available that holds the actual Markdown text</param>
         /// <returns></returns>
-        public MarkdownProcessingFolder AddMarkdownProcessingFolder(string path, string viewTemplate = null,
-            bool processMdFiles = true, bool processExtensionlessUrls = true)
+        public MarkdownProcessingFolder AddMarkdownProcessingFolder(string path, 
+                                                                    string viewTemplate = null,
+                                                                    bool processMdFiles = true,
+                                                                    bool processExtensionlessUrls = true)
         {
 
             if (!path.StartsWith("/"))
@@ -48,9 +56,12 @@ namespace Westwind.AspNetCore.Markdown
         }
     }
 
+    /// <summary>
+    /// Configures an individual Folder that is to be processed
+    /// by the Markdown Page Processor
+    /// </summary>
     public class MarkdownProcessingFolder
     {
-
         /// <summary>
         /// Relative path
         /// </summary>
@@ -59,7 +70,7 @@ namespace Westwind.AspNetCore.Markdown
         /// <summary>
         /// View Template to use to render the Markdown page
         /// </summary>
-        public string ViewTemplate { get; set; } = "~/Views/__MarkdownPageTemplate.cshtml";
+        public string ViewTemplate { get; set; } = MarkdownPageProcessorConfiguration.DefaultMarkdownViewTemplate;
 
 
         /// <summary>
@@ -80,7 +91,6 @@ namespace Westwind.AspNetCore.Markdown
         /// might want access to in the 
         /// 
         /// </summary>
-        public Action<MarkdownProcessingFolder, Controller> PreProcess
-        { get; set; }
+        public Action<MarkdownProcessingFolder, Controller> PreProcess { get; set; }
     }
 }

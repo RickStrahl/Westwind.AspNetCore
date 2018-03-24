@@ -28,8 +28,11 @@ namespace SampleWeb
 
             services.AddMarkdownPageProcessor(config =>
             {
-                var folderConfig = config.AddMarkdownProcessingFolder("/docs/");
-                folderConfig.PreProcess = (folder, controller) => { controller.ViewBag.Model = "Custom Data here..."; };
+                var folderConfig = config.AddMarkdownProcessingFolder("/posts/", "~/Pages/__MarkdownPageTemplate.cshtml");                
+                folderConfig.PreProcess = (folder, controller) =>
+                {
+                    controller.ViewBag.Model = "Custom Data here...";                    
+                };
             });
             services.AddMvc();
         }

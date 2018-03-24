@@ -2,13 +2,13 @@
 
 This small package provides Markdown support for your ASP.NET Core applications. It includes:
 
-* **Markdown TagHelper** 
+* **[Markdown TagHelper](#markdown-taghelper)** 
     *  Embed Markdown Content into Views and Pages
     *  Databind Markdown text
-*  **Markdown Parser**
+*  **[Markdown Parser](#markdown-parsing)**
     *  Generate HTML to string
     *  Generate HtmlString for Razor usage
-*  **Markdown Page Processor Middleware**
+*  **[Markdown Page Processor Middleware](#markdown-page-processor-middleware)**
     *  Serve .md files as Markdown
     *  Serve extensionless files as Markdown
     *  Supports templated Markdown
