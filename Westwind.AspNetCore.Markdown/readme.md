@@ -43,14 +43,12 @@ After installing the NuGet package **you have to register** the tag helper so MV
 @addTagHelper *, Westwind.AspNetCore.Markdown
 ```
 
-## Usage
-This package contains support for a Markdown TagHelper and a Markdown Parser that makes it easy to use Markdown content rendered as HTML in your applications.
 
-### Markdown TagHelper
+## Markdown TagHelper
 The Markdown TagHelper allows you to embed static Markdown content into a `<markdown>` tag. The Tag supports both embedded content, or an attribute based value assignment or model binding via the `markdown` attribute.
 
 
-#### Literal Markdown Content
+### Literal Markdown Content
 To use the literal content control you can simply place your Markdown text between the opening and closing `<markdown>` tags:
 
 ```html
@@ -87,7 +85,7 @@ The TagHelper turns the Markdown text into HTML, in place of the TagHelper conte
 > Syntax highlighting can be accomplished by using a JavaScript code highlighting addin. You can check out the [Markdown.cshtml sample page](https://github.com/RickStrahl/Westwind.AspNetCore/blob/master/SampleWeb/Pages/Markdown.cshtml) to see how to use [HiLightJs ](https://highlightjs.org/).
 
 
-#### Markdown Attribute and DataBinding
+### Markdown Attribute and DataBinding
 In addition to the content you can also bind to the `markdown` attribute which allows for programmatic assignment and databinding.
 
 ```
@@ -101,7 +99,7 @@ In addition to the content you can also bind to the `markdown` attribute which a
 
 The `markdown` attribute accepts binding expressions you can bind Markdown for display from model values or other expressions easily.
 
-#### NormalizeWhiteSpace
+### NormalizeWhiteSpace
 Markdown is sensitive to leading spaces and given that you're likely to enter Markdown into the literal TagHelper in a code editor there's likely to be a leading block of white space. Markdown treats leading whitespace as significant - 4 spaces or a tab indicate a code block so if you have:
 
 ```html
@@ -139,22 +137,22 @@ The current Time is: @DateTime.Now.ToString("HH:mm:ss")
 This also works, but is hard to maintain in some code editors due to auto-code reformatting.
 
 
-### Markdown Parsing
+## Markdown Parsing
 You can also use this component for simple Markdown parsing in code or your Razor pages.
 
-#### Markdown to String
+### Markdown to String
 
 ```cs
 string html = Markdown.Parse(markdownText)
 ```
 
-#### Markdown to Razor Html String
+### Markdown to Razor Html String
 
 ```cs
 <div>@Markdown.ParseHtmlString(Model.ProductInfoMarkdown)</div>
 ```
 
-### Markdown Page Processor Middleware
+## Markdown Page Processor Middleware
 You can also set up your site to serve Markdown files from disk as self-contained Web pages. You can configure a folder hierarchy for serving `.md` files or extensionless urls that are mapped to underlying .md files and use a master template that renders the HTML.
 
 To use this feature you need to do the following:
@@ -164,7 +162,7 @@ To use this feature you need to do the following:
 * Use `UseMarkdownPageProcessor()` to hook up the middleware
 * Create `.md` files for your content
 
-#### Create a Markdown Page View Template
+### Create a Markdown Page View Template
 The first thing that's required is a Markdown Page template that acts as a container for your markdown page on disk. The middleware reads in the Markdown file from disk, renders it to HTML and then uses the template to render the rendered Markdown into the template. 
 
 The `ViewBag.RenderedMarkdown` is an `HtmlString` instance that contains the HTML text. At minimum you can create a page like this:
@@ -182,7 +180,7 @@ This template can be a self contained file, or as I am doing here, it can explic
 
 Each individual folder hierarchy can have it's own template but all within that group have to use the same layout.
 
-#### Startup Configuration
+### Startup Configuration
 As with any middleware components you need to configure the MarkdownPageProcessor middleware and hook it up for processing which is a two step process.
 
 First you need to call `AddMarkdownPageProcessor()` to configure the Markdown processor. You need to specify the folders that the processor is supposed to work on.
@@ -218,7 +216,7 @@ public void Configure(IApplicationBuilder app, IHostingEnvironment env)
 
 The `UseMarkdownPageProcessor()` method hooks up the middleware into the pipeline.
 
-#### Create your Markdown Pages
+### Create your Markdown Pages
 Finally you need to create your Markdown pages in the folders you configured. Assume for a minute that you hooked up a `Posts` folder for Markdown Processing. The folder refers to the `\wwwroot\Posts` folder in your ASP.NET Core project. You can now create a new markdown file in that folder or any subfolder below it. I'm going to pretend I create blog post in a typical data folder structure. For example:
 
 ```
@@ -232,4 +230,3 @@ http://localhost:59805/posts/2018/03/23/MarkdownTagHelper.md
 or if extensionless URLs are configured:
 
 http://localhost:59805/posts/2018/03/23/MarkdownTagHelper
-
