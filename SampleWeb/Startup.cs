@@ -2,6 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Markdig;
+using Markdig.Extensions.AutoIdentifiers;
+using Markdig.Extensions.Tables;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -26,12 +29,30 @@ namespace SampleWeb
         {
             services.AddRouting();
 
-            services.AddMarkdownPageProcessor(config =>
+            services.AddMarkdown(config =>
             {
                 var folderConfig = config.AddMarkdownProcessingFolder("/posts/", "~/Pages/__MarkdownPageTemplate.cshtml");                
                 folderConfig.PreProcess = (folder, controller) =>
                 {
                     controller.ViewBag.Model = "Custom Data here...";                    
+                };
+
+                // Create custom MarkdigPipeline (using MarkDig; for extension methods)
+                config.ConfigureMarkdigPipeline = builder =>
+                {
+                    builder.UseEmphasisExtras(Markdig.Extensions.EmphasisExtras.EmphasisExtraOptions.Default)
+                        .UsePipeTables()
+                        .UseGridTables()                        
+                        .UseAutoIdentifiers(AutoIdentifierOptions.GitHub) // Headers get id="name" 
+                        .UseAutoLinks() // URLs are parsed into anchors
+                        .UseAbbreviations()
+                        .UseYamlFrontMatter()
+                        .UseEmojiAndSmiley(true)                        
+                        .UseListExtras()
+                        .UseFigures()
+                        .UseTaskLists()
+                        .UseCustomContainers()
+                        .UseGenericAttributes();
                 };
             });
             services.AddMvc();
@@ -50,7 +71,7 @@ namespace SampleWeb
                 app.UseExceptionHandler("/Error");            
             }
 
-            app.UseMarkdownPageProcessor();
+            app.UseMarkdown();
             
             //app.Use(async (context, next) =>
             //{

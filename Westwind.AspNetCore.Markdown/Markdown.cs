@@ -67,5 +67,6 @@ namespace Westwind.AspNetCore.Markdown
         {
             return new HtmlString(Parse(markdown, usePragmaLines, forceReload));
         }
+     
     }
 }

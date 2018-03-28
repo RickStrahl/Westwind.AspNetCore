@@ -43,7 +43,6 @@ After installing the NuGet package **you have to register** the tag helper so MV
 @addTagHelper *, Westwind.AspNetCore.Markdown
 ```
 
-
 ## Markdown TagHelper
 The Markdown TagHelper allows you to embed static Markdown content into a `<markdown>` tag. The Tag supports both embedded content, or an attribute based value assignment or model binding via the `markdown` attribute.
 
@@ -152,6 +151,37 @@ string html = Markdown.Parse(markdownText)
 <div>@Markdown.ParseHtmlString(Model.ProductInfoMarkdown)</div>
 ```
 
+### MarkDig Pipeline Configuration
+This component uses the MarkDig Markdown Parser which allows for explicit feature configuration via many of its built-in extensions. The default configuration enables the most commonly used Markdown features and defaults to Github Flavored Markdown for most settings.
+
+If you need to customize what features are supported you can override the pipeline creation explicitly in the `Startup.ConfigureServices` method:
+
+```cs
+services.AddMarkdownPageProcessor(config =>
+{
+    // Create custom MarkdigPipeline 
+    // using MarkDig; for extension methods
+    config.ConfigureMarkdigPipeline = builder =>
+    {
+        builder.UseEmphasisExtras(Markdig.Extensions.EmphasisExtras.EmphasisExtraOptions.Default)
+            .UsePipeTables()
+            .UseGridTables()                        
+            .UseAutoIdentifiers(AutoIdentifierOptions.GitHub) // Headers get id="name" 
+            .UseAutoLinks() // URLs are parsed into anchors
+            .UseAbbreviations()
+            .UseYamlFrontMatter()
+            .UseEmojiAndSmiley(true)                        
+            .UseListExtras()
+            .UseFigures()
+            .UseTaskLists()
+            .UseCustomContainers()
+            .UseGenericAttributes();
+    };
+});
+```
+
+When set this configuration is used every time the Markdown parser instance is created instead of the default behavior.
+
 ## Markdown Page Processor Middleware
 You can also set up your site to serve Markdown files from disk as self-contained Web pages. You can configure a folder hierarchy for serving `.md` files or extensionless urls that are mapped to underlying .md files, and use a master MVC View or Page as a template to host the rendered HTML. The template acts as the Site container into which the Markdown is rendered and it can be a self contained page or a Layout content page that works with the same Layout page you use for other site content.
 
@@ -242,7 +272,10 @@ public void ConfigureServices(IServiceCollection services)
 {
     services.AddMarkdownPageProcessor(config =>
     {
-        var folderConfig = config.AddMarkdownProcessingFolder("/posts/");
+        // just add a folder as is
+        config.AddMarkdownProcessingFolder("/docs/");
+        
+        folderConfig = config.AddMarkdownProcessingFolder("/posts/");
         folderConfig.PreProcess = (folder, controller) => { controller.ViewBag.Model = "Custom Data here..."; };
     });
     
