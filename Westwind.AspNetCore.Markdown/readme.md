@@ -188,8 +188,8 @@ You can also set up your site to serve Markdown files from disk as self-containe
 To use this feature you need to do the following:
 
 * Create a Markdown View Template (default is: `~/Views/__MarkdownPageTemplate.cshtml`)
-* Use `AddMarkdownPageProcessor()` to configure the page processing
-* Use `UseMarkdownPageProcessor()` to hook up the middleware
+* Use `AddMarkdown()` to configure the page processing
+* Use `UseMarkdown()` to hook up the middleware
 * Create `.md` files for your content
 
 Note that the default template location can be customized for each folder and it can live anywhere including the `Pages` folder.
