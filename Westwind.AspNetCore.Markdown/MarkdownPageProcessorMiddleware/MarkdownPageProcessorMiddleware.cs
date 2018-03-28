@@ -49,13 +49,13 @@ namespace Westwind.AspNetCore.Markdown
     /// Middleware that allows you to serve static Markdown files from disk
     /// and merge them using a configurable View template.
     /// </summary>
-    public class MarkdownProcessorMiddleware
+    public class MarkdownPageProcessorMiddleware
     {
         private readonly RequestDelegate _next;
-        private readonly MarkdownPageProcessorConfiguration _configuration;
+        private readonly MarkdownConfiguration _configuration;
 
-        public MarkdownProcessorMiddleware(RequestDelegate next, 
-                                               MarkdownPageProcessorConfiguration configuration)
+        public MarkdownPageProcessorMiddleware(RequestDelegate next, 
+                                               MarkdownConfiguration configuration)
         {
             _next = next;
             _configuration = configuration;
@@ -114,7 +114,7 @@ namespace Westwind.AspNetCore.Markdown
     /// <summary>
     /// The Middleware Hookup extensions.
     /// </summary>
-    public static class MarkdownPageProcessorMiddlewareExtensions
+    public static class MarkdownMiddlewareExtensions
     {
 
         /// <summary>
@@ -123,19 +123,23 @@ namespace Westwind.AspNetCore.Markdown
         /// <param name="services"></param>
         /// <param name="configAction"></param>
         /// <returns></returns>
-        public static IServiceCollection AddMarkdownPageProcessor(this IServiceCollection services,
-            Action<MarkdownPageProcessorConfiguration> configAction = null)
+        public static IServiceCollection AddMarkdown(this IServiceCollection services,
+            Action<MarkdownConfiguration> configAction = null)
         {            
-            var config = new MarkdownPageProcessorConfiguration();
+            var config = new MarkdownConfiguration();
 
             if (configAction != null)            
                 configAction.Invoke(config);
+
+
+            if (config.ConfigureMarkdigPipeline != null)
+                MarkdownParserMarkdig.ConfigurePipelineBuilder = config.ConfigureMarkdigPipeline;
 
             config.MarkdownProcessingFolders = 
                 config.MarkdownProcessingFolders
                     .OrderBy(f => f.RelativePath)
                     .ToList();
-
+            
             services.AddSingleton(config);
             
             return services;
@@ -147,9 +151,9 @@ namespace Westwind.AspNetCore.Markdown
         /// </summary>
         /// <param name="builder"></param>
         /// <returns></returns>
-        public static IApplicationBuilder UseMarkdownPageProcessor(this IApplicationBuilder builder)
+        public static IApplicationBuilder UseMarkdown(this IApplicationBuilder builder)
         {
-            return builder.UseMiddleware<MarkdownProcessorMiddleware>();
+            return builder.UseMiddleware<MarkdownPageProcessorMiddleware>();
         }
     }
 }

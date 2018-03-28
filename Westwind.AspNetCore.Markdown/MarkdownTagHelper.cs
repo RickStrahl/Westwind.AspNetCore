@@ -87,7 +87,8 @@ namespace Westwind.AspNetCore.Markdown
                 content = Markdown.Model?.ToString();
 
             if (content == null)            
-                content = (await output.GetChildContentAsync(NullHtmlEncoder.Default)).GetContent(NullHtmlEncoder.Default);
+                content = (await output.GetChildContentAsync(NullHtmlEncoder.Default))
+                                .GetContent(NullHtmlEncoder.Default);
 
             if (string.IsNullOrEmpty(content))
                 return;

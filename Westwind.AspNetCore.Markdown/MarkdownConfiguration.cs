@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using Markdig;
 
 namespace Westwind.AspNetCore.Markdown
 {
@@ -9,7 +10,7 @@ namespace Westwind.AspNetCore.Markdown
     /// <summary>
     /// Holds configuration information about the MarkdownPageProcessor
     /// </summary>
-    public class MarkdownPageProcessorConfiguration
+    public class MarkdownConfiguration
     {
         public const string DefaultMarkdownViewTemplate = "~/Views/__MarkdownPageTemplate.cshtml";
 
@@ -19,6 +20,11 @@ namespace Westwind.AspNetCore.Markdown
         /// </summary>
         public List<MarkdownProcessingFolder> MarkdownProcessingFolders { get; set; } = new List<MarkdownProcessingFolder>();
 
+
+        /// <summary>
+        /// Optional global configuration for setting up the Markdig Pipeline
+        /// </summary>
+        public Action<MarkdownPipelineBuilder> ConfigureMarkdigPipeline { get; set; }
 
         /// <summary>
         /// Adds a folder to the list of folders that are to be 
@@ -70,7 +76,7 @@ namespace Westwind.AspNetCore.Markdown
         /// <summary>
         /// View Template to use to render the Markdown page
         /// </summary>
-        public string ViewTemplate { get; set; } = MarkdownPageProcessorConfiguration.DefaultMarkdownViewTemplate;
+        public string ViewTemplate { get; set; } = MarkdownConfiguration.DefaultMarkdownViewTemplate;
 
 
         /// <summary>

@@ -13,11 +13,11 @@ namespace SampleWeb.Controllers
     /// </summary>
     public class MarkdownPageProcessorController : Controller
     {
-        public MarkdownPageProcessorConfiguration MarkdownProcessorConfig { get; }
+        public MarkdownConfiguration MarkdownProcessorConfig { get; }
         private readonly IHostingEnvironment hostingEnvironment;
 
         public MarkdownPageProcessorController(IHostingEnvironment hostingEnvironment,
-            MarkdownPageProcessorConfiguration config)
+            MarkdownConfiguration config)
         {
             MarkdownProcessorConfig = config;
             this.hostingEnvironment = hostingEnvironment;
@@ -50,7 +50,7 @@ namespace SampleWeb.Controllers
                 return View(folderConfig.ViewTemplate);
             }
 
-            return View(MarkdownPageProcessorConfiguration.DefaultMarkdownViewTemplate);
+            return View(MarkdownConfiguration.DefaultMarkdownViewTemplate);
         }
 
         /// <summary>
