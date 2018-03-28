@@ -157,7 +157,7 @@ This component uses the MarkDig Markdown Parser which allows for explicit featur
 If you need to customize what features are supported you can override the pipeline creation explicitly in the `Startup.ConfigureServices` method:
 
 ```cs
-services.AddMarkdownPageProcessor(config =>
+services.AddMarkdown(config =>
 {
     // Create custom MarkdigPipeline 
     // using MarkDig; for extension methods
@@ -270,7 +270,7 @@ First you need to call `AddMarkdownPageProcessor()` to configure the Markdown pr
 ```cs
 public void ConfigureServices(IServiceCollection services)
 {
-    services.AddMarkdownPageProcessor(config =>
+    services.AddMarkdown(config =>
     {
         // just add a folder as is
         config.AddMarkdownProcessingFolder("/docs/");
@@ -292,14 +292,14 @@ public void Configure(IApplicationBuilder app, IHostingEnvironment env)
 {  
     ...
     
-    app.UseMarkdownPageProcessor();
+    app.UseMarkdown();
     
     app.UseStaticFiles();
     app.UseMvc();
 }
 ```        
 
-The `UseMarkdownPageProcessor()` method hooks up the middleware into the pipeline.
+The `UseMarkdown()` method hooks up the middleware into the pipeline.
 
 ### Create your Markdown Pages
 Finally you need to create your Markdown pages in the folders you configured. Assume for a minute that you hooked up a `Posts` folder for Markdown Processing. The folder refers to the `\wwwroot\Posts` folder in your ASP.NET Core project. You can now create a new markdown file in that folder or any subfolder below it. I'm going to pretend I create blog post in a typical data folder structure. For example:
