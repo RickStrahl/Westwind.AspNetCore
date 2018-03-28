@@ -12,6 +12,7 @@
         /// </summary>
         public static IMarkdownParser CurrentParser;
 
+
         /// <summary>
         /// Retrieves a cached instance of the markdown parser
         /// </summary>                

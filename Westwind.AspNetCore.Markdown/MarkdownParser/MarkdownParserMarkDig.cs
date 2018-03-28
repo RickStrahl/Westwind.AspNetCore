@@ -34,6 +34,8 @@
 using System;
 using System.IO;
 using Markdig;
+using Markdig.Extensions.AutoIdentifiers;
+using Markdig.Extensions.EmphasisExtras;
 using Markdig.Renderers;
 
 namespace Westwind.AspNetCore.Markdown
@@ -45,15 +47,27 @@ namespace Westwind.AspNetCore.Markdown
     /// </summary>
     public class  MarkdownParserMarkdig : MarkdownParserBase
     {
-        public static MarkdownPipeline Pipeline;
+        /// <summary>
+        /// Cached pipeline instance
+        /// </summary>
+        public static MarkdownPipeline Pipeline;        
 
         private readonly bool _usePragmaLines;
 
+        /// <summary>
+        /// Optional global configuration for setting up the Markdig Pipeline
+        /// </summary>
+        public static Action<MarkdownPipelineBuilder> ConfigurePipelineBuilder { get; set; }
+
         public MarkdownParserMarkdig(bool usePragmaLines = false, bool force = false, Action<MarkdownPipelineBuilder> markdigConfiguration = null)
         {
+
             _usePragmaLines = usePragmaLines;
             if (force || Pipeline == null)
-            {                
+            {
+                if (markdigConfiguration == null && ConfigurePipelineBuilder != null)                
+                    markdigConfiguration = ConfigurePipelineBuilder;
+
                 var builder = CreatePipelineBuilder(markdigConfiguration);                
                 Pipeline = builder.Build();
             }
@@ -69,13 +83,16 @@ namespace Westwind.AspNetCore.Markdown
             if (string.IsNullOrEmpty(markdown))
                 return string.Empty;
 
-            var htmlWriter = new StringWriter();
-            var renderer = CreateRenderer(htmlWriter);
+            string html;
+            using (var htmlWriter = new StringWriter())
+            {
+                var renderer = CreateRenderer(htmlWriter);
 
-            Markdig.Markdown.Convert(markdown, renderer, Pipeline);
+                Markdig.Markdown.Convert(markdown, renderer, Pipeline);
 
-            var html = htmlWriter.ToString();
-            
+                html = htmlWriter.ToString();
+            }
+
             html = ParseFontAwesomeIcons(html);            
             html = ParseScript(html);  
                       
@@ -89,25 +106,25 @@ namespace Westwind.AspNetCore.Markdown
             // build it explicitly
             if (markdigConfiguration == null)
             {
-                builder = new MarkdownPipelineBuilder()                    
-                    .UseEmphasisExtras(Markdig.Extensions.EmphasisExtras.EmphasisExtraOptions.Default)
+                builder = new MarkdownPipelineBuilder()
+                    .UseEmphasisExtras()
                     .UsePipeTables()
                     .UseGridTables()
                     .UseFooters()
                     .UseFootnotes()
-                    .UseCitations();
+                    .UseCitations()
+                    .UseAutoLinks() // URLs are parsed into anchors
+                    .UseAutoIdentifiers(AutoIdentifierOptions.GitHub) // Headers get id="name" 
+                    .UseAbbreviations()
+                    .UseYamlFrontMatter()
+                    .UseEmojiAndSmiley(true)
+                    .UseMediaLinks()
+                    .UseListExtras()
+                    .UseFigures()
+                    .UseTaskLists()
+                    .UseCustomContainers()
+                    .UseGenericAttributes();
 
-
-                builder = builder.UseAutoLinks();        // URLs are parsed into anchors
-                builder = builder.UseAutoIdentifiers();  // Headers get id="name" 
-
-                builder = builder.UseAbbreviations();
-                builder = builder.UseYamlFrontMatter();
-                builder = builder.UseEmojiAndSmiley(true);
-                builder = builder.UseMediaLinks();
-                builder = builder.UseListExtras();
-                builder = builder.UseFigures();
-                builder = builder.UseTaskLists();
                 //builder = builder.UseSmartyPants();            
 
                 if (_usePragmaLines)
@@ -123,7 +140,7 @@ namespace Westwind.AspNetCore.Markdown
 
             if (_usePragmaLines)
                 builder = builder.UsePragmaLines();
-
+            
             return builder;
         }
 
