@@ -2,9 +2,15 @@
 
 This is a small helper package that provides a number of small helper and extension classes that facilitate common operations in ASP.NET Core and MVC applications.
 
+For documentation on sub-components please see their respective folders:
+
+* **[Westwind.AspNetCore.Markdown](https://github.com/RickStrahl/Westwind.AspNetCore/tree/master/Westwind.AspNetCore.Markdown/readme.md)**
+
+
 ### Installation
 You can install the package [from NuGet](https://www.nuget.org/packages/Westwind.AspNetCore/) in Visual Studio:
 
+#### Westwind.AspnetCore Package
 
 ```ps
 PM> install-package westwind.aspnetcore
@@ -16,6 +22,7 @@ or the `dotnet` command line:
 dotnet add package westwind.aspnetcore
 ```
 
+#### Westwind.AspnetCore.Markdown Package
 There is also a separate package for [Westwind.AspNetCore.Markdown](https://www.nuget.org/packages/Westwind.AspNetCore.Markdown) which provides a Markdown TagHelper and Markdown Parsing services:
 
 ```ps
@@ -27,9 +34,6 @@ or the `dotnet` command line:
 ```ps
 dotnet add package westwind.aspnetcore.markdown
 ```
-
-For more info please see:
-* [Westwind.AspNetCore.Markdown](https://github.com/RickStrahl/Westwind.AspNetCore/tree/master/Westwind.AspNetCore.Markdown/readme.md)
 
 ### Features
 
