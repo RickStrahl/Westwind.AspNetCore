@@ -37,8 +37,14 @@ namespace SampleWeb.Controllers
             var pageFile = Path.Combine(basePath,relativePath);            
             if (!System.IO.File.Exists(pageFile))
                 return NotFound();
-
-            var markdown = await System.IO.File.ReadAllTextAsync(pageFile);
+            
+            string markdown;
+            using (var fs = new FileStream(pageFile, FileMode.Open, FileAccess.Read))
+            using (StreamReader sr = new StreamReader(fs))
+            {                
+                    markdown = await sr.ReadToEndAsync();                
+            }
+            
             if (string.IsNullOrEmpty(markdown))
                 return NotFound();
 
