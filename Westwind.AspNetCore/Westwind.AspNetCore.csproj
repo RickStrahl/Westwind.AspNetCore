@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>3.0.15</Version>
+    <Version>3.0.18</Version>
     <Authors>Rick Strahl</Authors>
     <Company>West Wind Technologies</Company>
     <Product>West Wind Web Toolkit</Product>
@@ -15,8 +15,8 @@
     <RepositoryType>Github</RepositoryType>
     <PackageTags>Westwind AspNetCore Web</PackageTags>
     <PackageIconUrl>http://www.west-wind.com/westwindToolkit/images/WestwindWebToolkit_128x128.png</PackageIconUrl>
-    <AssemblyVersion>3.0.15.0</AssemblyVersion>
-    <FileVersion>3.0.15.0</FileVersion>
+    <AssemblyVersion>3.0.18.0</AssemblyVersion>
+    <FileVersion>3.0.18.0</FileVersion>
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="Utilities\**" />
