@@ -90,6 +90,12 @@ namespace Westwind.AspNetCore.Markdown
         /// </summary>
         public bool ProcessExtensionlessUrls { get; set; } = true;
 
+        /// <summary>
+        /// Determines whether pages try to find the Title inside of the Markdown text
+        /// either from YAML content or from first # HEADER tag.
+        /// </summary>
+        public bool ExtractTitle { get; set; } = true;
+
 
         /// <summary>
         /// Function that can be set to be called before the Markdown View is fired.

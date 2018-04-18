@@ -35,8 +35,10 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 
@@ -50,12 +52,15 @@ namespace Westwind.AspNetCore.Markdown
     {
         private readonly RequestDelegate _next;
         private readonly MarkdownConfiguration _configuration;
+        private readonly IHostingEnvironment _env;
 
         public MarkdownPageProcessorMiddleware(RequestDelegate next, 
-                                               MarkdownConfiguration configuration)
+                                               MarkdownConfiguration configuration,
+                                               IHostingEnvironment env)
         {
             _next = next;
             _configuration = configuration;
+            _env = env;
         }
 
         public Task InvokeAsync(HttpContext context)
@@ -64,42 +69,54 @@ namespace Westwind.AspNetCore.Markdown
             if (path == null)
                 return _next(context);
 
-            bool hasExtension = !string.IsNullOrEmpty(System.IO.Path.GetExtension(path));
+            bool hasExtension = !string.IsNullOrEmpty(Path.GetExtension(path));
             bool hasMdExtension = path.EndsWith(".md");
             bool isRoot = path == "/";
             bool processAsMarkdown = false;
 
+            var basePath = _env.WebRootPath;
+            var relativePath = path;
+            relativePath = PathHelper.NormalizePath(relativePath).Substring(1);
+            var pageFile = Path.Combine(basePath, relativePath);
+
             // process any Markdown file that has .md extension explicitly
             foreach (var folder in _configuration.MarkdownProcessingFolders)
             {
-                if (!path.ToLower().StartsWith(folder.RelativePath.ToLower()))
+                if (!path.StartsWith(folder.RelativePath, StringComparison.InvariantCultureIgnoreCase))
+                    continue;
+
+                if (isRoot && folder.RelativePath != "/")
                     continue;
 
                 if (context.Request.Path.Value.EndsWith(".md", StringComparison.InvariantCultureIgnoreCase))
-                    processAsMarkdown = true;
-                // Root Url = everything is processed (not a good idea)
-                else if (isRoot)
                 {
-                    if (folder.RelativePath != "/")
+                    processAsMarkdown = true;
+                }
+                else if (path.StartsWith(folder.RelativePath, StringComparison.InvariantCultureIgnoreCase) &&
+                     (folder.ProcessExtensionlessUrls && !hasExtension ||
+                      hasMdExtension && folder.ProcessMdFiles))
+                {
+                    if (!hasExtension && Directory.Exists(pageFile))
                         continue;
 
-                    if (folder.ProcessExtensionlessUrls && !hasExtension || hasMdExtension && folder.ProcessMdFiles)
-                        processAsMarkdown = true;
-                }
-                else if (path.ToLower().StartsWith(folder.RelativePath.ToLower()) && (folder.ProcessExtensionlessUrls && !hasExtension || hasMdExtension && folder.ProcessMdFiles))
-                    processAsMarkdown = true;
+                    if (!hasExtension)
+                        pageFile += ".md";
 
+                    if (!File.Exists(pageFile))
+                        continue;
+
+                    processAsMarkdown = true;
+                }
 
                 if (processAsMarkdown)
-                {
-                    if (!hasExtension)
-                        path += ".md";
-
+                {             
+                    context.Items["MarkdownPath_PageFile"] = pageFile;
                     context.Items["MarkdownPath_OriginalPath"] = path;
                     context.Items["MarkdownPath_FolderConfiguration"] = folder;
 
                     // rewrite path to our controller so we can use _layout page
                     context.Request.Path = "/markdownprocessor/markdownpage";
+                    break;
                 }
             }
 
