@@ -24,7 +24,7 @@ namespace SampleWeb.Controllers
             MarkdownProcessorConfig = config;
             this.hostingEnvironment = hostingEnvironment;
         }
-
+                
         [Route("markdownprocessor/markdownpage")]
         public async Task<IActionResult> MarkdownPage()
         {            
@@ -49,11 +49,7 @@ namespace SampleWeb.Controllers
             if (string.IsNullOrEmpty(markdown))
                 return NotFound();
 
-            var model = ParseMarkdownToModel(markdown);
-
-
-                        
-            ViewBag.RenderedMarkdown = Markdown.ParseHtmlString(markdown);
+            var model = ParseMarkdownToModel(markdown);       
             
             if (folderConfig != null)
             {
@@ -102,6 +98,5 @@ namespace SampleWeb.Controllers
 
             return model;
         }
-
     }
 }

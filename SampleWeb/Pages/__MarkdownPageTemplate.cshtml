@@ -1,5 +1,6 @@
 ﻿@model Westwind.AspNetCore.Markdown.MarkdownModel
 @{
+    ViewBag.Title = Model.Title;
     Layout = "_Layout";
 }
 @section Headers {
@@ -13,7 +14,7 @@
         pre {
             background: #1E1E1E;
             color: #eee;
-            padding: 0.7em !important;
+            padding: 0.5em !important;
             overflow-x: auto;
             white-space: pre;
             word-break: normal;

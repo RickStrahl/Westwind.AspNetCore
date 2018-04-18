@@ -34,7 +34,7 @@ namespace SampleWeb
 
 
                 // Customized Configuration: Set FolderConfiguration options
-                var folderConfig = config.AddMarkdownProcessingFolder("/posts/", "~/Pages/__MarkdownSimplestPageTemplate.cshtml");
+                var folderConfig = config.AddMarkdownProcessingFolder("/posts/", "~/Pages/__MarkdownPageTemplate.cshtml");
 
                 // Optional configuration settings
                 folderConfig.ProcessExtensionlessUrls = true;  // default
@@ -80,7 +80,7 @@ namespace SampleWeb
             else
             {
                 app.UseExceptionHandler("/Error");            
-            }
+            }            
 
             app.UseMarkdown();
             

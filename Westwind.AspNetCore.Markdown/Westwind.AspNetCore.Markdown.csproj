@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>3.0.18</Version>
+    <Version>3.0.25</Version>
     <Authors>Rick Strahl</Authors>
     <Company>West Wind Technologies</Company>
     <Product>West Wind Web Toolkit</Product>
@@ -15,8 +15,8 @@
     <RepositoryType>Github</RepositoryType>
     <PackageTags>Westwind AspNetCore Web</PackageTags>
     <PackageIconUrl>https://markdownmonster.west-wind.com/images/markdown_icon.png</PackageIconUrl>
-    <AssemblyVersion>3.0.18.0</AssemblyVersion>
-    <FileVersion>3.0.18.0</FileVersion>
+    <AssemblyVersion>3.0.25.0</AssemblyVersion>
+    <FileVersion>3.0.25.0</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
