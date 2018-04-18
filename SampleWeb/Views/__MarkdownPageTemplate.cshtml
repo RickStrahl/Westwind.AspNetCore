@@ -1,4 +1,6 @@
-﻿@{
+﻿@model  Westwind.AspNetCore.Markdown.MarkdownModel
+@{
+    ViewBag.Title = Model.Title;                                                  
     Layout = "_Layout";
 }
 @section Headers {
@@ -25,7 +27,7 @@
     </style>
 }
 <div style="margin-top: 40px;">
-    @ViewBag.RenderedMarkdown
+    @Model.RenderedMarkdown
 </div>
 
 @section Scripts {

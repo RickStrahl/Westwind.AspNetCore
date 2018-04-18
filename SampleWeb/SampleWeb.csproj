@@ -12,4 +12,9 @@
   <ItemGroup>
     <ProjectReference Include="..\Westwind.AspNetCore.Markdown\Westwind.AspNetCore.Markdown.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Update="Pages\__MarkdownSimplestPageTemplate.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+  </ItemGroup>
 </Project>

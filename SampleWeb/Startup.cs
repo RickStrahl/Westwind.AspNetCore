@@ -27,17 +27,26 @@ namespace SampleWeb
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddRouting();
-
             services.AddMarkdown(config =>
             {
-                var folderConfig = config.AddMarkdownProcessingFolder("/posts/", "~/Pages/__MarkdownPageTemplate.cshtml");                
+                // Simplest: Use all default settings
+                config.AddMarkdownProcessingFolder("/docs/", "~/Pages/__MarkdownPageTemplate.cshtml");
+
+
+                // Customized Configuration: Set FolderConfiguration options
+                var folderConfig = config.AddMarkdownProcessingFolder("/posts/", "~/Pages/__MarkdownSimplestPageTemplate.cshtml");
+
+                // Optional configuration settings
+                folderConfig.ProcessExtensionlessUrls = true;  // default
+                folderConfig.ProcessMdFiles = true; // default
+
+                // Optional pre-processing
                 folderConfig.PreProcess = (folder, controller) =>
                 {
-                    controller.ViewBag.Model = "Custom Data here...";                    
+                    // controller.ViewBag.Model = new MyCustomModel();
                 };
 
-                // Create custom MarkdigPipeline (using MarkDig; for extension methods)
+                // optional custom MarkdigPipeline (using MarkDig; for extension methods)
                 config.ConfigureMarkdigPipeline = builder =>
                 {
                     builder.UseEmphasisExtras(Markdig.Extensions.EmphasisExtras.EmphasisExtraOptions.Default)
@@ -55,6 +64,8 @@ namespace SampleWeb
                         .UseGenericAttributes();
                 };
             });
+
+            // We need to use MVC so we can use a Razor Configuration Template
             services.AddMvc();
         }
 

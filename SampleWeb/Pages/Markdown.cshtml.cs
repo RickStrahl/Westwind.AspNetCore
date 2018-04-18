@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace SampleWeb.Pages
 {
-    public class MarkdownModel : PageModel
+    public class MarkdownControlModel : PageModel
     {
         public string MarkdownText { get; set; } = 
             @"This is **Markdown Text** that was bound to a `PageModel.MarkdownText` property:
