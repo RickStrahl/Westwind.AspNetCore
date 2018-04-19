@@ -2,7 +2,7 @@
 
 This small package provides Markdown support for your ASP.NET Core applications. It has the following features:
 
-*  **[Markdown Parser](#markdown-parsing)**
+*  **[Markdown Parsing Helpers](#markdown-parsing)**
     *  Generate Markdown to raw String  
       `Markdown.Parse(markdown)`
     *  Generate Markdown to HtmlString for Razor usage   
@@ -30,8 +30,8 @@ or the `dotnet` command line:
 dotnet add package westwind.aspnetcore.markdown
 ```
 
-## Markdown Parsing
-At it's simplest this component provides Markdown parsing that you can use to convert Markdown text to HTML either inside of application code, or inside of Razor expresions.
+## Markdown Parsing Helpers
+At it's simplest this component provides Markdown parsing that you can use to convert Markdown text to HTML either inside of application code, or inside of Razor expressions.
 
 ### Markdown to String
 
