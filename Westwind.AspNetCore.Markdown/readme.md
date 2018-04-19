@@ -1,4 +1,4 @@
-# ASP.NET Core Markdown TagHelper and Markdown Parser using MarkDig
+# ASP.NET Core Markdown Support
 
 This small package provides Markdown support for your ASP.NET Core applications. It has the following features:
 
