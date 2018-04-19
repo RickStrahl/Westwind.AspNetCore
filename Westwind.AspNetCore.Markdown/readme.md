@@ -17,7 +17,7 @@ This small package provides Markdown support for your ASP.NET Core applications.
 *  [Uses the MarkDig Markdown Parser](https://github.com/lunet-io/markdig)
 
 
-## Installation
+## Installing the NuGet Package
 You can install the package [from NuGet](https://www.nuget.org/packages/Westwind.AspNetCore.Markdown/) in Visual Studio or from the command line:
 
 ```ps
@@ -29,6 +29,7 @@ or the `dotnet` command line:
 ```ps
 dotnet add package westwind.aspnetcore.markdown
 ```
+
 ## Markdown Parsing
 At it's simplest this component provides Markdown parsing that you can use to convert Markdown text to HTML either inside of application code, or inside of Razor expresions.
 
