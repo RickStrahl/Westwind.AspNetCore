@@ -17,6 +17,11 @@ This small package provides Markdown support for your ASP.NET Core applications.
 *  [Uses the MarkDig Markdown Parser](https://github.com/lunet-io/markdig)
 
 
+Related links:
+
+* [Markdown TagHelper Blog Post](https://weblog.west-wind.com/posts/2018/Mar/23/Creating-an-ASPNET-Core-Markdown-TagHelper-and-Parser)
+* [Markdown Page Handler Middleware Blog Post](https://weblog.west-wind.com/posts/2018/Apr/18/Creating-a-generic-Markdown-Page-Handler-in-ASPNET-Core)
+
 ## Installing the NuGet Package
 You can install the package [from NuGet](https://www.nuget.org/packages/Westwind.AspNetCore.Markdown/) in Visual Studio or from the command line:
 
@@ -227,6 +232,24 @@ services.AddMarkdown(config =>
     folderConfig.PreProcess = (folder, controller) =>
     {
         controller.ViewBag.Model = new MyCustomModel();
+    };
+    
+    // optional custom MarkdigPipeline (using MarkDig; for extension methods)
+    config.ConfigureMarkdigPipeline = builder =>
+    {
+        builder.UseEmphasisExtras(Markdig.Extensions.EmphasisExtras.EmphasisExtraOptions.Default)
+            .UsePipeTables()
+            .UseGridTables()                        
+            .UseAutoIdentifiers(AutoIdentifierOptions.GitHub) // Headers get id="name" 
+            .UseAutoLinks() // URLs are parsed into anchors
+            .UseAbbreviations()
+            .UseYamlFrontMatter()
+            .UseEmojiAndSmiley(true)                        
+            .UseListExtras()
+            .UseFigures()
+            .UseTaskLists()
+            .UseCustomContainers()
+            .UseGenericAttributes();
     };
 }   
 ```
