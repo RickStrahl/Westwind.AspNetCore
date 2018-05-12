@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -40,9 +40,9 @@ namespace SampleWeb
                 folderConfig.ProcessExtensionlessUrls = true;  // default
                 folderConfig.ProcessMdFiles = true; // default
 
-                // Optional pre-processing
-                folderConfig.PreProcess = (folder, controller) =>
-                {
+                // Optional pre-processing - with filled model
+                folderConfig.PreProcess = (model, controller) =>
+                {                    
                     // controller.ViewBag.Model = new MyCustomModel();
                 };
 
@@ -68,6 +68,7 @@ namespace SampleWeb
             // We need to use MVC so we can use a Razor Configuration Template
             services.AddMvc();
         }
+
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)

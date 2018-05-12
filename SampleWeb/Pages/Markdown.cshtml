@@ -1,7 +1,9 @@
 ﻿@page
 @model MarkdownControlModel
 @using Westwind.AspNetCore.Markdown
-
+@{
+    ViewBag.Title = "Markdown TagHelper";
+}
 @section Headers {
     <style>
         h3 {
@@ -26,6 +28,8 @@
     </style>
 }
 
+
+
 <h3>Markdown TagHelper Block</h3>
 <markdown normalize-whitespace="true">
     #### This is Markdown text inside of a Markdown block
@@ -37,9 +41,10 @@
 
 
     ![](https://markdownmonster.west-wind.com/Images/MarkdownMonster_Icon_32.png)
-    This is a link to [Markdown Monster](https://markdownmonster.west-wind.com).
+    This is a link to 
+    [Markdown Monster](https://markdownmonster.west-wind.com).
 
-    This is an auto link:  
+    This is an auto link:
 
     https://markdownmonster.west-wind.com
 
@@ -48,12 +53,15 @@
     // this c# is a code block
     for (int i = 0; i < lines.Length; i++)
     {
-    line1 = lines[i];
-    if (!string.IsNullOrEmpty(line1))
-    break;
+        line1 = lines[i];
+        if (!string.IsNullOrEmpty(line1))
+        break;
     }
     ```
 </markdown>
+
+
+
 
 <h3>Markdown Model Binding</h3>
 <markdown normalize-whitespace="true" markdown="MarkdownText" />

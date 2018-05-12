@@ -229,9 +229,9 @@ services.AddMarkdown(config =>
     folderConfig.ProcessMdFiles = true;            // default
 
     // Optional pre-processing
-    folderConfig.PreProcess = (folder, controller) =>
+    folderConfig.PreProcess = (model, controller) =>
     {
-        controller.ViewBag.Model = new MyCustomModel();
+        //controller.ViewBag.Model = new MyCustomModel();
     };
     
     // optional custom MarkdigPipeline (using MarkDig; for extension methods)
