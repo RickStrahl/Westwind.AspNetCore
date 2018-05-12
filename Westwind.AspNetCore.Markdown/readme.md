@@ -1,5 +1,9 @@
 # ASP.NET Core Markdown Support
 
+
+[![NuGet Pre Release](https://img.shields.io/nuget/vpre/westwind.aspnetcore.markdown.svg)](https://www.nuget.org/packages?q=Westwind.aspnetcore.markdown)
+
+
 This small package provides Markdown support for your ASP.NET Core applications. It has the following features:
 
 *  **[Markdown Parsing Helpers](#markdown-parsing)**
