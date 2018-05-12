@@ -103,6 +103,6 @@ namespace Westwind.AspNetCore.Markdown
         /// might want access to in the 
         /// 
         /// </summary>
-        public Action<MarkdownProcessingFolder, Controller> PreProcess { get; set; }
+        public Action<MarkdownModel, Controller> PreProcess { get; set; }
     }
 }

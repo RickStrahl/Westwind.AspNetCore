@@ -109,7 +109,8 @@ namespace Westwind.AspNetCore.Markdown
                 }
 
                 if (processAsMarkdown)
-                {             
+                {
+                    // push values we can pick up in the controller
                     context.Items["MarkdownPath_PageFile"] = pageFile;
                     context.Items["MarkdownPath_OriginalPath"] = path;
                     context.Items["MarkdownPath_FolderConfiguration"] = folder;

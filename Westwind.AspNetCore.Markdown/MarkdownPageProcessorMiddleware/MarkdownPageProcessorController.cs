@@ -24,10 +24,10 @@ namespace SampleWeb.Controllers
             MarkdownProcessorConfig = config;
             this.hostingEnvironment = hostingEnvironment;
         }
-                
+
         [Route("markdownprocessor/markdownpage")]
         public async Task<IActionResult> MarkdownPage()
-        {            
+        {
             var basePath = hostingEnvironment.WebRootPath;
             var relativePath = HttpContext.Items["MarkdownPath_OriginalPath"] as string;
             if (relativePath == null)
@@ -37,26 +37,29 @@ namespace SampleWeb.Controllers
             var pageFile = HttpContext.Items["MarkdownPath_PageFile"] as string;
             if (!System.IO.File.Exists(pageFile))
                 return NotFound();
-            
+
             // string markdown = await File.ReadAllTextAsync(pageFile);
             string markdown;
             using (var fs = new FileStream(pageFile, FileMode.Open, FileAccess.Read))
             using (StreamReader sr = new StreamReader(fs))
-            {                
-                markdown = await sr.ReadToEndAsync();                
+            {
+                markdown = await sr.ReadToEndAsync();
             }
-            
+
             if (string.IsNullOrEmpty(markdown))
                 return NotFound();
 
-            var model = ParseMarkdownToModel(markdown);       
-            
+            var model = ParseMarkdownToModel(markdown);
+            model.RelativePath = relativePath;
+            model.PhysicalPath = pageFile;
+
             if (folderConfig != null)
             {
-                folderConfig.PreProcess?.Invoke(folderConfig, this);
+                model.FolderConfiguration = folderConfig;
+                folderConfig.PreProcess?.Invoke(model, this);
                 return View(folderConfig.ViewTemplate, model);
             }
-            
+
             return View(MarkdownConfiguration.DefaultMarkdownViewTemplate, model);
         }
 
@@ -77,7 +80,10 @@ namespace SampleWeb.Controllers
                 {
                     var yaml = StringUtils.ExtractString(firstLinesText, "---", "---", returnDelimiters: true);
                     if (yaml != null)
+                    {
                         model.Title = StringUtils.ExtractString(yaml, "title: ", "\n");
+                        model.YamlHeader = yaml.Replace("---", "").Trim();
+                    }
                 }
 
                 if (model.Title == null)
