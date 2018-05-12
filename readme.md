@@ -1,5 +1,5 @@
 # Westwind.AspNetCore
-#### ASP.NET Core Utility library with helpers, formatters and extensions for ASP.NET Core
+#### Utility library providing useful helpers, formatters and extensions for ASP.NET Core
 
 [![NuGet Pre Release](https://img.shields.io/nuget/vpre/westwind.aspnetcore.svg)](https://www.nuget.org/packages?q=Westwind.aspnetcore)
 
