@@ -1,8 +1,6 @@
 # ASP.NET Core Markdown Support
 
-
 [![NuGet Pre Release](https://img.shields.io/nuget/vpre/westwind.aspnetcore.markdown.svg)](https://www.nuget.org/packages?q=Westwind.aspnetcore.markdown)
-
 
 This small package provides Markdown support for your ASP.NET Core applications. It has the following features:
 
@@ -16,8 +14,8 @@ This small package provides Markdown support for your ASP.NET Core applications.
     *  Databind Markdown text
 *  **[Markdown Page Processor Middleware](#markdown-page-processor-middleware)**
     *  Serve .md files as Markdown
-    *  Serve extensionless files as Markdown
-    *  Configurable Razor template to host Markdown text
+    *  Serve extensionless URLs as Markdown
+    *  Configurable Razor template to customize Markdown Page Container UI
 *  [Uses the MarkDig Markdown Parser](https://github.com/lunet-io/markdig)
 
 
