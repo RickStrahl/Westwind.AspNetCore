@@ -26,6 +26,7 @@ namespace SampleWeb.Controllers
         }
 
         [Route("markdownprocessor/markdownpage")]
+		[HttpGet]
         public async Task<IActionResult> MarkdownPage()
         {
             var basePath = hostingEnvironment.WebRootPath;
