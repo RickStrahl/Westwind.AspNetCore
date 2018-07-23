@@ -63,7 +63,7 @@ namespace SampleWeb
                         .UseCustomContainers()
                         .UseGenericAttributes();
                 };
-            });
+            });            
 
             // We need to use MVC so we can use a Razor Configuration Template
             services.AddMvc();

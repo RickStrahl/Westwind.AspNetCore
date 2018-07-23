@@ -17,8 +17,8 @@ namespace Westwind.AspNetCore.Security
     /// and settings.
     /// </summary>
     /// <remarks>
-    /// Create an application specific class that inherits with
-    /// you specific claims retrieved as property values:
+    /// Create an application specific class that inherits from AppUserBase and
+    /// uses specific claims retrieved as property values:
     /// 
     /// ```cs
     /// public class AppUser : AppUserBase

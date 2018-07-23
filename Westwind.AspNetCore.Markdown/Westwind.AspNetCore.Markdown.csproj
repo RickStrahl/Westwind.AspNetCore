@@ -1,13 +1,13 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>3.0.25</Version>
+    <Version>3.0.29</Version>
     <Authors>Rick Strahl</Authors>
     <Company>West Wind Technologies</Company>
     <Product>West Wind Web Toolkit</Product>
     <Title>Westwind AspNet Core Markdown TagHelper and Parser</Title>
-    <Description>Provides a tag helper that parses Markdown content to HTML inside of a `Markdown` tag. Also provides `Markdown.Parse()` and `Markdown.ParseHtmlString()` methods for easy Markdown parsing inside of code or Razor content. Uses the MarkDig Markdown Parser.</Description>
+    <Description>This library provides support for Markdown parsing helpers for parsing Markdown in code (`Markdown.Parse()` or `Markdown.ParseHtmlString()`, a `&lt;markdown&gt; TagHelper that allows embedding static text into Razor pages or views as well as binding model data. There's also a generic middleware component to allow drop in support for any application to serve Markdown files rendered into HTML content in the context of the host application.</Description>
     <Copyright>(c) West Wind Technologies, 2017-2018</Copyright>
     <PackageProjectUrl>https://github.com/RickStrahl/Westwind.AspNetCore/tree/master/Westwind.AspNetCore</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/RickStrahl/Westwind.AspNetCore/tree/master/Westwind.AspNetCore#License</PackageLicenseUrl>
@@ -15,13 +15,13 @@
     <RepositoryType>Github</RepositoryType>
     <PackageTags>Westwind AspNetCore Web</PackageTags>
     <PackageIconUrl>https://markdownmonster.west-wind.com/images/markdown_icon.png</PackageIconUrl>
-    <AssemblyVersion>3.0.25.0</AssemblyVersion>
-    <FileVersion>3.0.25.0</FileVersion>
+    <AssemblyVersion>3.0.29.0</AssemblyVersion>
+    <FileVersion>3.0.29.0</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Markdig" Version="0.14.9" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.0.3" />
+    <PackageReference Include="Markdig" Version="0.15.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.1.1" />
   </ItemGroup>
 
 </Project>
