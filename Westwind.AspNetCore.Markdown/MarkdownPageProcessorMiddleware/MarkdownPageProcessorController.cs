@@ -26,8 +26,8 @@ namespace Westwind.AspNetCore.Markdown
             this.hostingEnvironment = hostingEnvironment;
         }
 
-        [Route("markdownprocessor/markdownpage")]
-		[HttpGet]
+        [HttpGet]
+        [Route("markdownprocessor/markdownpage")]		
         public async Task<IActionResult> MarkdownPage()
         {
             var model = HttpContext.Items["MarkdownProcessor_Model"] as MarkdownModel;
