@@ -7,12 +7,13 @@ using Microsoft.AspNetCore.Mvc;
 using Westwind.AspNetCore.Markdown;
 using Westwind.AspNetCore.Markdown.Utilities;
 
-namespace SampleWeb.Controllers
+namespace Westwind.AspNetCore.Markdown
 {
 
     /// <summary>
-    /// A generic controll implementation
-    /// </summary>
+    /// A generic controll implementation for processing Markdown
+    /// files directly as HTML content
+    /// </summary>    
     public class MarkdownPageProcessorController : Controller
     {
         public MarkdownConfiguration MarkdownProcessorConfig { get; }
@@ -28,19 +29,21 @@ namespace SampleWeb.Controllers
         [Route("markdownprocessor/markdownpage")]
         public async Task<IActionResult> MarkdownPage()
         {
+            var model = HttpContext.Items["MarkdownProcessor_Model"] as MarkdownModel;
+
             var basePath = hostingEnvironment.WebRootPath;
-            var relativePath = HttpContext.Items["MarkdownPath_OriginalPath"] as string;
+            var relativePath = model.RelativePath;
             if (relativePath == null)
                 return NotFound();
 
-            var folderConfig = HttpContext.Items["MarkdownPath_FolderConfiguration"] as MarkdownProcessingFolder;
-            var pageFile = HttpContext.Items["MarkdownPath_PageFile"] as string;
-            if (!System.IO.File.Exists(pageFile))
+            if (!System.IO.File.Exists(model.PhysicalPath))
                 return NotFound();
 
             // string markdown = await File.ReadAllTextAsync(pageFile);
             string markdown;
-            using (var fs = new FileStream(pageFile, FileMode.Open, FileAccess.Read))
+            using (var fs = new FileStream(model.PhysicalPath,
+                FileMode.Open,
+                FileAccess.Read))
             using (StreamReader sr = new StreamReader(fs))
             {
                 markdown = await sr.ReadToEndAsync();
@@ -49,28 +52,25 @@ namespace SampleWeb.Controllers
             if (string.IsNullOrEmpty(markdown))
                 return NotFound();
 
-            var model = ParseMarkdownToModel(markdown);
-            model.RelativePath = relativePath;
-            model.PhysicalPath = pageFile;
+            // set title, raw markdown, yamlheader and rendered markdown
+            ParseMarkdownToModel(markdown, model);
 
-            if (folderConfig != null)
+            if (model.FolderConfiguration != null)
             {
-                model.FolderConfiguration = folderConfig;
-                folderConfig.PreProcess?.Invoke(model, this);
-                return View(folderConfig.ViewTemplate, model);
+                model.FolderConfiguration.PreProcess?.Invoke(model, this);
+                return View(model.FolderConfiguration.ViewTemplate, model);
             }
 
             return View(MarkdownConfiguration.DefaultMarkdownViewTemplate, model);
         }
 
-        private MarkdownModel ParseMarkdownToModel(string markdown, MarkdownProcessingFolder folderConfig = null)
+        private MarkdownModel ParseMarkdownToModel(string markdown, MarkdownModel model = null)
         {
-            var model = new MarkdownModel();
+            if (model == null)
+                model = new MarkdownModel();
 
-            if (folderConfig == null)
-                folderConfig = new MarkdownProcessingFolder();
-
-            if (folderConfig.ExtractTitle)
+            
+            if (model.FolderConfiguration.ExtractTitle)
             {
                 var firstLines = StringUtils.GetLines(markdown, 30);
                 var firstLinesText = String.Join("\n", firstLines);
