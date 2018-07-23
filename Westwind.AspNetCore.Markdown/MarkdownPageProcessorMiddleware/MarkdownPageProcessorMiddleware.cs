@@ -54,9 +54,9 @@ namespace Westwind.AspNetCore.Markdown
         private readonly MarkdownConfiguration _configuration;
         private readonly IHostingEnvironment _env;
 
-        public MarkdownPageProcessorMiddleware(RequestDelegate next, 
-                                               MarkdownConfiguration configuration,
-                                               IHostingEnvironment env)
+        public MarkdownPageProcessorMiddleware(RequestDelegate next,
+            MarkdownConfiguration configuration,
+            IHostingEnvironment env)
         {
             _next = next;
             _configuration = configuration;
@@ -93,8 +93,8 @@ namespace Westwind.AspNetCore.Markdown
                     processAsMarkdown = true;
                 }
                 else if (path.StartsWith(folder.RelativePath, StringComparison.InvariantCultureIgnoreCase) &&
-                     (folder.ProcessExtensionlessUrls && !hasExtension ||
-                      hasMdExtension && folder.ProcessMdFiles))
+                         (folder.ProcessExtensionlessUrls && !hasExtension ||
+                          hasMdExtension && folder.ProcessMdFiles))
                 {
                     if (!hasExtension && Directory.Exists(pageFile))
                         continue;
@@ -110,10 +110,15 @@ namespace Westwind.AspNetCore.Markdown
 
                 if (processAsMarkdown)
                 {
-                    // push values we can pick up in the controller
-                    context.Items["MarkdownPath_PageFile"] = pageFile;
-                    context.Items["MarkdownPath_OriginalPath"] = path;
-                    context.Items["MarkdownPath_FolderConfiguration"] = folder;
+                    var model = new MarkdownModel
+                    {
+                        FolderConfiguration = folder,
+                        RelativePath = path,
+                        PhysicalPath = pageFile
+                    };
+
+                    // push the model into the context for controller to pick up
+                    context.Items["MarkdownProcessor_Model"] = model;
 
                     // rewrite path to our controller so we can use _layout page
                     context.Request.Path = "/markdownprocessor/markdownpage";
