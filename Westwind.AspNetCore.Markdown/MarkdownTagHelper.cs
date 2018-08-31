@@ -60,6 +60,15 @@ namespace Westwind.AspNetCore.Markdown
         [HtmlAttributeName("normalize-whitespace")]
         public bool NormalizeWhitespace { get; set; } = true;
 
+
+        /// <summary>
+        /// Scripts `script` tags and `javascript:` directive
+        /// from the generated HTML content
+        /// </summary>
+        [HtmlAttributeName("strip-script-tags")]
+        public bool StripScriptTags { get; set; } = true;
+
+
         /// <summary>
         /// Optional Content property that allows you to bind a 
         /// Markdown model expression to the content. 
@@ -98,7 +107,7 @@ namespace Westwind.AspNetCore.Markdown
             string markdown = NormalizeWhiteSpaceText(content);            
 
             var parser = MarkdownParserFactory.GetParser();
-            var html = parser.Parse(markdown);
+            var html = parser.Parse(markdown,StripScriptTags);
 
             output.TagName = null;  // Remove the <markdown> element
             output.Content.SetHtmlContent(html);

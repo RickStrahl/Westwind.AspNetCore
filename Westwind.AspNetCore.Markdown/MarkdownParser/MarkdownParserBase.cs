@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Text.RegularExpressions;
+using Westwind.AspNetCore.Markdown.Utilities;
 
 namespace Westwind.AspNetCore.Markdown
 {
@@ -16,8 +17,9 @@ namespace Westwind.AspNetCore.Markdown
         /// Parses markdown
         /// </summary>
         /// <param name="markdown"></param>
+        /// <param name="stripScript">Strips script tags and javascript: text</param>
         /// <returns></returns>
-        public abstract string Parse(string markdown);
+        public abstract string Parse(string markdown, bool stripScript = false);
         
         /// <summary>
         /// Parses strikeout text ~~text~~. Single line (to linebreak) allowed only.
@@ -64,6 +66,9 @@ namespace Westwind.AspNetCore.Markdown
             return markdown;
         }
 
+        protected static Regex _RegExScript = new Regex(@"<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>",RegexOptions.IgnoreCase);
+        protected static Regex _RegExJavaScriptHref = new Regex(@"<a.*?href=.*?(javascript:).*?>.*?<\/a>", RegexOptions.IgnoreCase);
+
         /// <summary>
         /// Parses out script tags that might not be encoded yet
         /// </summary>
@@ -71,12 +76,19 @@ namespace Westwind.AspNetCore.Markdown
         /// <returns></returns>
         protected string ParseScript(string html)
         {
-            html = html.Replace("<script", "&lt;script");
-            html = html.Replace("</script", "&lt;/script");
-            html = html.Replace("javascript:", "javaScript:");
+            html = _RegExScript.Replace(html, string.Empty);
+            var matches = _RegExJavaScriptHref.Matches(html);
+            if (matches.Count > 0)
+            {
+                foreach (Match match in matches)
+                {
+                    var txt = StringUtils.ReplaceString(match.Value, "javascript:", "unsupported:", true);
+                    html = html.Replace(match.Value, txt);
+                }
+            }
+
             return html;
         }
-
 
         public static Regex fontAwesomeIconRegEx = new Regex(@"@icon-.*?[\s|\.|\,|\<]");
 
@@ -98,7 +110,6 @@ namespace Westwind.AspNetCore.Markdown
 
             return html;
         }
-
-
+        
     }
 }

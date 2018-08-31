@@ -27,7 +27,6 @@
                 return CurrentParser;
             
             CurrentParser = new MarkdownParserMarkdig(usePragmaLines, forceLoad);
-
             return CurrentParser;
         }
         

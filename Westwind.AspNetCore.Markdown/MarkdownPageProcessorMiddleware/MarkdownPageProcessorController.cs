@@ -101,7 +101,7 @@ namespace Westwind.AspNetCore.Markdown
             }
 
             model.RawMarkdown = markdown;
-            model.RenderedMarkdown = Markdown.ParseHtmlString(markdown);
+            model.RenderedMarkdown = Markdown.ParseHtmlString(markdown, stripScriptTags:model.FolderConfiguration.StripScriptTags);
 
             return model;
         }

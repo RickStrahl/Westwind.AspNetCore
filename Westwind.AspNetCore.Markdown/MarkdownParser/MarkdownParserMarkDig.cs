@@ -50,9 +50,17 @@ namespace Westwind.AspNetCore.Markdown
         /// <summary>
         /// Cached pipeline instance
         /// </summary>
-        public static MarkdownPipeline Pipeline;        
+        public static MarkdownPipeline Pipeline;
+
+        /// <summary>
+        /// Removes script code if set
+        /// </summary>
+        public static bool StripScriptCode { get; set; } = true;
+
 
         private readonly bool _usePragmaLines;
+
+        
 
         /// <summary>
         /// Optional global configuration for setting up the Markdig Pipeline
@@ -77,8 +85,9 @@ namespace Westwind.AspNetCore.Markdown
         /// Parses the actual markdown down to html
         /// </summary>
         /// <param name="markdown"></param>
+        /// <param name="stripScript">If true strips script tags and javascript: directives</param>
         /// <returns></returns>        
-        public override string Parse(string markdown)
+        public override string Parse(string markdown, bool stripScript = true)
         {
             if (string.IsNullOrEmpty(markdown))
                 return string.Empty;
@@ -93,8 +102,10 @@ namespace Westwind.AspNetCore.Markdown
                 html = htmlWriter.ToString();
             }
 
-            html = ParseFontAwesomeIcons(html);            
-            html = ParseScript(html);  
+            html = ParseFontAwesomeIcons(html);
+
+            if (stripScript)
+                html = ParseScript(html);  
                       
             return html;
         }

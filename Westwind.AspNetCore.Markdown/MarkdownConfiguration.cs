@@ -78,7 +78,6 @@ namespace Westwind.AspNetCore.Markdown
         /// </summary>
         public string ViewTemplate { get; set; } = MarkdownConfiguration.DefaultMarkdownViewTemplate;
 
-
         /// <summary>
         /// If true processes files with .md extension
         /// </summary>
@@ -96,6 +95,11 @@ namespace Westwind.AspNetCore.Markdown
         /// </summary>
         public bool ExtractTitle { get; set; } = true;
 
+        /// <summary>
+        /// Removes script tags and javascript directives
+        /// from generated HTML content
+        /// </summary>
+        public bool StripScriptTags { get; set; } = false;
 
         /// <summary>
         /// Function that can be set to be called before the Markdown View is fired.
