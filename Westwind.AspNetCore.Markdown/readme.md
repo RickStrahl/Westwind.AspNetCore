@@ -180,6 +180,20 @@ The current Time is: @DateTime.Now.ToString("HH:mm:ss")
 
 This also works, but is hard to maintain in some code editors due to auto-code reformatting.
 
+### strip-script-tags
+By default the Markdown tag helper strips `<script>` tags and `href="javascript"` directives from the generated HTML content. If you would like to explicitly include script tags because your content requires it you can enable that functionality by setting
+
+```html
+<markdown strip-script-tags="false">
+	<script>alert('This Alert shows')</script>
+	
+	<a href="javascript:alert('gotcha')">Go ahead and make my day, Punk!</a>
+</markdown>
+```
+
+With the flag set to `false` the script **does execute** and the link will trigger the second alert. The default of `true` removes the entire script block and replaces `javascript:` in the href with `unsupported:` which effectively doesn't do anything.
+
+
 ## Markdown Page Processor Middleware
 The Markdown middleware allows you drop `.md` files into a configured folder and have that folder parsed directly from disk. The middleware merges the Markdown into a pre-configured Razor template you provide so your Markdown text can be rendered in the proper UI context of your site chrome. 
 
@@ -408,3 +422,58 @@ The following adds basic syntax coloring support using a preconfigured package o
 > <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
 > <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/vs2015.min.css" rel="stylesheet" />
 > ``` 
+
+## Westwind.AspNetCore and XSS
+You should always treat Markdown **exactly like you would treat raw HTML**. If you're letting users input Markdown, understand that the rendered HTML may have to be **sanitized**.
+
+This component has a few features that provides basic options to remove the most obvious XSS attacks.
+
+There are two approaches:
+
+* **Remove support for HTML tags**
+* **Strip Script tags**
+
+### Remove support for HTML tags embedded in Markdown
+By default Markdown supports rendering of embedded HTML **as-is**. Any HTML text inside of a Markdown document that is preceeded by a blank line will render as raw HTML.
+
+This means that it's possible to enter any kind of HTML and script into a markdown document and that script executes when rendered unsanitized.
+
+You can explicitly remove HTML support which effectively renders all HTML tags as HTML encoded text. To do this use the following configuration setup:
+
+```cs
+services.AddMarkdown(config =>
+{
+    // Create custom MarkdigPipeline 
+    // using MarkDig; for extension methods
+    config.ConfigureMarkdigPipeline = builder =>
+    {
+        builder.UseEmphasisExtras(Markdig.Extensions.EmphasisExtras.EmphasisExtraOptions.Default)
+            .UsePipeTables()
+            .UseGridTables()        
+            ...
+            // *** DISABLE HTML HERE
+            .DisableHtml();
+    };
+});
+```
+
+### Use the StripScriptTags Option
+The various components and static methods each have the ability to trigger a script tag filter which is fired after the HTML has been generated. A couple of RegEx expressions are used to remove `<script>` tags `<a href='javascript:'>` type requests.
+
+#### Markdown.Parse(markdown,stripScriptTags)
+The `Parse()` and `ParseHtml()` methods both include a `stripScriptTags` parameter which is `false` by default. The default behavior is to leave script code as is so if you use the static functions stripping script out is always an opt in operation.
+
+#### Markdown Tag Helper
+The Markdown TagHelper has a `strip-script-tags` attribute that is `true` by default. The TagHelper automatically removes script tags by default. Set the attribute to `false` to force the tag helper to explicitly include scripts.
+
+##### Markdown Page Handler
+By default the Markdown Page Handler **renders script as is**. In most cases pages are static and usually under the control of the Web site and meant to replace potentially large HTML pages which in some cases may need to include script. 
+
+To strip script tags you can set the `StripScriptTags` flag on the folder configuration instance:
+
+```cs
+var folderConfig = config.AddMarkdownProcessingFolder(
+			"/docs/",
+			"~/Pages/__MarkdownPageTemplate.cshtml");
+folderConfig.StripScriptTags = true;
+```

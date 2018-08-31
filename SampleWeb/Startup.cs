@@ -30,11 +30,11 @@ namespace SampleWeb
             services.AddMarkdown(config =>
             {
                 // Simplest: Use all default settings
-                config.AddMarkdownProcessingFolder("/docs/", "~/Pages/__MarkdownPageTemplate.cshtml");
-
+                var folderConfig = config.AddMarkdownProcessingFolder("/docs/", "~/Pages/__MarkdownPageTemplate.cshtml");                
 
                 // Customized Configuration: Set FolderConfiguration options
-                var folderConfig = config.AddMarkdownProcessingFolder("/posts/", "~/Pages/__MarkdownPageTemplate.cshtml");
+                folderConfig = config.AddMarkdownProcessingFolder("/posts/", "~/Pages/__MarkdownPageTemplate.cshtml");
+                folderConfig.StripScriptTags = true;  // remove <script> tags and `href="javascript:" links
 
                 // Optional configuration settings
                 folderConfig.ProcessExtensionlessUrls = true;  // default
