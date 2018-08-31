@@ -4,7 +4,7 @@
 
 ### Version 3.0.30
 
-* **Update Script Stripping Logic and Behavior**
+* **Update Script Stripping Logic and Behavior**  
 Updated the `<script>` tag and `hef="javascript:"` handling by adding options to the Markdown parsers, TagHelper and Page Handler.
 
 

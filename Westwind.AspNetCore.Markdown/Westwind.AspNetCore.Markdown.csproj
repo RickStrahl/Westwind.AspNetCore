@@ -16,12 +16,12 @@
     <PackageTags>Westwind AspNetCore Web</PackageTags>
     <PackageIconUrl>https://markdownmonster.west-wind.com/images/markdown_icon.png</PackageIconUrl>
     <AssemblyVersion>3.0.30.0</AssemblyVersion>
-    <FileVersion>3.0.30.0</FileVersion>
+    <FileVersion>3.0.30</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Markdig" Version="0.15.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.1.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.1.0" />
   </ItemGroup>
 
 </Project>
