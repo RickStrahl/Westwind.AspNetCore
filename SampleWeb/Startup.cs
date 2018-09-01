@@ -29,15 +29,17 @@ namespace SampleWeb
         {
             services.AddMarkdown(config =>
             {
-                config.HtmlTagBlackList = ""script|iframe|object|embed|form";
+                // optional Tag BlackList
+                config.HtmlTagBlackList = "script|iframe|object|embed|form"; // default
 
                 // Simplest: Use all default settings
                 var folderConfig = config.AddMarkdownProcessingFolder("/docs/", "~/Pages/__MarkdownPageTemplate.cshtml");
                 
-
                 // Customized Configuration: Set FolderConfiguration options
                 folderConfig = config.AddMarkdownProcessingFolder("/posts/", "~/Pages/__MarkdownPageTemplate.cshtml");
-                folderConfig.StripScriptTags = true;  // remove <script> tags and `href="javascript:" links
+
+                // Optionally strip script/iframe/form/object/embed tags ++
+                folderConfig.StripScriptTags = false;  //  default
 
                 // Optional configuration settings
                 folderConfig.ProcessExtensionlessUrls = true;  // default
