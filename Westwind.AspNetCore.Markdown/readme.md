@@ -193,10 +193,21 @@ This also works, but is hard to maintain in some code editors due to auto-code r
 By default the Markdown tag helper strips `<script>` tags and `href="javascript"` directives from the generated HTML content. If you would like to explicitly include script tags because your content requires it you can enable that functionality by setting
 
 ```html
-<markdown strip-script-tags="false">
-	<script>alert('This Alert shows')</script>
-	
-	<a href="javascript:alert('gotcha')">Go ahead and make my day, Punk!</a>
+<markdown strip-script-tags="true">
+    ### Rudimentary XSS Support
+    Below are a script tag, and some raw HTML alert with an onclick handler which 
+    are potential XSS vulnerable. Default is `strip-script-tags="true"` to remove
+    script and other vulnerabilities.
+    
+    <a href="javascript: alert('Gotcha! javascript: executed.');">Malicious Link</a>
+    
+    <script>
+        alert("GOTHCHA! Injected code executed.")
+    </script>
+    
+    <div class="alert alert-info" onmouseover="alert('Gotcha! onclick handler fired');">
+        XSS Alert: You shouldn't be able to click me and execute the onclick handler.
+    </div>
 </markdown>
 ```
 

@@ -31,7 +31,7 @@
 
 
 <h3>Markdown TagHelper Block</h3>
-<markdown normalize-whitespace="true">
+<markdown normalize-whitespace="true" strip-script-tags="true">
     #### This is Markdown text inside of a Markdown block
 
     * Item 1
@@ -41,7 +41,7 @@
 
 
     ![](https://markdownmonster.west-wind.com/Images/MarkdownMonster_Icon_32.png)
-    This is a link to 
+    This is a link to
     [Markdown Monster](https://markdownmonster.west-wind.com).
 
     This is an auto link:
@@ -53,11 +53,26 @@
     // this c# is a code block
     for (int i = 0; i < lines.Length; i++)
     {
-        line1 = lines[i];
-        if (!string.IsNullOrEmpty(line1))
-        break;
+    line1 = lines[i];
+    if (!string.IsNullOrEmpty(line1))
+    break;
     }
     ```
+    
+    ### Rudimentary XSS Support
+    Below are a script tag, and some raw HTML alert with an onclick handler which 
+    are potential XSS vulnerable. Default is `strip-script-tags="true"` to remove
+    script and other vulnerabilities.
+    
+    <script>
+        alert("GOTHCHA! Injected code executed.")
+    </script>
+    
+    <div class="alert alert-info" onclick="alert('Gotcha! onclick handler fired');">
+        XSS Alert: You shouldn't be able to click me and execute the onclick handler.
+    </div>
+
+     
 </markdown>
 
 
