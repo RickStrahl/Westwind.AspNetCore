@@ -66,29 +66,71 @@ namespace Westwind.AspNetCore.Markdown
             return markdown;
         }
 
-        protected static Regex _RegExScript = new Regex(@"<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>",RegexOptions.IgnoreCase);
-        protected static Regex _RegExJavaScriptHref = new Regex(@"<a.*?href=.*?(javascript:).*?>.*?<\/a>", RegexOptions.IgnoreCase);
-
+        #region Html Sanitation
         /// <summary>
-        /// Parses out script tags that might not be encoded yet
+        /// Global list of tags that are cleaned up by the script sanitation
+        /// as a pipe separated list.
+        ///
+        /// You can change this value which applies to the scriptScriptTags
+        /// option, but it is an application wide global setting.
+        /// 
+        /// Default: script|iframe|object|embed|form
         /// </summary>
-        /// <param name="html"></param>
-        /// <returns></returns>
-        protected string ParseScript(string html)
-        {
-            html = _RegExScript.Replace(html, string.Empty);
-            var matches = _RegExJavaScriptHref.Matches(html);
-            if (matches.Count > 0)
-            {
-                foreach (Match match in matches)
-                {
-                    var txt = StringUtils.ReplaceString(match.Value, "javascript:", "unsupported:", true);
-                    html = html.Replace(match.Value, txt);
-                }
-            }
 
-            return html;
+
+
+
+            
+        internal static string HtmlTagBlackList { get; set; } = "script|iframe|object|embed|form";
+
+protected static Regex _RegExScript = new Regex(
+    $@"(<({HtmlTagBlackList})\b[^<]*(?:(?!<\/({HtmlTagBlackList}))<[^<]*)*<\/({HtmlTagBlackList})>)",
+    RegexOptions.IgnoreCase | RegexOptions.Multiline);
+
+protected static Regex _RegExJavaScriptHref = new Regex(
+    @"<.*?(href|src|dynsrc|lowsrc)=.*?(javascript:).*?>.*?<\/a>",
+    RegexOptions.IgnoreCase | RegexOptions.Multiline);
+
+protected static Regex _RegExOnEventAttributes = new Regex(
+    @"<.*?\s(on.{4,12}=([""].*?[""]|['].*?['])).*?(>|\/>)",
+    RegexOptions.IgnoreCase | RegexOptions.Multiline);
+
+/// <summary>
+/// Parses out script tags that might not be encoded yet
+/// </summary>
+/// <param name="html"></param>
+/// <returns></returns>
+protected string ParseScript(string html)
+{
+    // Replace Script tags
+    html = _RegExScript.Replace(html, string.Empty);
+
+    // Remove javascript: directives
+    var matches = _RegExJavaScriptHref.Matches(html);
+    foreach (Match match in matches)
+    {
+        var txt = StringUtils.ReplaceString(match.Value, "javascript:", "unsupported:", true);
+        html = html.Replace(match.Value, txt);
+    }
+
+    // Remove onxxxx event handlers from elements
+    matches = _RegExOnEventAttributes.Matches(html);
+    foreach (Match match in matches)
+    {
+        var txt = match.Value;
+        if (match.Groups.Count > 1)
+        {
+            var onEvent = match.Groups[1].Value;
+            txt = txt.Replace(onEvent, string.Empty);
+            if (!string.IsNullOrEmpty(txt))
+                html = html.Replace(match.Value, txt);
         }
+    }
+
+    return html;
+}
+
+        #endregion
 
         public static Regex fontAwesomeIconRegEx = new Regex(@"@icon-.*?[\s|\.|\,|\<]");
 

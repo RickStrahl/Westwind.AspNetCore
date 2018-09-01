@@ -27,6 +27,11 @@ namespace Westwind.AspNetCore.Markdown
         public Action<MarkdownPipelineBuilder> ConfigureMarkdigPipeline { get; set; }
 
         /// <summary>
+        /// Global HtmlTagBlackList when StripScriptTags is set for Markdown parsing     
+        /// </summary>
+        public string HtmlTagBlackList { get; set; } = "script|iframe|object|embed|form";
+
+        /// <summary>
         /// Adds a folder to the list of folders that are to be 
         /// processed by this middleware. 
         /// </summary>
@@ -100,6 +105,7 @@ namespace Westwind.AspNetCore.Markdown
         /// from generated HTML content
         /// </summary>
         public bool StripScriptTags { get; set; } = false;
+        
 
         /// <summary>
         /// Function that can be set to be called before the Markdown View is fired.

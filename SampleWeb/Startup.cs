@@ -29,8 +29,11 @@ namespace SampleWeb
         {
             services.AddMarkdown(config =>
             {
+                config.HtmlTagBlackList = ""script|iframe|object|embed|form";
+
                 // Simplest: Use all default settings
-                var folderConfig = config.AddMarkdownProcessingFolder("/docs/", "~/Pages/__MarkdownPageTemplate.cshtml");                
+                var folderConfig = config.AddMarkdownProcessingFolder("/docs/", "~/Pages/__MarkdownPageTemplate.cshtml");
+                
 
                 // Customized Configuration: Set FolderConfiguration options
                 folderConfig = config.AddMarkdownProcessingFolder("/posts/", "~/Pages/__MarkdownPageTemplate.cshtml");
@@ -61,6 +64,7 @@ namespace SampleWeb
                         .UseFigures()
                         .UseTaskLists()
                         .UseCustomContainers()
+                        //.DisableHtml()   // renders HTML tags as text including script
                         .UseGenericAttributes();
                 };
             });            

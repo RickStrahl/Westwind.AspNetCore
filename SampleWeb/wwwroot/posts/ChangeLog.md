@@ -1,5 +1,12 @@
 ﻿<img src="https://raw.githubusercontent.com/RickStrahl/MarkdownMonster/master/MarkdownMonster/Assets/MarkdownMonster_Icon_256.png" width=100 align="right" />
 
+<div style="padding: 20px;background: #999" onclick="alert('hello');">ola</div>
+
+<script>
+alert("hello world")
+</script>
+
+
 # Markdown Monster Change Log 
 
 [![download](https://img.shields.io/badge/Download-Installer-blue.svg)](https://markdownmonster.west-wind.com/download.aspx)

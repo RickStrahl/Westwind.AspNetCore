@@ -25,6 +25,7 @@ namespace Westwind.AspNetCore.Markdown
             if (configAction != null)            
                 configAction.Invoke(config);
 
+            MarkdownParserBase.HtmlTagBlackList = config.HtmlTagBlackList;
 
             if (config.ConfigureMarkdigPipeline != null)
                 MarkdownParserMarkdig.ConfigurePipelineBuilder = config.ConfigureMarkdigPipeline;

@@ -52,6 +52,13 @@ string html = Markdown.Parse(markdownText)
 <div>@Markdown.ParseHtmlString(Model.ProductInfoMarkdown)</div>
 ```
 
+### StripScriptTags in Parser Methods to mitigate XSS
+Both of the above methods include a few optional parameters including a `stripScriptTags` parameter which defaults to `false`. If set to `true` any `<script>` tags that are not embedded inside of inline or fenced code blocks are stripped. Additionally any reference to `javascript:` inside of a tag is replaced with `unsupported:` rendering the script non-functional.
+
+```cs
+string html = Markdown.Parse(markdownText, stripScriptTags: true)
+```
+
 ### MarkDig Pipeline Configuration
 This component uses the MarkDig Markdown Parser which allows for explicit feature configuration via many of its built-in extensions. The default configuration enables the most commonly used Markdown features and defaults to Github Flavored Markdown for most settings.
 
@@ -77,6 +84,8 @@ services.AddMarkdown(config =>
             .UseTaskLists()
             .UseCustomContainers()
             .UseGenericAttributes();
+            
+            //.DisableHtml();   // don't render HTML - encode as text
     };
 });
 ```
@@ -458,7 +467,7 @@ services.AddMarkdown(config =>
 ```
 
 ### Use the StripScriptTags Option
-The various components and static methods each have the ability to trigger a script tag filter which is fired after the HTML has been generated. A couple of RegEx expressions are used to remove `<script>` tags `<a href='javascript:'>` type requests.
+The various components and static methods each have the ability to trigger a script tag filter which is fired after the HTML has been generated. A couple of RegEx expressions are used to remove `<script>` (and `<iframe>`,`<object>`,`<embed>` and `<form>`) tags `<a href='javascript:'>` type requests.
 
 #### Markdown.Parse(markdown,stripScriptTags)
 The `Parse()` and `ParseHtml()` methods both include a `stripScriptTags` parameter which is `false` by default. The default behavior is to leave script code as is so if you use the static functions stripping script out is always an opt in operation.
@@ -466,7 +475,7 @@ The `Parse()` and `ParseHtml()` methods both include a `stripScriptTags` paramet
 #### Markdown Tag Helper
 The Markdown TagHelper has a `strip-script-tags` attribute that is `true` by default. The TagHelper automatically removes script tags by default. Set the attribute to `false` to force the tag helper to explicitly include scripts.
 
-##### Markdown Page Handler
+#### Markdown Page Handler
 By default the Markdown Page Handler **renders script as is**. In most cases pages are static and usually under the control of the Web site and meant to replace potentially large HTML pages which in some cases may need to include script. 
 
 To strip script tags you can set the `StripScriptTags` flag on the folder configuration instance:
@@ -477,3 +486,20 @@ var folderConfig = config.AddMarkdownProcessingFolder(
 			"~/Pages/__MarkdownPageTemplate.cshtml");
 folderConfig.StripScriptTags = true;
 ```
+
+#### Overriding the Html Tag Blacklist
+The HTML Tag Blacklist used when when StripScripttags is set to `true` can be overridden via the Config object's `HtmlTagBlackList` property during configuration:
+
+```cs
+public void ConfigureServices(IServiceCollection services)
+{
+    services.AddMarkdown(config =>
+    {
+        // optionally set the BlackList Tag list - default values below
+        config.HtmlTagBlackList = "script|iframe|object|embed|form";
+        ...
+    }
+}
+```
+
+This value is global and can only be set during startup. Changing it at runtime has no effect as it translates to RegEx expression parameters.
