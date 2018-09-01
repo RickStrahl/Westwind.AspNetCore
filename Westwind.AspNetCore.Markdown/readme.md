@@ -238,27 +238,34 @@ public void ConfigureServices(IServiceCollection services)
 
 This configures the Markdown processor for default behavior which handles `.md` files and extensionless Urls in the `/docs/` folder as Markdown files (if they exist) and it assumes a default Razor Markdown host template at `~/Views/__MarkdownPageTemplate.cshtml`. 
 
-All of these values can be customized with additional configuration options:
+All of these values can be customized with additional configuration options in `ConfigureServices()`:
+
 
 ```cs
 services.AddMarkdown(config =>
 {
-    // Simplest: Use all default settings - usually all you need
-    config.AddMarkdownProcessingFolder("/docs/", "~/Pages/__MarkdownPageTemplate.cshtml");
+    // optional Tag BlackList
+    config.HtmlTagBlackList = "script|iframe|object|embed|form"; // default
+
+    // Simplest: Use all default settings
+    var folderConfig = config.AddMarkdownProcessingFolder("/docs/", "~/Pages/__MarkdownPageTemplate.cshtml");
     
     // Customized Configuration: Set FolderConfiguration options
-    var folderConfig = config.AddMarkdownProcessingFolder("/posts/", "~/Pages/__MarkdownPageTemplate.cshtml");
+    folderConfig = config.AddMarkdownProcessingFolder("/posts/", "~/Pages/__MarkdownPageTemplate.cshtml");
+
+    // Optionally strip script/iframe/form/object/embed tags ++
+    folderConfig.StripScriptTags = false;  //  default
 
     // Optional configuration settings
     folderConfig.ProcessExtensionlessUrls = true;  // default
-    folderConfig.ProcessMdFiles = true;            // default
+    folderConfig.ProcessMdFiles = true; // default
 
-    // Optional pre-processing
+    // Optional pre-processing - with filled model
     folderConfig.PreProcess = (model, controller) =>
-    {
-        //controller.ViewBag.Model = new MyCustomModel();
+    {                    
+        // controller.ViewBag.Model = new MyCustomModel();
     };
-    
+
     // optional custom MarkdigPipeline (using MarkDig; for extension methods)
     config.ConfigureMarkdigPipeline = builder =>
     {
@@ -274,10 +281,12 @@ services.AddMarkdown(config =>
             .UseFigures()
             .UseTaskLists()
             .UseCustomContainers()
+            //.DisableHtml()   // renders HTML tags as text including script
             .UseGenericAttributes();
     };
-}   
+});            
 ```
+
 
 There are additional options including the ability to hook in a pre-processor that's fired on every controller hit. In the example I set a custom model to the ViewBag that the template can potentially pick up and work with. For applications you might have a stock View model that provides access rights and other user logic that needs to fire to access the page and display the view. Using the `PreProcess` Action hook you can run just about any pre-processing logic and get values into the View if necessary via the `Controller.Viewbag`.
 
