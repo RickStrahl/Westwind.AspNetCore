@@ -2,10 +2,10 @@
 <small>[Nuget](https://www.nuget.org/packages/Westwind.AspNetCore/) &bull; [Github](https://github.com/RickStrahl/Westwind.AspNetCore)</small>
 
 
-### Version 3.0.30
+### Version 3.0.33
 
-* **Update Script Stripping Logic and Behavior**  
-Updated the `<script>` tag and `hef="javascript:"` handling by adding options to the Markdown parsers, TagHelper and Page Handler.
+* **Add better XSS Support**  
+There's now optional, configurable handling for removing `<script>`,`<iframe>`,`<form>` etc. tags, `javascript:` directives, and `onXXXX` event handlers on raw HTML elements in the document. For more info see blog post: [Markdown and Cross Site Scripting](https://weblog.west-wind.com/posts/2018/Aug/31/Markdown-and-Cross-Site-Scripting).
 
 
 ### Version 3.0.25
