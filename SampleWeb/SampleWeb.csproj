@@ -16,5 +16,8 @@
     <Content Update="Pages\__MarkdownSimplestPageTemplate.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
+    <Content Update="wwwroot\docs\ChangeLog.md">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
   </ItemGroup>
 </Project>

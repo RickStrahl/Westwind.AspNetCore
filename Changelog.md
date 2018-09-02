@@ -4,9 +4,15 @@
 
 ### Version 3.0.33
 
-* **Add better XSS Support**  
+* **Add better XSS Support for Markdown Parser**  
 There's now optional, configurable handling for removing `<script>`,`<iframe>`,`<form>` etc. tags, `javascript:` directives, and `onXXXX` event handlers on raw HTML elements in the document. For more info see blog post: [Markdown and Cross Site Scripting](https://weblog.west-wind.com/posts/2018/Aug/31/Markdown-and-Cross-Site-Scripting).
 
+
+* **WebUtils.SanitizeHtml() base XSS Helper**
+Added generic `WebUtils.SanitizeHtml()` helper to provide rudimentary HTML Sanitation for user input HTML.
+
+* **WebUtils.JsonString(), WebUtils.JsonDate()**  
+Added JSON helpers that facilitate encoding and decoding strings and dates to JSON without having to force use of a full JSON parser. Useful for emedding JSON values into script content.
 
 ### Version 3.0.25
 
