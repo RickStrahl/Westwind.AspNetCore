@@ -37,6 +37,7 @@ using Markdig;
 using Markdig.Extensions.AutoIdentifiers;
 using Markdig.Extensions.EmphasisExtras;
 using Markdig.Renderers;
+using Westwind.AspNetCore.Markdown.Utilities;
 
 namespace Westwind.AspNetCore.Markdown
 {
@@ -85,9 +86,9 @@ namespace Westwind.AspNetCore.Markdown
         /// Parses the actual markdown down to html
         /// </summary>
         /// <param name="markdown"></param>
-        /// <param name="stripScript">If true strips script tags and javascript: directives</param>
+        /// <param name="sanitizeHtml">If true strips script tags and javascript: directives</param>
         /// <returns></returns>        
-        public override string Parse(string markdown, bool stripScript = true)
+        public override string Parse(string markdown, bool sanitizeHtml = true)
         {
             if (string.IsNullOrEmpty(markdown))
                 return string.Empty;
@@ -104,8 +105,8 @@ namespace Westwind.AspNetCore.Markdown
 
             html = ParseFontAwesomeIcons(html);
 
-            if (stripScript)
-                html = ParseScript(html);  
+            if (sanitizeHtml)
+                html = Sanitize(html);
                       
             return html;
         }

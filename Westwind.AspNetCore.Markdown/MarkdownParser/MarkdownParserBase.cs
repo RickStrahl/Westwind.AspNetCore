@@ -10,17 +10,19 @@ namespace Westwind.AspNetCore.Markdown
     /// </summary>
     public abstract class MarkdownParserBase : IMarkdownParser
     {
-        protected static Regex strikeOutRegex = 
+        protected static Regex strikeOutRegex =
             new Regex("~~.*?~~", RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.Compiled);
 
         /// <summary>
         /// Parses markdown
         /// </summary>
         /// <param name="markdown"></param>
-        /// <param name="stripScript">Strips script tags and javascript: text</param>
+        /// <param name="sanitizeHtml">If true sanitizes the generated HTML by removing script tags and other common XSS issues.
+        /// Note: Not a complete XSS solution but addresses the most obvious vulnerabilities. For more thourough HTML sanitation
+        /// </param>
         /// <returns></returns>
-        public abstract string Parse(string markdown, bool stripScript = false);
-        
+        public abstract string Parse(string markdown, bool sanitizeHtml = true);
+
         /// <summary>
         /// Parses strikeout text ~~text~~. Single line (to linebreak) allowed only.
         /// </summary>
@@ -46,7 +48,8 @@ namespace Westwind.AspNetCore.Markdown
             return html;
         }
 
-        static readonly Regex YamlExtractionRegex = new Regex("^---[\n,\r\n].*?^---[\n,\r\n]", RegexOptions.Singleline | RegexOptions.Multiline);
+        static readonly Regex YamlExtractionRegex = new Regex("^---[\n,\r\n].*?^---[\n,\r\n]",
+            RegexOptions.Singleline | RegexOptions.Multiline);
 
         /// <summary>
         /// Strips 
@@ -67,6 +70,7 @@ namespace Westwind.AspNetCore.Markdown
         }
 
         #region Html Sanitation
+
         /// <summary>
         /// Global list of tags that are cleaned up by the script sanitation
         /// as a pipe separated list.
@@ -76,59 +80,17 @@ namespace Westwind.AspNetCore.Markdown
         /// 
         /// Default: script|iframe|object|embed|form
         /// </summary>
+        public static string HtmlSanitizeTagBlackList { get; set; } = "script|iframe|object|embed|form";
 
-
-
-
-            
-        internal static string HtmlTagBlackList { get; set; } = "script|iframe|object|embed|form";
-
-protected static Regex _RegExScript = new Regex(
-    $@"(<({HtmlTagBlackList})\b[^<]*(?:(?!<\/({HtmlTagBlackList}))<[^<]*)*<\/({HtmlTagBlackList})>)",
-    RegexOptions.IgnoreCase | RegexOptions.Multiline);
-
-protected static Regex _RegExJavaScriptHref = new Regex(
-    @"<.*?(href|src|dynsrc|lowsrc)=.*?(javascript:).*?>.*?<\/a>",
-    RegexOptions.IgnoreCase | RegexOptions.Multiline);
-
-protected static Regex _RegExOnEventAttributes = new Regex(
-    @"<.*?\s(on.{4,12}=([""].*?[""]|['].*?['])).*?(>|\/>)",
-    RegexOptions.IgnoreCase | RegexOptions.Multiline);
-
-/// <summary>
-/// Parses out script tags that might not be encoded yet
-/// </summary>
-/// <param name="html"></param>
-/// <returns></returns>
-protected string ParseScript(string html)
-{
-    // Replace Script tags
-    html = _RegExScript.Replace(html, string.Empty);
-
-    // Remove javascript: directives
-    var matches = _RegExJavaScriptHref.Matches(html);
-    foreach (Match match in matches)
-    {
-        var txt = StringUtils.ReplaceString(match.Value, "javascript:", "unsupported:", true);
-        html = html.Replace(match.Value, txt);
-    }
-
-    // Remove onxxxx event handlers from elements
-    matches = _RegExOnEventAttributes.Matches(html);
-    foreach (Match match in matches)
-    {
-        var txt = match.Value;
-        if (match.Groups.Count > 1)
+        /// <summary>
+        /// Parses out script tags that might not be encoded yet
+        /// </summary>
+        /// <param name="html"></param>
+        /// <returns></returns>
+        protected string Sanitize(string html)
         {
-            var onEvent = match.Groups[1].Value;
-            txt = txt.Replace(onEvent, string.Empty);
-            if (!string.IsNullOrEmpty(txt))
-                html = html.Replace(match.Value, txt);
+            return StringUtils.SanitizeHtml(html,HtmlSanitizeTagBlackList);
         }
-    }
-
-    return html;
-}
 
         #endregion
 
@@ -152,6 +114,6 @@ protected string ParseScript(string html)
 
             return html;
         }
-        
+
     }
 }

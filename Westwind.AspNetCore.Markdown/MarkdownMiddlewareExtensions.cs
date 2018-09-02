@@ -2,6 +2,7 @@
 using System.Linq;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
+using Westwind.AspNetCore.Markdown.Utilities;
 
 namespace Westwind.AspNetCore.Markdown
 {
@@ -25,7 +26,7 @@ namespace Westwind.AspNetCore.Markdown
             if (configAction != null)            
                 configAction.Invoke(config);
 
-            MarkdownParserBase.HtmlTagBlackList = config.HtmlTagBlackList;
+            MarkdownParserBase.HtmlSanitizeTagBlackList = config.HtmlTagBlackList;
 
             if (config.ConfigureMarkdigPipeline != null)
                 MarkdownParserMarkdig.ConfigurePipelineBuilder = config.ConfigureMarkdigPipeline;
