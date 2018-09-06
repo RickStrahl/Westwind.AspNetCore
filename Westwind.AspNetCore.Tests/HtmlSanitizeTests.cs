@@ -41,6 +41,17 @@ namespace Westwind.AspNetCore.Tests
             Assert.IsTrue(!result.Contains("javascript:"));
         }
 
+        [TestMethod]
+        public void HtmlSanitizeJavaScriptTagsWithUnicodeQuotes()
+        {
+            string html = "<div>User input with <a href='&#106;&#97;&#118;&#97;&#115;&#99;&#114;&#105;&#112;&#116;:alert(\"javascript active\");'>Don't hurt me!<a/></div>";
+
+            var result = WebUtils.SanitizeHtml(html);
+
+            Console.WriteLine(result);
+            Assert.IsTrue(!result.Contains("&#106;&#97;&#118"));
+        }
+
 
         [TestMethod]
         public void HtmlSanitizeEventAttributes()

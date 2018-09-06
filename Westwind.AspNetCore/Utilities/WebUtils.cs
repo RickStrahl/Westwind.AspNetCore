@@ -17,8 +17,11 @@ namespace Westwind.AspNetCore.Utilities
             $@"(<({HtmlSanitizeTagBlackList})\b[^<]*(?:(?!<\/({HtmlSanitizeTagBlackList}))<[^<]*)*<\/({HtmlSanitizeTagBlackList})>)",
             RegexOptions.IgnoreCase | RegexOptions.Multiline);
 
+        // strip javascript: and unicode representation of javascript:
+        // href='javascript:alert(\"gotcha\")'
+        // href='&#106;&#97;&#118;&#97;&#115;&#99;&#114;&#105;&#112;&#116;:alert(\"gotcha\");'
         static Regex _RegExJavaScriptHref = new Regex(
-            @"<.*?(href|src|dynsrc|lowsrc)=.{0,10}(javascript:).*?>",
+            @"<.*?(href|src|dynsrc|lowsrc)=.{0,20}((javascript:)|(&#106)).*?>",
             RegexOptions.IgnoreCase | RegexOptions.Multiline);
 
         static Regex _RegExOnEventAttributes = new Regex(
@@ -57,8 +60,11 @@ namespace Westwind.AspNetCore.Utilities
             var matches = _RegExJavaScriptHref.Matches(html);
             foreach (Match match in matches)
             {
-                var txt = StringUtils.ReplaceString(match.Value, "javascript:", "unsupported:", true);
-                html = html.Replace(match.Value, txt);
+                if (match.Groups.Count > 2)
+                {
+                    var txt = match.Value.Replace(match.Groups[2].Value, "'#'");
+                    html = html.Replace(match.Value, txt);
+                }
             }
 
             // Remove onEvent handlers from elements
@@ -77,6 +83,8 @@ namespace Westwind.AspNetCore.Utilities
 
             return html;
         }
+
+
 
 
         #region JSON Value Encoding
