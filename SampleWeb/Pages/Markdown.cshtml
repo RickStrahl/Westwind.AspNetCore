@@ -31,7 +31,7 @@
 
 
 <h3>Markdown TagHelper Block</h3>
-<markdown normalize-whitespace="true" strip-script-tags="true">
+<markdown normalize-whitespace="true" sanitize-html="true">
     #### This is Markdown text inside of a Markdown block
 
     * Item 1
@@ -61,13 +61,18 @@
     
     ### Rudimentary XSS Support
     Below are a script tag, and some raw HTML alert with an onclick handler which 
-    are potential XSS vulnerable. Default is `strip-script-tags="true"` to remove
-    script and other vulnerabilities.
+    are potential XSS vulnerable. Default is `sanitize-html="true"` to remove
+    script and other vulnerabilities. `true` is the default.
     
+
+    > If you didn't see an alert box when the page loaded the `<script>` was scrubbed.
+
     <script>
         alert("GOTHCHA! Injected code executed.")
     </script>
     
+    <a href="javascript:alert('Gotcha! JavaScript: fired');">XSS Link</a>
+
     <div class="alert alert-info" onclick="alert('Gotcha! onclick handler fired');">
         XSS Alert: You shouldn't be able to click me and execute the onclick handler.
     </div>

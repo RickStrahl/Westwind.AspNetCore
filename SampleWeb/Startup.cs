@@ -39,7 +39,7 @@ namespace SampleWeb
                 folderConfig = config.AddMarkdownProcessingFolder("/posts/", "~/Pages/__MarkdownPageTemplate.cshtml");
 
                 // Optionally strip script/iframe/form/object/embed tags ++
-                folderConfig.StripScriptTags = false;  //  default
+                folderConfig.SanitizeHtml = false;  //  default
 
                 // Optional configuration settings
                 folderConfig.ProcessExtensionlessUrls = true;  // default

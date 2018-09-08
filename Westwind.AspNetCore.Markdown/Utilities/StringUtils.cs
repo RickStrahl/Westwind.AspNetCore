@@ -12,7 +12,7 @@ namespace Westwind.AspNetCore.Markdown.Utilities
      *          (c) West Wind Technologies, 2008 - 2018
      *          http://www.west-wind.com/
      * 
-     * Created: 09/08/2008
+     * Created: 09/08/2018
      *
      * Permission is hereby granted, free of charge, to any person
      * obtaining a copy of this software and associated documentation
@@ -40,9 +40,9 @@ namespace Westwind.AspNetCore.Markdown.Utilities
     #endregion
 
     /// <summary>
-    /// String utility class that provides a host of string related operations
+    /// String utility class that provides a host of string related operations.
     /// 
-    /// Extracted from: westwind.utilitie
+    /// Extracted from: westwind.utilities and internalized to avoid dependency
     /// </summary>
     public static class StringUtils
     {              
@@ -155,17 +155,24 @@ namespace Westwind.AspNetCore.Markdown.Utilities
         }
 
 
+
+        /// <summary>
+        /// Note: this is an internal implementation which should duplicate what
+        /// Westwind.Utilities.HtmlUtils.SanitizeHtml() does. Avoids dependency
+        /// 
+        /// https://github.com/RickStrahl/Westwind.Utilities/blob/master/Westwind.Utilities/Utilities/HtmlUtils.cs#L255
+        /// </summary>
+
         static string HtmlSanitizeTagBlackList { get; } = "script|iframe|object|embed|form";
 
-        static Regex _RegExScript = new Regex(
-            $@"(<({HtmlSanitizeTagBlackList})\b[^<]*(?:(?!<\/({HtmlSanitizeTagBlackList}))<[^<]*)*<\/({HtmlSanitizeTagBlackList})>)",
-            RegexOptions.IgnoreCase | RegexOptions.Multiline);
+        static Regex _RegExScript = new Regex($@"(<({HtmlSanitizeTagBlackList})\b[^<]*(?:(?!<\/({HtmlSanitizeTagBlackList}))<[^<]*)*<\/({HtmlSanitizeTagBlackList})>)",
+        RegexOptions.IgnoreCase | RegexOptions.Multiline);
 
         // strip javascript: and unicode representation of javascript:
         // href='javascript:alert(\"gotcha\")'
         // href='&#106;&#97;&#118;&#97;&#115;&#99;&#114;&#105;&#112;&#116;:alert(\"gotcha\");'
-        static Regex _RegExJavaScriptHref = new Regex(
-            @"<.*?(href|src|dynsrc|lowsrc)=.{0,20}((javascript:)|(&#106)).*?>",            
+        static Regex _RegExJavaScriptHref = new Regex(       
+            @"<.*?\s(href|src|dynsrc|lowsrc)=.{0,20}((javascript:)|(&#)).*?>",
             RegexOptions.IgnoreCase | RegexOptions.Multiline);
 
         static Regex _RegExOnEventAttributes = new Regex(
@@ -196,8 +203,8 @@ namespace Westwind.AspNetCore.Markdown.Utilities
             else
             {
                 html = Regex.Replace(html,
-                                      $@"(<({htmlTagBlacklist})\b[^<]*(?:(?!<\/({HtmlSanitizeTagBlackList}))<[^<]*)*<\/({htmlTagBlacklist})>)",
-                                      "", RegexOptions.IgnoreCase | RegexOptions.Multiline);
+                                        $@"(<({htmlTagBlacklist})\b[^<]*(?:(?!<\/({HtmlSanitizeTagBlackList}))<[^<]*)*<\/({htmlTagBlacklist})>)",
+                                        "", RegexOptions.IgnoreCase | RegexOptions.Multiline);
             }
 
             // Remove javascript: directives
@@ -206,7 +213,7 @@ namespace Westwind.AspNetCore.Markdown.Utilities
             {
                 if (match.Groups.Count > 2)
                 {
-                    var txt = match.Value.Replace(match.Groups[2].Value, "'#'");
+                    var txt = match.Value.Replace(match.Groups[2].Value, "unsupported:");
                     html = html.Replace(match.Value, txt);
                 }
             }
@@ -227,6 +234,7 @@ namespace Westwind.AspNetCore.Markdown.Utilities
 
             return html;
         }
+
 
     }
 }

@@ -45,15 +45,15 @@ namespace Westwind.AspNetCore.Markdown
         /// <param name="markdown">The markdown to parse into HTML</param>
         /// <param name="usePragmaLines">print line number ids into the document</param>
         /// <param name="forceReload">forces the markdown parser to be reloaded</param>
-        /// <param name="stripScriptTags">Remove script tags from HTML output</param>
+        /// <param name="sanitizeHtml">Remove script tags from HTML output</param>
         /// <returns></returns>
-        public static string Parse(string markdown, bool usePragmaLines = false, bool forceReload = false, bool stripScriptTags = false)
+        public static string Parse(string markdown, bool usePragmaLines = false, bool forceReload = false, bool sanitizeHtml = false)
         {
             if (string.IsNullOrEmpty(markdown))
                 return "";
 
             var parser = MarkdownParserFactory.GetParser(usePragmaLines, forceReload);
-            return parser.Parse(markdown,stripScriptTags);
+            return parser.Parse(markdown,sanitizeHtml);
         }
 
         /// <summary>
@@ -62,11 +62,11 @@ namespace Westwind.AspNetCore.Markdown
         /// <param name="markdown">The markdown to parse into HTML</param>
         /// <param name="usePragmaLines">print line number ids into the document</param>
         /// <param name="forceReload">forces the markdown parser to be reloaded</param>
-        /// <param name="stripScriptTags">Remove script tags from HTML output</param>
+        /// <param name="sanitizeHtml">Remove script tags from HTML output</param>
         /// <returns></returns>
-        public static HtmlString ParseHtmlString(string markdown, bool usePragmaLines = false, bool forceReload = false, bool stripScriptTags = false)
+        public static HtmlString ParseHtmlString(string markdown, bool usePragmaLines = false, bool forceReload = false, bool sanitizeHtml = false)
         {
-            return new HtmlString(Parse(markdown, usePragmaLines, forceReload, stripScriptTags));
+            return new HtmlString(Parse(markdown, usePragmaLines, forceReload, sanitizeHtml));
         }
      
     }

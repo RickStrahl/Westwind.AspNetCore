@@ -99,7 +99,6 @@ namespace Westwind.AspNetCore.Utilities
     /// 	alert( $("#" + scriptVars.txtAmazonUrlId).val() );
     /// });&lt;&lt;/code&gt;&gt;
     /// </summary>
-    [Obsolete("Use the JsonVariables class instead unless you're using WebForms specific features")]
     public class ScriptVariables
     {
 
@@ -125,12 +124,6 @@ namespace Westwind.AspNetCore.Utilities
         /// Internally tracked postfix code
         /// </summary>
         private StringBuilder sbPostFixScriptCode = new StringBuilder();
-
-
-        /// <summary>
-        /// Internal counter for submit script embedded
-        /// </summary>
-        private int SubmitCounter = 0;
 
 
         /// <summary>

@@ -265,7 +265,7 @@ services.AddMarkdown(config =>
     folderConfig = config.AddMarkdownProcessingFolder("/posts/", "~/Pages/__MarkdownPageTemplate.cshtml");
 
     // Optionally strip script/iframe/form/object/embed tags ++
-    folderConfig.StripScriptTags = false;  //  default
+    folderConfig.SanitizeHtml = false;  //  default
 
     // Optional configuration settings
     folderConfig.ProcessExtensionlessUrls = true;  // default
@@ -487,13 +487,13 @@ services.AddMarkdown(config =>
 ```
 
 ### Use the StripScriptTags Option
-The various components and static methods each have the ability to trigger a script tag filter which is fired after the HTML has been generated. A couple of RegEx expressions are used to remove `<script>` (and `<iframe>`,`<object>`,`<embed>` and `<form>`) tags `<a href='javascript:'>` type requests.
+The various components and static methods each have the ability to trigger a script tag filter which is fired after the HTML has been generated. A few RegEx expressions are used to remove `<script>` (and `<iframe>`,`<object>`,`<embed>` and `<form>`) tags, `<a href='javascript:'>` type requests and `onXXX=` DOM event handlers.
 
 #### Markdown.Parse(markdown,stripScriptTags)
-The `Parse()` and `ParseHtml()` methods both include a `stripScriptTags` parameter which is `false` by default. The default behavior is to leave script code as is so if you use the static functions stripping script out is always an opt in operation.
+The `Parse()` and `ParseHtml()` methods both include a `sanitizeHtml` parameter which is `false` by default. The default behavior is to leave script code as is so if you use the static functions stripping script out is always an opt in operation.
 
 #### Markdown Tag Helper
-The Markdown TagHelper has a `strip-script-tags` attribute that is `true` by default. The TagHelper automatically removes script tags by default. Set the attribute to `false` to force the tag helper to explicitly include scripts.
+The Markdown TagHelper has a `sanitize-html` attribute that is `true` by default. The TagHelper automatically removes script tags by default. Set the attribute to `false` to force the tag helper to explicitly include scripts.
 
 #### Markdown Page Handler
 By default the Markdown Page Handler **renders script as is**. In most cases pages are static and usually under the control of the Web site and meant to replace potentially large HTML pages which in some cases may need to include script. 
@@ -504,7 +504,7 @@ To strip script tags you can set the `StripScriptTags` flag on the folder config
 var folderConfig = config.AddMarkdownProcessingFolder(
 			"/docs/",
 			"~/Pages/__MarkdownPageTemplate.cshtml");
-folderConfig.StripScriptTags = true;
+folderConfig.SanitizeHtml = true;
 ```
 
 #### Overriding the Html Tag Blacklist

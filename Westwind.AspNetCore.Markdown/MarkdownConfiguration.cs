@@ -104,7 +104,7 @@ namespace Westwind.AspNetCore.Markdown
         /// Removes script tags and javascript directives
         /// from generated HTML content
         /// </summary>
-        public bool StripScriptTags { get; set; } = false;
+        public bool SanitizeHtml { get; set; } = false;
         
 
         /// <summary>

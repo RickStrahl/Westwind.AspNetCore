@@ -65,8 +65,8 @@ namespace Westwind.AspNetCore.Markdown
         /// Scripts `script` tags and `javascript:` directive
         /// from the generated HTML content
         /// </summary>
-        [HtmlAttributeName("strip-script-tags")]
-        public bool StripScriptTags { get; set; } = true;
+        [HtmlAttributeName("sanitize-html")]
+        public bool SanitizeHtml { get; set; } = true;
 
 
         /// <summary>
@@ -107,7 +107,7 @@ namespace Westwind.AspNetCore.Markdown
             string markdown = NormalizeWhiteSpaceText(content);            
 
             var parser = MarkdownParserFactory.GetParser();
-            var html = parser.Parse(markdown,StripScriptTags);
+            var html = parser.Parse(markdown,SanitizeHtml);
 
             output.TagName = null;  // Remove the <markdown> element
             output.Content.SetHtmlContent(html);
