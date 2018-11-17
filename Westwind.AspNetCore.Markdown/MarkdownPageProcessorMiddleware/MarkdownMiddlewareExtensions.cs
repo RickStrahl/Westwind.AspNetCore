@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Westwind.AspNetCore.Markdown.Utilities;
 
@@ -11,6 +12,9 @@ namespace Westwind.AspNetCore.Markdown
     /// </summary>
     public static class MarkdownMiddlewareExtensions
     {
+
+        internal static IServiceProvider ServiceProvider { get; set; }
+
 
         /// <summary>
         /// Configure the MarkdownPageProcessor in Startup.ConfigureServices.
@@ -37,7 +41,10 @@ namespace Westwind.AspNetCore.Markdown
                     .ToList();
             
             services.AddSingleton(config);
-            
+
+            // We need access to the HttpContext for Filename resolution
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
             return services;
         }
 
@@ -49,7 +56,15 @@ namespace Westwind.AspNetCore.Markdown
         /// <returns></returns>
         public static IApplicationBuilder UseMarkdown(this IApplicationBuilder builder)
         {
+            ServiceProvider = builder.ApplicationServices;
+
             return builder.UseMiddleware<MarkdownPageProcessorMiddleware>();
+        }
+
+        public static HttpContext GetHttpContext()
+        {
+            var contextAccessor = ServiceProvider.GetService<IHttpContextAccessor>() as IHttpContextAccessor;
+            return contextAccessor.HttpContext;
         }
     }
 }

@@ -6,10 +6,17 @@
 }
 @section Headers {
     <style>
-        h3 {
+        .header {
             margin-top: 50px;
             padding-bottom: 10px;
             border-bottom: 1px solid #eee;
+        }
+        .sample-block {
+            margin-left: 25px;
+            margin-top: 10px;
+            padding: 15px 15px 15px 15px;
+            background: #f2f2f2;
+            border-radius: 6px;
         }
         /* vs2015 theme specific*/
         pre {
@@ -30,94 +37,123 @@
 
 
 
-<h3>Markdown TagHelper Block</h3>
-<markdown normalize-whitespace="true" sanitize-html="true">
-    #### This is Markdown text inside of a Markdown block
+<h3 class="header">Markdown TagHelper Block</h3>
 
-    * Item 1
-    * Item 2
+This example embeds a static Markdown block into the current Razor page.
 
-    The current Time is: **@DateTime.Now.ToString("HH:mm:ss")**
+<div class="sample-block">
+    <markdown normalize-whitespace="true" sanitize-html="true">
+        #### This is Markdown text inside of a Markdown block
 
+        * Item 1
+        * Item 2
 
-    ![](https://markdownmonster.west-wind.com/Images/MarkdownMonster_Icon_32.png)
-    This is a link to
-    [Markdown Monster](https://markdownmonster.west-wind.com).
-
-    This is an auto link:
-
-    https://markdownmonster.west-wind.com
+        The current Time is: **@DateTime.Now.ToString("HH:mm:ss")**
 
 
-    ```cs
-    // this c# is a code block
-    for (int i = 0; i < lines.Length; i++)
-    {
-    line1 = lines[i];
-    if (!string.IsNullOrEmpty(line1))
-    break;
-    }
-    ```
-    
-    ### Rudimentary XSS Support
-    Below are a script tag, and some raw HTML alert with an onclick handler which 
-    are potential XSS vulnerable. Default is `sanitize-html="true"` to remove
-    script and other vulnerabilities. `true` is the default.
-    
+        ![](https://markdownmonster.west-wind.com/Images/MarkdownMonster_Icon_32.png)
+        This is a link to
+        [Markdown Monster](https://markdownmonster.west-wind.com).
 
-    > If you didn't see an alert box when the page loaded the `<script>` was scrubbed.
+        This is an auto link:
 
-    <script>
-        alert("GOTHCHA! Injected code executed.")
-    </script>
-    
-    <a href="javascript:alert('Gotcha! JavaScript: fired');">XSS Link</a>
-
-    <div class="alert alert-info" onclick="alert('Gotcha! onclick handler fired');">
-        XSS Alert: You shouldn't be able to click me and execute the onclick handler.
-    </div>
-
-     
-</markdown>
+        https://markdownmonster.west-wind.com
 
 
+        ```cs
+        // this c# is a code block
+        for (int i = 0; i < lines.Length; i++)
+        {
+        line1 = lines[i];
+        if (!string.IsNullOrEmpty(line1))
+        break;
+        }
+        ```
+
+        ### Rudimentary XSS Support
+        Below are a script tag, and some raw HTML alert with an onclick handler which
+        are potential XSS vulnerable. Default is `sanitize-html="true"` to remove
+        script and other vulnerabilities. `true` is the default.
 
 
-<h3>Markdown Model Binding</h3>
-<markdown normalize-whitespace="true" markdown="MarkdownText" />
+        > If you didn't see an alert box when the page loaded the 
+        > `<script>` tag was scrubbed.
 
-<h3>Markdown Parsing in Razor HTML  with Markdown.ParseHtmlString()</h3>
-@Markdown.ParseHtmlString("This is **Markdown Text** using the `@Markdown.ParseHtmlString()` method.")
+        <script>
+           alert("GOTHCHA! Injected code executed.")
+        </script>
 
-<markdown>
-    ```html
-    <div>
-        @@Markdown.ParseHtmlString("This is **Markdown Text** using the `@@Markdown.ParseHtmlString()` method.")
-    </div>
-    ```
-</markdown>
+        <a href="javascript:alert('Gotcha! JavaScript: fired');">XSS Link</a>
+
+        <div class="alert alert-info" onclick="alert('Gotcha! onclick handler fired');">
+            XSS Alert: You shouldn't be able to click me and execute the onclick handler.
+        </div>
 
 
-<h3>Markdown Parsing in code with Markdown.Parse()</h3>
+    </markdown>
+</div>
 
-<markdown>
-    ##### Parse Html in Code:
-    ```cs
-    var html = Markdown.Parse("This is **Markdown** Text.")
-    ```
-</markdown>
 
+
+<h3 class="header">Markdown Model Binding</h3>
+
+This example data binds the Model.MarkdownText property to the TagHelper's <code>markdown</code> proper
+
+<div class="sample-block">
+    <markdown normalize-whitespace="true" markdown="MarkdownText" />
+</div>
+
+
+<h3 class="header">Markdown Parsing in Razor HTML  with @@Markdown.ParseHtmlString()</h3>
+
+
+<div class="sample-block">
+    @Markdown.ParseHtmlString("This is **Markdown Text** using the `@Markdown.ParseHtmlString()` method.")
+</div>
+
+
+
+<h3 class="header">Markdown Parsing in code with Markdown.Parse()</h3>
+<div class="sample-block">
+    <markdown>
+        ##### Parse Html in Code:
+        ```cs
+        var html = Markdown.Parse("This is **Markdown** Text.")
+        ```
+    </markdown>
+</div>
+
+
+<h3 class="header">Markdown TagHelper with File Loaded Markdown</h3>
+<p>
+    This example uses <code>&lt;markdown Filename="~/MarkdownPartialPage.md">&lt;/markdown></code> to render
+    Markdown from a file into the current page.
+</p>
+
+<div class="sample-block">
+    <markdown Filename="~/MarkdownPartialPage.md"></markdown>
+</div>
+
+
+<h3 class="header">Markdown.ParseHtmlFromFile()</h3>
+<p>
+    And one more time with the same content as above using <code>Markdown.ParseHtmlStringFromFile()</code>:
+</p>
+
+<div class="sample-block">
+    @Markdown.ParseHtmlStringFromFile("~/MarkdownPartialPage.md")
+</div>
 
 @section Scripts {
     <script src="~/lib/highlightjs/highlight.pack.js"></script>
     <link href="~/lib/highlightjs/styles/vs2015.css" rel="stylesheet" />
     <script>
-        setTimeout(function () {
-            var pres = document.querySelectorAll("pre>code");
-            for (var i = 0; i < pres.length; i++) {
-                hljs.highlightBlock(pres[i]);
-            }
-        });
+                setTimeout(function () {
+                    var pres = document.querySelectorAll("pre>code");
+                    for (var i = 0; i < pres.length; i++) {
+                        hljs.highlightBlock(pres[i]);
+                    }
+                });
 
     </script>
 }

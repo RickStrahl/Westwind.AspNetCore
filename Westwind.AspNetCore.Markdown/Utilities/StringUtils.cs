@@ -40,11 +40,12 @@ namespace Westwind.AspNetCore.Markdown.Utilities
     #endregion
 
     /// <summary>
-    /// String utility class that provides a host of string related operations.
+    /// String utility class that provides several string related operations.
     /// 
     /// Extracted from: westwind.utilities and internalized to avoid dependency
+    /// For more info see relevant methods in that library
     /// </summary>
-    public static class StringUtils
+    internal static class StringUtils
     {              
         /// <summary>
         /// Extracts a string from between a pair of delimiters. Only the first 
@@ -104,35 +105,6 @@ namespace Westwind.AspNetCore.Markdown.Utilities
             return string.Empty;
         }
 
-        /// <summary>
-        /// Replaces a substring within a string with another substring with optional case sensitivity turned off.
-        /// </summary>
-        /// <param name="origString">String to do replacements on</param>
-        /// <param name="findString">The string to find</param>
-        /// <param name="replaceString">The string to replace found string wiht</param>
-        /// <param name="caseInsensitive">If true case insensitive search is performed</param>
-        /// <returns>updated string or original string if no matches</returns>
-        public static string ReplaceString(string origString, string findString,
-            string replaceString, bool caseInsensitive)
-        {
-            int at1 = 0;
-            while (true)
-            {
-                if (caseInsensitive)
-                    at1 = origString.IndexOf(findString, at1, origString.Length - at1, StringComparison.OrdinalIgnoreCase);
-                else
-                    at1 = origString.IndexOf(findString, at1);
-
-                if (at1 == -1)
-                    break;
-
-                origString = origString.Substring(0, at1) + replaceString + origString.Substring(at1 + findString.Length);
-
-                at1 += replaceString.Length;
-            }
-
-            return origString;
-        }
 
         /// <summary>
         /// Parses a string into an array of lines broken
@@ -171,13 +143,13 @@ namespace Westwind.AspNetCore.Markdown.Utilities
         // strip javascript: and unicode representation of javascript:
         // href='javascript:alert(\"gotcha\")'
         // href='&#106;&#97;&#118;&#97;&#115;&#99;&#114;&#105;&#112;&#116;:alert(\"gotcha\");'
-        static Regex _RegExJavaScriptHref = new Regex(       
-            @"<.*?\s(href|src|dynsrc|lowsrc)=.{0,20}((javascript:)|(&#)).*?>",
-            RegexOptions.IgnoreCase | RegexOptions.Multiline);
+        static Regex _RegExJavaScriptHref = new Regex(
+            @"<[^>]*?\s(href|src|dynsrc|lowsrc)=.{0,20}((javascript:)|(&#)).*?>",
+            RegexOptions.IgnoreCase | RegexOptions.Singleline);
 
         static Regex _RegExOnEventAttributes = new Regex(
-            @"<.*?\s(on.{4,12}=([""].*?[""]|['].*?['])).*?(>|\/>)",
-            RegexOptions.IgnoreCase | RegexOptions.Multiline);
+            @"<[^>]*?\s(on[^\s\\]{0,20}=([""].*?[""]|['].*?['])).*?(>|\/>)",
+            RegexOptions.IgnoreCase | RegexOptions.Singleline);
 
         /// <summary>
         /// Sanitizes HTML to some of the most of 

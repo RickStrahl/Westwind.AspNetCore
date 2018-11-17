@@ -32,8 +32,11 @@
 #endregion
 
 
-
+using System;
+using System.IO;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Html;
+using Westwind.AspnetCore.Markdown.Utilities;
 
 namespace Westwind.AspNetCore.Markdown
 {
@@ -68,6 +71,96 @@ namespace Westwind.AspNetCore.Markdown
         {
             return new HtmlString(Parse(markdown, usePragmaLines, forceReload, sanitizeHtml));
         }
-     
+
+        /// <summary>
+        /// Parses content from a file on disk from Markdown to HTML.
+        /// </summary>
+        /// <param name="filename">A physical or virtual filename path. If running under System.Web this method uses MapPath to resolve paths.
+        /// For non-HttpContext environments this file name needs to be fully qualified.</param>
+        /// <param name="usePragmaLines">Generates line numbers as ids into headers and paragraphs. Useful for previewers to match line numbers to rendered output</param>
+        /// <param name="forceReload">Forces the parser to reloaded. Otherwise cached instance is used</param>
+        /// <param name="sanitizeHtml">Strips out scriptable tags and attributes for prevent XSS attacks. Minimal implementation.</param>
+        /// <returns>HTML result as a string</returns>
+        public static string ParseHtmlFromFile(string markdownFile, bool usePragmaLines = false, bool forceReload = false,
+                                           bool sanitizeHtml = false)
+        {
+            if (string.IsNullOrEmpty(markdownFile))
+                return markdownFile;
+
+            var context = MarkdownMiddlewareExtensions.GetHttpContext();
+            var filename = HttpRequestExtensions.MapPath(context.Request, markdownFile);
+
+            string markdown = null;
+
+            try
+            {
+                using (var reader = File.OpenText(filename))
+                {
+                    markdown = reader.ReadToEnd();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new FileLoadException("Couldn't load Markdown file: " + Path.GetFileName(markdownFile), ex);
+            }
+
+            var parser = MarkdownParserFactory.GetParser();
+            var html = parser.Parse(markdown, sanitizeHtml);
+
+            return html;
+        }
+
+
+        /// <summary>
+        /// Parses content from a file on disk from Markdown to HTML.
+        /// </summary>
+        /// <param name="filename">A physical or virtual filename path. If running under System.Web this method uses MapPath to resolve paths.
+        /// For non-HttpContext environments this file name needs to be fully qualified.</param>
+        /// <param name="usePragmaLines">Generates line numbers as ids into headers and paragraphs. Useful for previewers to match line numbers to rendered output</param>
+        /// <param name="forceReload">Forces the parser to reloaded. Otherwise cached instance is used</param>
+        /// <param name="sanitizeHtml">Strips out scriptable tags and attributes for prevent XSS attacks. Minimal implementation.</param>
+        /// <returns>HTML result as an HTML string for embedding in Razor views</returns>
+        public static HtmlString ParseHtmlStringFromFile(string markdownFile, bool usePragmaLines = false,
+            bool forceReload = false,
+            bool sanitizeHtml = false)
+        {
+            return new HtmlString(ParseHtmlFromFile(markdownFile, usePragmaLines, forceReload, sanitizeHtml));
+        }
+
+        /// <summary>
+            /// Parses content from a file on disk from Markdown to HTML.
+            /// </summary>
+            /// <param name="filename">A physical or virtual filename path. If running under System.Web this method uses MapPath to resolve paths.
+            /// For non-HttpContext environments this file name needs to be fully qualified.</param>
+            /// <param name="usePragmaLines">Generates line numbers as ids into headers and paragraphs. Useful for previewers to match line numbers to rendered output</param>
+            /// <param name="forceReload">Forces the parser to reloaded. Otherwise cached instance is used</param>
+            /// <param name="sanitizeHtml">Strips out scriptable tags and attributes for prevent XSS attacks. Minimal implementation.</param>
+            /// <returns>HTML result as a string</returns>
+            public static async Task<string> ParseHtmlFromFileAsync(string markdownFile, bool usePragmaLines = false, bool forceReload = false, bool sanitizeHtml = false)
+        {
+            if (string.IsNullOrEmpty(markdownFile))
+                return markdownFile;
+
+            var context = MarkdownMiddlewareExtensions.GetHttpContext();
+            var filename = HttpRequestExtensions.MapPath(context.Request,markdownFile);
+
+            string content = null;
+
+            try
+            {
+                using (var reader = File.OpenText(filename))
+                {
+                    content = await reader.ReadToEndAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new FileLoadException("Couldn't load Markdown file: " + Path.GetFileName(markdownFile), ex);
+            }
+
+            return content;
+        }
+
+
     }
 }

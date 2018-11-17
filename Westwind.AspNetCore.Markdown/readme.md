@@ -10,8 +10,9 @@ This small package provides Markdown support for your ASP.NET Core applications.
     *  Generate Markdown to HtmlString for Razor usage   
        `Markdown.ParseHtmlString(markdown)`
 * **[Markdown TagHelper](#markdown-taghelper)** 
-    *  Embed Markdown Content into Views and Pages
+    *  Embed Markdown text into Views and Pages
     *  Databind Markdown text
+    *  Embed Markdown from files
 *  **[Markdown Page Processor Middleware](#markdown-page-processor-middleware)**
     *  Serve .md files as Markdown
     *  Serve extensionless URLs as Markdown
@@ -50,6 +51,22 @@ string html = Markdown.Parse(markdownText)
 
 ```cs
 <div>@Markdown.ParseHtmlString(Model.ProductInfoMarkdown)</div>
+```
+
+### Parse Markdown to String from a File
+You can also convert Markdown using a file:
+
+```cs
+var html = Markdown.ParseHtmlFromFile("~/EmbeddedMarkdownContent.md");
+
+// async
+var html = await Markdown.ParseHtmlFromFileAsync("~/EmbeddedMarkdownContent.md");
+```
+
+To embed in Razor Views:
+
+```html
+@Markdown.ParseHtmlStringFromFile("~/EmbeddedMarkdownContent.md")
 ```
 
 ### StripScriptTags in Parser Methods to mitigate XSS

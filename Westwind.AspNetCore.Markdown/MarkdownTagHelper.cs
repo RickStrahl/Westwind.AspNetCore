@@ -31,13 +31,16 @@
 #endregion
 
 
-
+using System;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using System.Diagnostics;
+using System.IO;
+using Microsoft.AspNetCore.Http;
+using Westwind.AspnetCore.Markdown.Utilities;
 
 namespace Westwind.AspNetCore.Markdown
 {
@@ -50,6 +53,7 @@ namespace Westwind.AspNetCore.Markdown
     [HtmlTargetElement("markdown")]
     public class MarkdownTagHelper : TagHelper
     {
+        private readonly IHttpContextAccessor _httpContext;
 
         /// <summary>
         /// When set to true (default) strips leading white space based
@@ -80,6 +84,20 @@ namespace Westwind.AspNetCore.Markdown
         public ModelExpression Markdown { get; set; }
 
 
+        /// <summary>
+        /// Optional file to load content. Use       
+        /// </summary>
+        [HtmlAttributeName("Filename")]
+        public string Filename { get; set; }
+
+
+        
+
+        public MarkdownTagHelper(IHttpContextAccessor httpContext)
+        {
+            _httpContext = httpContext;
+        }
+
 
         /// <summary>
         /// Process markdown and generate HTML output
@@ -92,18 +110,41 @@ namespace Westwind.AspNetCore.Markdown
             await base.ProcessAsync(context, output);
 
             string content = null;
-            if (Markdown != null)
-                content = Markdown.Model?.ToString();
+            if (!string.IsNullOrEmpty(Filename))
+            {
+                try
+                {
+                    var filename  = HttpRequestExtensions.MapPath(_httpContext.HttpContext.Request, Filename);
 
-            if (content == null)            
-                content = (await output.GetChildContentAsync(NullHtmlEncoder.Default))
-                                .GetContent(NullHtmlEncoder.Default);
+                    using (var reader = File.OpenText(filename))
+                    {
+                        content = await reader.ReadToEndAsync();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new FileLoadException("Couldn't load Markdown file: " + Path.GetFileName(Filename), ex);
+                }
 
-            if (string.IsNullOrEmpty(content))
-                return;
+                if (string.IsNullOrEmpty(content))
+                    return;
+            }
+            else
+            {
 
-            content = content.Trim('\n', '\r');
+                if (Markdown != null)
+                    content = Markdown.Model?.ToString();
 
+                if (content == null)
+                    content = (await output.GetChildContentAsync(NullHtmlEncoder.Default))
+                        .GetContent(NullHtmlEncoder.Default);
+
+                if (string.IsNullOrEmpty(content))
+                    return;
+
+                content = content.Trim('\n', '\r');
+            }
+        
             string markdown = NormalizeWhiteSpaceText(content);            
 
             var parser = MarkdownParserFactory.GetParser();
