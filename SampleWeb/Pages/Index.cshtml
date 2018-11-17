@@ -4,22 +4,29 @@
     ViewData["Title"] = "Home page";
 }
 @section headers
-{ 
+{
 
     <style>
         .hero-text {
             text-align: center;
             line-height: 1.8em;
-            font-size: 3.2em;
-            padding: 30px 0 50px;
+            font-size: 2.7em;
+            padding: 35px 0 82px;
             background: black;
             color: white;
-            font-weight: 600;
+            font-weight: 500;
         }
+        @@media (max-width:600px) {
+            .hero-text {
+                font-size: 1.8em;
+            }
+        }
+   
         .text-primary {
             font-weight: bold !important;
             color: khaki;
-        }
+            font-size: 1.2em;
+        }    
     </style>
 }
 
@@ -28,35 +35,43 @@
         <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
         <li data-target="#myCarousel" data-slide-to="1"></li>
         <li data-target="#myCarousel" data-slide-to="2"></li>
+        <li data-target="#myCarousel" data-slide-to="3"></li>
     </ol>
     <div class="carousel-inner" role="listbox">
-        <div class="item active">
-            @*<img src="~/images/AspnetCoreMarkdownBanner.jpg" alt="Markdown Monster" class="img-responsive" />*@
-            <a href="/markdown" style="text-decoration: none;" alt="click to see the TagHelper samples">
+        <div class="item active">            
+            <a href="/MarkdownTagHelper" style="text-decoration: none;" alt="click to see the TagHelper samples">
                 <div class="hero-text">
-                    <p class="text-primary">Markdown 'Islands' via TagHelper Control</p>
-                    <p>Embed static text, Model data or files</p>
-                    <p>Easy Markdown Parsing</p>                    
+                    <p class="text-primary">Markdown TagHelper</p>
+                    <p>embed static text or model data</p>
+                    <p>embed Markdown from files</p>
                 </div>
             </a>
         </div>
-        <div class="item">
-            @*<img src="~/images/AspnetCoreMarkdownBanner.jpg" alt="Markdown Monster" class="img-responsive" />*@
+        <div class="item">            
+            <a href="/MarkdownParsing" style="text-decoration: none;" alt="click to see the Parsing samples">
+                <div class="hero-text">
+                    <p class="text-primary">Markdown Parsing</p>
+                    <p>parse Markdown from strings</p>
+                    <p>parse Markdown from files</p>
+                </div>
+            </a>
+        </div>
+        <div class="item">            
             <a href="/posts/2018/03/23/MarkdownTagHelper" style="text-decoration: none;" alt="click to see a page directly rendered from Markdown file on disk">
                 <div class="hero-text">
-                    <p class="text-primary">Markdown Page Handler</p>
-                    <p>render Markdown pages in your site</p>
-                    <p>drop files and access .md or extensionless Url</p>
+                    <p class="text-primary">Markdown Pages</p>
+                    <p>render Markdown pages from disk</p>
+                    <p>simply drop files into a folder</p>
                 </div>
             </a>
         </div>
 
 
-        <div class="item">
+        <div class="item" style="background: black;">
             <a href="https://markdownMonster.west-wind.com">
-                <img src="~/images/MarkdownMonster_wide.jpg" alt="Markdown Monster" class="img-responsive" />
+                <img src="~/images/MarkdownMonster_wide.jpg" alt="Markdown Monster" class="img-responsive" style="padding: 65px 0" />                
             </a>
-
+            
         </div>
     </div>
 

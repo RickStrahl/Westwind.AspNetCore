@@ -11,6 +11,7 @@
             padding-bottom: 10px;
             border-bottom: 1px solid #eee;
         }
+
         .sample-block {
             margin-left: 25px;
             margin-top: 10px;
@@ -35,6 +36,7 @@
     </style>
 }
 
+    <h1>Markdown 'Islands' with the &lt;markdown&gt; TagHelper</h1>
 
 
 <h3 class="header">Markdown TagHelper Block</h3>
@@ -76,11 +78,13 @@ This example embeds a static Markdown block into the current Razor page.
         script and other vulnerabilities. `true` is the default.
 
 
-        > If you didn't see an alert box when the page loaded the 
-        > `<script>` tag was scrubbed.
-
+        > If you didn't see an alert box when the page loaded the
+        > `
         <script>
-           alert("GOTHCHA! Injected code executed.")
+    ` tag was scrubbed.
+
+                <script>
+                   alert("GOTHCHA! Injected code executed.")
         </script>
 
         <a href="javascript:alert('Gotcha! JavaScript: fired');">XSS Link</a>
@@ -104,25 +108,6 @@ This example data binds the Model.MarkdownText property to the TagHelper's <code
 </div>
 
 
-<h3 class="header">Markdown Parsing in Razor HTML  with @@Markdown.ParseHtmlString()</h3>
-
-
-<div class="sample-block">
-    @Markdown.ParseHtmlString("This is **Markdown Text** using the `@Markdown.ParseHtmlString()` method.")
-</div>
-
-
-
-<h3 class="header">Markdown Parsing in code with Markdown.Parse()</h3>
-<div class="sample-block">
-    <markdown>
-        ##### Parse Html in Code:
-        ```cs
-        var html = Markdown.Parse("This is **Markdown** Text.")
-        ```
-    </markdown>
-</div>
-
 
 <h3 class="header">Markdown TagHelper with File Loaded Markdown</h3>
 <p>
@@ -135,25 +120,18 @@ This example data binds the Model.MarkdownText property to the TagHelper's <code
 </div>
 
 
-<h3 class="header">Markdown.ParseHtmlFromFile()</h3>
-<p>
-    And one more time with the same content as above using <code>Markdown.ParseHtmlStringFromFile()</code>:
-</p>
 
-<div class="sample-block">
-    @Markdown.ParseHtmlStringFromFile("~/MarkdownPartialPage.md")
-</div>
 
 @section Scripts {
     <script src="~/lib/highlightjs/highlight.pack.js"></script>
     <link href="~/lib/highlightjs/styles/vs2015.css" rel="stylesheet" />
     <script>
-                setTimeout(function () {
-                    var pres = document.querySelectorAll("pre>code");
-                    for (var i = 0; i < pres.length; i++) {
-                        hljs.highlightBlock(pres[i]);
-                    }
-                });
+                        setTimeout(function () {
+                            var pres = document.querySelectorAll("pre>code");
+                            for (var i = 0; i < pres.length; i++) {
+                                hljs.highlightBlock(pres[i]);
+                            }
+                        });
 
     </script>
 }
