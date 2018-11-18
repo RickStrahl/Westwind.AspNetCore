@@ -39,7 +39,7 @@
     <h1>Markdown 'Islands' with the &lt;markdown&gt; TagHelper</h1>
 
 
-<h3 class="header">Markdown TagHelper Block</h3>
+<h3 class="header">Markdown TagHelper Static Text Block</h3>
 
 This example embeds a static Markdown block into the current Razor page.
 
@@ -95,6 +95,20 @@ This example embeds a static Markdown block into the current Razor page.
 
 
     </markdown>
+</div>
+
+<h3 class="header">Markdown Parsing in code with Markdown.Parse()</h3>
+<div class="sample-block">
+    <markdown>
+        ##### Parse Html in Code:
+        The following is a short snippet of C# code:
+
+        ```cs
+        var html = Markdown.Parse("This is **Markdown** Text.")
+        ```
+        
+        Using fenced code blocks and <a href="https://highlightjs.com">highlightJs</a>
+    </markdown>        
 </div>
 
 

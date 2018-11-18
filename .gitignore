@@ -61,6 +61,7 @@ artifacts/
 *.tli
 *.tlh
 *.tmp
+*.bak
 *.tmp_proj
 *.log
 *.vspscc
@@ -70,6 +71,7 @@ artifacts/
 *.svclog
 *.scc
 *.ide
+
 
 # Chutzpah Test files
 _Chutzpah*

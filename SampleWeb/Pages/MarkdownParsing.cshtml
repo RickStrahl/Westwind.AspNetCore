@@ -2,7 +2,7 @@
 @model MarkdownControlModel
 @using Westwind.AspNetCore.Markdown
 @{
-    ViewBag.Title = "Markdown TagHelper";
+    ViewBag.Title = "Markdown TagHelper";   
 }
 @section Headers {
     <style>
@@ -38,35 +38,17 @@
 <h1>Markdown Parsing with the Markdown Class</h1>
   
 
-    <h3 class="header">Markdown Parsing in Razor HTML  with @@Markdown.ParseHtmlString()</h3>
-
-
+    <h3 class="header">Markdown Parsing in Razor HTML  with <code>@@Markdown.ParseHtmlString()</code></h3>
     <div class="sample-block">
         @Markdown.ParseHtmlString("This is **Markdown Text** using the `@Markdown.ParseHtmlString()` method.")
     </div>
 
 
-
-    <h3 class="header">Markdown Parsing in code with Markdown.Parse()</h3>
+    <h3 class="header">Markdown Parsing using the raw <code>Markdown.Parse()</code> method</h3>
     <div class="sample-block">
-        <markdown>
-            ##### Parse Html in Code:
-            ```cs
-            var html = Markdown.Parse("This is **Markdown** Text.")
-            ```
-        </markdown>
-    </div>
-
-
-    <h3 class="header">Markdown TagHelper with File Loaded Markdown</h3>
-    <p>
-        This example uses <code>&lt;markdown Filename="~/MarkdownPartialPage.md">&lt;/markdown></code> to render
-        Markdown from a file into the current page.
-    </p>
-
-    <div class="sample-block">
-        <markdown Filename="~/MarkdownPartialPage.md"></markdown>
-    </div>
+        @{ var html = Markdown.Parse("This is **Markdown** Text using the `Markdown.Parse()` method."); }
+        <div>@Html.Raw(html)</div>
+    </div>   
 
 
     <h3 class="header">Markdown.ParseHtmlFromFile()</h3>
@@ -78,7 +60,7 @@
         @Markdown.ParseHtmlStringFromFile("~/MarkdownPartialPage.md")
     </div>
     
-</div>
+
 @section Scripts {
     <script src="~/lib/highlightjs/highlight.pack.js"></script>
     <link href="~/lib/highlightjs/styles/vs2015.css" rel="stylesheet" />

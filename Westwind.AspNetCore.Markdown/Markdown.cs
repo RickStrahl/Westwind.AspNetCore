@@ -81,7 +81,7 @@ namespace Westwind.AspNetCore.Markdown
         /// <param name="forceReload">Forces the parser to reloaded. Otherwise cached instance is used</param>
         /// <param name="sanitizeHtml">Strips out scriptable tags and attributes for prevent XSS attacks. Minimal implementation.</param>
         /// <returns>HTML result as a string</returns>
-        public static string ParseHtmlFromFile(string markdownFile, bool usePragmaLines = false, bool forceReload = false,
+        public static string ParseFromFile(string markdownFile, bool usePragmaLines = false, bool forceReload = false,
                                            bool sanitizeHtml = false)
         {
             if (string.IsNullOrEmpty(markdownFile))
@@ -124,7 +124,7 @@ namespace Westwind.AspNetCore.Markdown
             bool forceReload = false,
             bool sanitizeHtml = false)
         {
-            return new HtmlString(ParseHtmlFromFile(markdownFile, usePragmaLines, forceReload, sanitizeHtml));
+            return new HtmlString(ParseFromFile(markdownFile, usePragmaLines, forceReload, sanitizeHtml));
         }
 
         /// <summary>
