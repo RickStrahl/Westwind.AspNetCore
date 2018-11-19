@@ -5,9 +5,10 @@
 
 This is a small helper package that provides a number of small helper and extension classes that facilitate common operations in ASP.NET Core and MVC applications.
 
-For documentation on sub-components please see their respective folders:
-
-* **[Westwind.AspNetCore.Markdown](https://github.com/RickStrahl/Westwind.AspNetCore/tree/master/Westwind.AspNetCore.Markdown/readme.md)**
+> #### Westwind.AspnetCore.Markdown has moved
+> The **Westwind.AspnetCore.Markdown** sub-component has moved to its own repository:
+> 
+> [Westwind.AspNetCore.Markdown on GitHub](https://github.com/RickStrahl/Westwind.AspNetCore.Markdown)
 
 
 ### Installation
