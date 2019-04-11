@@ -13,7 +13,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Westwind.AspNetCore.Markdown\Westwind.AspNetCore.Markdown.csproj" />
     <ProjectReference Include="..\Westwind.AspNetCore\Westwind.AspNetCore.csproj" />
   </ItemGroup>
 

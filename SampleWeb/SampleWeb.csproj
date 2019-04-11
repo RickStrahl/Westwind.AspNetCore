@@ -13,9 +13,6 @@
     <None Include="wwwroot\MarkdownPartialPage.md" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Westwind.AspNetCore.Markdown\Westwind.AspNetCore.Markdown.csproj" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Update="Pages\MarkdownParsing.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>

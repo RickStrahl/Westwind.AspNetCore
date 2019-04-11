@@ -14,16 +14,35 @@ using Westwind.Web;
 namespace Westwind.AspNetCore
 {
 
+    
     /// <summary>
-    /// Base Controller implementation that holds UserState,
-    /// ErrorDisplay objects that are preinitialized.
+    /// Base Controller implementation that holds ViewState options,
+    /// ErrorDisplay and UserState objects that are preinitialized
     /// </summary>
-    public class BaseController : Controller
+    public class BaseController : BaseController<UserState>
+    {
+
+    }
+
+
+    public class BaseController<TUserState> : Controller
+        where TUserState : UserState, new()
     {        
         /// <summary>
         /// ErrorDisplay control that holds page level error information
         /// </summary>
         public ErrorDisplayModel ErrorDisplay = new ErrorDisplayModel();
+
+        /// <summary>
+        /// UserState instance that holds cached user data info that
+        /// gets persisted into an authentication cookie or token for
+        /// easy reuse without reloading a user record.
+        ///
+        /// Works with Auth Cookie or JWT token Authentication just ensure
+        /// you write out UserState into claims when creating Cookie/Token
+        /// via <seealso cref="UserState.ToString"/>
+        /// </summary>
+        public UserState UserState;
                
         public override void OnActionExecuting(ActionExecutingContext context)
         {
@@ -37,6 +56,11 @@ namespace Westwind.AspNetCore
         protected virtual void Initialize(ActionExecutingContext context)
         {                        
             ViewBag.ErrorDisplay = ErrorDisplay;
+
+            if (User != null && User.Identity != null && User.Identity.IsAuthenticated)
+                UserState = Westwind.Web.UserState.CreateFromUserClaims<TUserState>(HttpContext) as TUserState;
+            if (UserState == null)
+                UserState = new UserState();
         }
         
 

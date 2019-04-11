@@ -12,10 +12,22 @@ namespace Westwind.AspNetCore.Errors
     /// Unhandled Exception filter attribute for API controllers.
     /// Fires back a common JSON response of type ApiErrorResponse
     /// </summary>
-    public class ApiExceptionFilter : ExceptionFilterAttribute
+    public class ApiExceptionFilterAttribute : ExceptionFilterAttribute
     {
+        private readonly bool _dontProcess;
+
+        public ApiExceptionFilterAttribute(bool dontProcess = false)
+        {
+            _dontProcess = dontProcess;
+        }
         public override void OnException(ExceptionContext context)
         {
+            if (_dontProcess)
+            {
+                base.OnException(context);
+                return;                
+            }
+
             ApiError apiError = null;
             if (context.Exception is ApiException)
             {
@@ -30,6 +42,7 @@ namespace Westwind.AspNetCore.Errors
             else if (context.Exception is UnauthorizedAccessException)
             {
                 apiError = new ApiError("Unauthorized Access");
+                apiError.detail = context.Exception.Message;
                 context.HttpContext.Response.StatusCode = 401;
 
                 // handle logging here
