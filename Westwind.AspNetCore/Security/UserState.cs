@@ -148,6 +148,36 @@ namespace Westwind.Web
         /// UserData object is always returned.
         /// </summary>
         /// <param name="userData"></param>
+        /// <param name="userStateType"></param>
+        /// <returns></returns>
+        public static UserState CreateFromString(string userData, Type userStateType)
+        {
+            if (string.IsNullOrEmpty(userData))
+                return null;
+
+            UserState result = null;
+            try
+            {
+                object res = StringSerializer.DeserializeObject(userData, userStateType);
+                result = res as UserState;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("UserState Deserialization failed: " + ex.Message);
+                return Activator.CreateInstance(userStateType) as UserState;
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Creates an instance of a userstate object from serialized
+        /// data.
+        /// 
+        /// IsEmpty() will return true if data was not loaded. A 
+        /// UserData object is always returned.
+        /// </summary>
+        /// <param name="userData"></param>
         /// <returns></returns>
         public static T CreateFromString<T>(string userData)
             where T :  class, new()
@@ -163,13 +193,14 @@ namespace Westwind.Web
             }
             catch(Exception ex)
             {
-                Debug.WriteLine(ex.Message);
+                Debug.WriteLine("UserState Deserialization failed: " + ex.Message);
                 return new T();
             }
 
             return result;
         }
 
+       
 
 
         /// <summary>
@@ -193,8 +224,7 @@ namespace Westwind.Web
 
             return CreateFromString(claim.Value) as UserState;
         }
-
-        // TODO: Need Testing
+        
         /// <summary>
         /// Creates a UserState object from authentication information in the 
         /// Forms Authentication ticket.
@@ -206,18 +236,7 @@ namespace Westwind.Web
         public static T CreateFromUserClaims<T>(HttpContext context)
             where T : UserState, new()
         {
-            var identity = context.User?.Identity as ClaimsIdentity;
-            if (identity == null)
-                return new T(); // { UserPrincipal = context.User};
-
-            var claim = identity.FindFirst("UserState");
-            if (claim == null)
-                return new T(); // { UserPrincipal = context.User};
-
-            var state = CreateFromString<T>(claim.Value);
-            //state.UserPrincipal = context.User;
-            return state;
-
+            return CreateFromUserClaims(context, typeof(T)) as T;            
         }
 
         /// <summary>
@@ -227,14 +246,39 @@ namespace Westwind.Web
         /// IsEmpty() will return false if no data was loaded but
         /// a Userdata object is always returned
         /// </summary>
+        /// <param name="context">Http context that holds Identity and User Claims</param>
         /// <returns></returns>
         public static UserState CreateFromUserClaims(HttpContext context)
         {
-            return CreateFromUserClaims<UserState>(context);            
+            return CreateFromUserClaims<UserState>(context);
         }
 
+        /// <summary>
+        /// Creates a UserState object from authentication information in the 
+        /// Forms Authentication ticket.
+        /// 
+        /// IsEmpty() will return false if no data was loaded but
+        /// a Userdata object is always returned
+        /// </summary>
+        /// <param name="context">Http context that holds Identity and User Claims</param>
+        /// <param name="userStateType">UserState type to deserialize into</param>
+        /// <returns></returns>
+        public static UserState CreateFromUserClaims(HttpContext context, Type userStateType)
+        {
+            var identity = context.User?.Identity as ClaimsIdentity;
+            if (identity == null)
+                return Activator.CreateInstance(userStateType) as UserState;
 
+            var claim = identity.FindFirst("UserState");
+            if (claim == null)
+                return Activator.CreateInstance(userStateType) as UserState;
 
+            var state = CreateFromString(claim.Value,userStateType);
+            
+            return state;
+        }
+
+        
         /// <summary>
         /// Determines whether UserState instance
         /// holds user information.
