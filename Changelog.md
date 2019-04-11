@@ -1,6 +1,19 @@
 # Westwind.AspNetCore Change Log
 <small>[Nuget](https://www.nuget.org/packages/Westwind.AspNetCore/) &bull; [Github](https://github.com/RickStrahl/Westwind.AspNetCore)</small>
 
+### Version 3.3
+
+* **Add new BaseApiController Class**  
+Add new BaseApiController class that by default adds the `ApiExceptionFilterAttribute` and the new `UserStateBaseApiControllerFilterAttribute` properties for transforming exceptions and automatically parsing Identity claims into a UserState object if provided.
+
+* **New `UserStateBaseApiControllerFilterAttribute`**  
+Filter that can be used to automatically parse UserState objects if they are provided in the Identity claims. Set UserState in Authentication methods when creating tokens or cookies and embed a `UserState` claim with `new Claim("UserState", UserState.ToString())` to add persisted token/cookie state that is returned when requests are authenticated.
+
+### Version 3.2
+
+* **Removed `Westwind.AspNetCore.Markdown**  
+Removed the Markdown features and moved them into a separate, self-contained project.
+
 ### Version 3.0.50
 
 * **Markdown TagHelper Filename Property**  
