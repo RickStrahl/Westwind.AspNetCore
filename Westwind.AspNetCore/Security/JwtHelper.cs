@@ -47,7 +47,7 @@ namespace Westwind.AspNetCore.Security
             return new JwtSecurityToken(
                 issuer: issuer,
                 audience: audience,
-                expires: DateTime.UtcNow.AddMinutes(45),
+                expires: DateTime.UtcNow.Add(expiration),
                 claims: claims,
                 signingCredentials: creds
             );
