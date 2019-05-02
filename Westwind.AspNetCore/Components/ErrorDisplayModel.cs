@@ -80,9 +80,7 @@ namespace Westwind.AspNetCore.Components
         /// </summary>
         public ValidationErrorCollection DisplayErrors { get; set; } = new ValidationErrorCollection();
 
-        bool visible = false;
-
-        
+        bool visible;
 
         public void ShowError(string errorMessage, string header = null)
         {

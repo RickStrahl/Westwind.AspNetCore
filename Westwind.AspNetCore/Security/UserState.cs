@@ -13,19 +13,22 @@ namespace Westwind.Web
     /// to a string and back. Meant to hold basic logon information
     /// to avoid trips to the database for common information required
     /// by an app to validate and display user info.
+    ///
+    /// The **UserId** (or Int/Guid) value should always be set with
+    /// a value to indicate that this object is not empty.
     /// 
-    /// I use this class a lot to attach as Forms Authentication
-    /// Ticket data to keep basic user data without having to
-    /// hit the database
-    /// </summary>    
+    /// I use this class a lot to attach to serialize as a singl
+    /// User Claim in User Claims, or Forms Authentication tickets
+    /// </summary>
+    [DebuggerDisplay("{Name ?? \"Empty\"}")]
     public class UserState
     {
         public UserState()
-        {
-        
+        {        
             Name = string.Empty;
             Email = string.Empty;
             UserId = string.Empty;
+            UserIdInt = -1;
             IsAdmin = false;
             SecurityToken = string.Empty;
         }
@@ -54,27 +57,12 @@ namespace Westwind.Web
         /// <summary>
         /// Returns the User Id as an int if convertiable
         /// </summary>
-        public int UserIdInt
-        {
-            get
-            {
-                if (string.IsNullOrEmpty(UserId))
-                    return 0;
+        public int UserIdInt { get; set; }
 
-                int id = -1;
-                if (!int.TryParse(UserId, out id))
-                    return -1;
-
-                return id;
-            }
-            set
-            {
-                if (value == -1)
-                    return;
-
-                UserId = value.ToString();
-            }
-        }
+        /// <summary>
+        /// Returns the User Id as an int if convertiable
+        /// </summary>
+        public Guid? UserIdGuid { get; set; }
 
         /// <summary>
         /// A unique id created for this entry that can be used to
@@ -281,12 +269,15 @@ namespace Westwind.Web
         
         /// <summary>
         /// Determines whether UserState instance
-        /// holds user information.
+        /// holds user information - specifically
+        /// whether one of the UserID values is set.
         /// </summary>
         /// <returns></returns>
         public bool IsEmpty()
         {
-            return string.IsNullOrEmpty(this.UserId);
+            return string.IsNullOrEmpty(UserId) &&
+                   UserIdInt < 1
+                   && (UserIdGuid==null || UserIdGuid == Guid.Empty);
         }
     }
 }
