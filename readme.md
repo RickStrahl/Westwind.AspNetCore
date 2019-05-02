@@ -67,6 +67,9 @@ In most MVC applications you need some sort of error display and this ErrorDispl
     * `MapPath()` - Map virtual path to physical path on disk
     * `Params()` - Return an item from Form, Query or Session collections.
 
+* **UserState Helper**  
+The UserState object greatly simplifies working with auth 'cached' token data more easily by storing a single value in a user claim or forms auth ticket that can be easily restored into an typed object. The class supports easily serialization and auto-loading from Claims. Can be extended by subclassing and adding your own values. 
+
 
 ## License
 The Westwind.Web.MarkdownControl library is an open source product licensed under:
