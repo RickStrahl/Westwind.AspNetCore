@@ -25,7 +25,6 @@ namespace Westwind.AspNetCore.Components
         /// </summary>
         public string Message { get; set; }
 
-
         public string Header { get; set; }
 
 
@@ -69,18 +68,17 @@ namespace Westwind.AspNetCore.Components
             }
         }
         
-
         /// <summary>
         /// Timeout in milliseconds before the error display is hidden
         /// </summary>
         public int Timeout { get; set; }
 
+        
         /// <summary>
         /// Holds a modelstate errors collection
         /// </summary>
         public ValidationErrorCollection DisplayErrors { get; set; } = new ValidationErrorCollection();
 
-        bool visible;
 
         public void ShowError(string errorMessage, string header = null)
         {
@@ -89,7 +87,6 @@ namespace Westwind.AspNetCore.Components
             if (!string.IsNullOrEmpty(header))
                 Header = header;
 
-            visible = true;
         }
 
         public void ShowWarning(string errorMessage, string header = null)
@@ -100,7 +97,6 @@ namespace Westwind.AspNetCore.Components
             if (!string.IsNullOrEmpty(header))
                 Header = header;
 
-            visible = true;
         }
 
         public void ShowInfo(string message,string header = null)
@@ -111,7 +107,6 @@ namespace Westwind.AspNetCore.Components
             if (!string.IsNullOrEmpty(header))
                 Header = header;
 
-            visible = true;
         }
 
         public void ShowSuccess(string message, string header = null)
@@ -121,8 +116,6 @@ namespace Westwind.AspNetCore.Components
             Message = message;
             if (!string.IsNullOrEmpty(header))
                 Header = header;
-
-            visible = true;
         }
 
 
@@ -139,7 +132,6 @@ namespace Westwind.AspNetCore.Components
                 if ((state.Value.Errors.Count > 0))
                     DisplayErrors.Add(state.Value.Errors[0].ErrorMessage,fieldPrefix + state.Key);
             }
-            visible = true;
         }
 
         /// <summary>
@@ -154,7 +146,6 @@ namespace Westwind.AspNetCore.Components
             {                
                 DisplayErrors.Add(error.Message,fieldPrefix + error.ControlID);
             }
-            visible = true;
         }
 
         /// <summary>
@@ -165,7 +156,6 @@ namespace Westwind.AspNetCore.Components
         public void AddMessage(string errorMessage, string control = null)
         {            
             DisplayErrors.Add(errorMessage,control);
-            visible = true;
         }
     }
 

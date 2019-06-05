@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Security.Claims;
-using System.Web;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Newtonsoft.Json;
 using Westwind.AspNetCore.Components;
 using Westwind.AspNetCore.Errors;
-using Westwind.Utilities;
-using Westwind.Web;
+using Westwind.AspNetCore.Security;
 
 
 namespace Westwind.AspNetCore
@@ -58,7 +55,7 @@ namespace Westwind.AspNetCore
             ViewBag.ErrorDisplay = ErrorDisplay;
 
             if (User != null && User.Identity != null && User.Identity.IsAuthenticated)
-                UserState = Westwind.Web.UserState.CreateFromUserClaims<TUserState>(HttpContext) as TUserState;
+                UserState = UserState.CreateFromUserClaims<TUserState>(HttpContext) as TUserState;
             if (UserState == null)
                 UserState = new UserState();
         }

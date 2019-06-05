@@ -7,8 +7,8 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Newtonsoft.Json;
 using Westwind.AspNetCore.Components;
 using Westwind.AspNetCore.Errors;
+using Westwind.AspNetCore.Security;
 using Westwind.Utilities;
-using Westwind.Web;
 
 
 namespace Westwind.AspNetCore
@@ -121,7 +121,7 @@ namespace Westwind.AspNetCore
             var userStateType = controller.UserState.GetType();            
                 
             if (user != null && user.Identity != null && user.Identity.IsAuthenticated)
-                controller.UserState = Westwind.Web.UserState.CreateFromUserClaims(context.HttpContext, userStateType) as UserState;            
+                controller.UserState = UserState.CreateFromUserClaims(context.HttpContext, userStateType);            
         }
 
 

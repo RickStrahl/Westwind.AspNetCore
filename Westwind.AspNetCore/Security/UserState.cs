@@ -6,7 +6,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 using Westwind.Utilities;
 
-namespace Westwind.Web
+namespace Westwind.AspNetCore.Security
 {
     /// <summary>
     /// User information container that can easily 'serialize'

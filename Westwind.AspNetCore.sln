@@ -11,7 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documents", "Documents", "{
 		readme.md = readme.md
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Westwind.AspNetCore.Tests", "Westwind.AspNetCore.Tests\Westwind.AspNetCore.Tests.csproj", "{DED10733-6F8D-4283-8B73-CAB4DAD1FDED}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TokenTest", "TokenTest\TokenTest.csproj", "{76EF011E-9250-4CC1-8A23-1524D8486776}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +23,10 @@ Global
 		{EB608605-BA27-43E9-9498-80180E357E08}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EB608605-BA27-43E9-9498-80180E357E08}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EB608605-BA27-43E9-9498-80180E357E08}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DED10733-6F8D-4283-8B73-CAB4DAD1FDED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DED10733-6F8D-4283-8B73-CAB4DAD1FDED}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DED10733-6F8D-4283-8B73-CAB4DAD1FDED}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DED10733-6F8D-4283-8B73-CAB4DAD1FDED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{76EF011E-9250-4CC1-8A23-1524D8486776}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{76EF011E-9250-4CC1-8A23-1524D8486776}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{76EF011E-9250-4CC1-8A23-1524D8486776}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{76EF011E-9250-4CC1-8A23-1524D8486776}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

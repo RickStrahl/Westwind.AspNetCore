@@ -148,8 +148,9 @@ namespace Westwind.AspNetCore.Utilities
                 sb.Append(@"""\/Date(");
                 sb.Append(milliseconds);
 
+                
                 // Add Timezone 
-                sb.Append((TimeZone.CurrentTimeZone.GetUtcOffset(date).Hours * 100).ToString("0000").PadLeft(4, '0'));
+                sb.Append((TimeZoneInfo.Local.GetUtcOffset(date).Hours * 100).ToString("0000").PadLeft(4, '0'));
 
                 sb.Append(@")\/""");
                 return sb.ToString();
