@@ -29,10 +29,15 @@ namespace Westwind.AspNetCore.Errors
         /// </summary>
         public string detail { get; set; }
 
+        
+        public string code { get; set; }
+
         /// <summary>
         /// Optional collection of errors.
         /// </summary>
         public ValidationErrorCollection errors { get; set; }
+
+        
 
 
         /// <summary>

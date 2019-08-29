@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Westwind.Utilities;
 
 namespace Westwind.AspNetCore.Errors
 {
@@ -41,7 +43,7 @@ namespace Westwind.AspNetCore.Errors
             }
             else if (context.Exception is UnauthorizedAccessException)
             {
-                apiError = new ApiError("Unauthorized Access");
+                apiError = new ApiError("Unauthorized Access"); 
                 apiError.detail = context.Exception.Message;
                 context.HttpContext.Response.StatusCode = 401;
 
@@ -65,6 +67,33 @@ namespace Westwind.AspNetCore.Errors
 
                 // handle logging here
             }
+
+#if DEBUG
+            // Get Code Line 
+            if (!string.IsNullOrEmpty(apiError.detail))
+            {
+                try
+                {
+                    var firstLine = StringUtils.GetLines(apiError.detail, 1)[0];
+
+                    if (!string.IsNullOrEmpty(firstLine) && firstLine.Contains(".cs:line "))
+                    {
+                        firstLine = StringUtils.ExtractString(firstLine, " in ", "xxx", allowMissingEndDelimiter: true);
+
+                        var tokens = firstLine.Split(new[] {":line "}, StringSplitOptions.RemoveEmptyEntries);
+
+                        if (tokens.Length > 0 && System.IO.File.Exists(tokens[0]))
+                        {
+                            var line = int.Parse(tokens[1]);
+                            var fc = File.ReadAllText(tokens[0]);
+                            var lines = StringUtils.GetLines(fc);
+                            apiError.code = lines[line - 1].Trim();
+                        }
+                    }
+                }
+                catch { }
+            }
+#endif
 
             // always return a JSON result
             context.Result = new JsonResult(apiError);
