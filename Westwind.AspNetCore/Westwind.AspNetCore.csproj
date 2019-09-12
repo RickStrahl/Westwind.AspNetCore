@@ -2,10 +2,10 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>3.2.9</Version>
+    <Version>3.2.10</Version>
     <Authors>Rick Strahl</Authors>
     <Company>West Wind Technologies</Company>
-    <Product>West Wind Web Toolkit</Product>
+    <Product>West Wind AspNet Core Toolkit</Product>
     <Title>Westwind Web AspNet Core Support Library</Title>
     <Description>Support library for ASP.NET Core and ASP.NET Core MVC.</Description>
     <Copyright>(c) West Wind Technologies, 2017-2019</Copyright>
