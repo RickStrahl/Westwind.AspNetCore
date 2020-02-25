@@ -36,39 +36,39 @@ namespace Westwind.AspNetCore.Security
         /// <summary>
         /// The display name for the userId
         /// </summary>
-        public string Name { get; set; }
+        public virtual string Name { get; set; }
 
         /// <summary>
         /// The user's email address or login acount
         /// </summary>
-        public string Email { get; set; }
+        public virtual string Email { get; set; }
 
         /// <summary>
         /// The user's user Id as a string
         /// </summary>
-        public string UserId { get; set; }
+        public virtual string UserId { get; set; }
 
         /// <summary>
         /// The users admin status
         /// </summary>
-        public bool IsAdmin { get; set; }
+        public virtual bool IsAdmin { get; set; }
         
         
         /// <summary>
         /// Returns the User Id as an int if convertiable
         /// </summary>
-        public int UserIdInt { get; set; }
+        public virtual int UserIdInt { get; set; }
 
         /// <summary>
         /// Returns the User Id as an int if convertiable
         /// </summary>
-        public Guid? UserIdGuid { get; set; }
+        public virtual Guid? UserIdGuid { get; set; }
 
         /// <summary>
         /// A unique id created for this entry that can be used to
         /// identify the user outside of the UserState context
         /// </summary>
-        public string SecurityToken { 
+        public virtual string SecurityToken { 
             get 
             {
                 if (string.IsNullOrEmpty(_SecurityToken))
@@ -98,7 +98,7 @@ namespace Westwind.AspNetCore.Security
         /// Imports Id, Email and Name from a | separated string
         /// </summary>
         /// <param name="itemString"></param>
-        public bool FromString(string itemString)
+        public virtual bool FromString(string itemString)
         {
             if (string.IsNullOrEmpty(itemString))
                 return false;

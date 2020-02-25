@@ -9,6 +9,9 @@ Add new BaseApiController class that by default adds the `ApiExceptionFilterAttr
 * **New `UserStateBaseApiControllerFilterAttribute`**  
 Filter that can be used to automatically parse UserState objects if they are provided in the Identity claims. Set UserState in Authentication methods when creating tokens or cookies and embed a `UserState` claim with `new Claim("UserState", UserState.ToString())` to add persisted token/cookie state that is returned when requests are authenticated.
 
+* **New `HostEnvironmentAbstraction` and `LegacyHostEnvironment` Classes**  
+These two classes provide two separate mechanisms for making hosting environments work across .NET Core 2.x and 3.x. `HostEnvironmentAbstraction` provides a wrapper that exposes a host environment for the appropriate environment consistently, while `LegacyHostEnvironment` provides an `IWebHostEnvironment` implementation for .NET Core 2.x.
+
 ### Version 3.2
 
 * **Removed `Westwind.AspNetCore.Markdown**  

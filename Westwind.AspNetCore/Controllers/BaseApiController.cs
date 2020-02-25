@@ -148,6 +148,8 @@ namespace Westwind.AspNetCore
 
     }
 
+  
+
     /// <summary>
     /// Filter that handles parsing UserState if it exists
     /// in the User claims. Basically looks
@@ -185,15 +187,16 @@ namespace Westwind.AspNetCore
         /// <param name="context"></param>
         protected virtual void ParseUserState(ActionExecutingContext context)
         {
-            var user = context.HttpContext.User;
             var controller = context.Controller as BaseApiController;
+            if (controller == null)
+                return;  // can't parse return without userstate
+
+            var user = context.HttpContext.User;
             var userStateType = controller.UserState.GetType();            
                 
             if (user != null && user.Identity != null && user.Identity.IsAuthenticated)
                 controller.UserState = UserState.CreateFromUserClaims(context.HttpContext, userStateType);            
         }
-
-
     }
 
 }
