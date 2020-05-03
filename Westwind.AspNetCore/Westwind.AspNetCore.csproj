@@ -2,13 +2,13 @@
   <PropertyGroup>
     <TargetFrameworks>netcoreapp3.1;netcoreapp2.1</TargetFrameworks>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>3.2.15</Version>
+    <Version>3.3</Version>
     <Authors>Rick Strahl</Authors>
     <Company>West Wind Technologies</Company>
     <Product>West Wind AspNet Core Toolkit</Product>
     <Title>Westwind Web AspNet Core Support Library</Title>
     <Description>Support library for ASP.NET Core and ASP.NET Core MVC.</Description>
-    <Copyright>(c) West Wind Technologies, 2017-2019</Copyright>
+    <Copyright>(c) West Wind Technologies, 2017-2020</Copyright>
     <PackageProjectUrl>https://github.com/RickStrahl/Westwind.AspNetCore/tree/master/Westwind.AspNetCore</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/RickStrahl/Westwind.AspNetCore/tree/master/Westwind.AspNetCore#License</PackageLicenseUrl>
     <RepositoryUrl>https://github.com/RickStrahl/Westwind.AspNetCore/tree/master/Westwind.AspNetCore</RepositoryUrl>

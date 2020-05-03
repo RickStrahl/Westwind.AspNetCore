@@ -44,7 +44,7 @@ namespace Westwind.AspNetCore
         /// you write out UserState into claims when creating Cookie/Token
         /// via <seealso cref="UserState.ToString"/>
         /// </summary>
-        public TUserState UserState = new TUserState();
+        public new TUserState UserState = new TUserState();
                
       
         /// <summary>
@@ -53,7 +53,7 @@ namespace Westwind.AspNetCore
         /// <param name="errorMessage">Message of the error to return</param>
         /// <param name="statusCode">Optional status code.</param>
         /// <returns></returns>
-        public JsonResult JsonError(string errorMessage, int statusCode = 500)
+        public new JsonResult JsonError(string errorMessage, int statusCode = 500)
         {
             Response.Clear();
             Response.StatusCode = statusCode;
@@ -66,7 +66,7 @@ namespace Westwind.AspNetCore
         /// <param name="ex">Exception that generates the error message and info to return</param>
         /// <param name="statusCode">Optional status code</param>
         /// <returns></returns>
-        public JsonResult ReturnJsonError(Exception ex, int statusCode = 500)
+        public new JsonResult ReturnJsonError(Exception ex, int statusCode = 500)
         {
             Response.Clear();
             Response.StatusCode = statusCode;

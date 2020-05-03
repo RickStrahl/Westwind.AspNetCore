@@ -23,9 +23,6 @@ namespace Microsoft.AspNetCore.Hosting
     /// </example>
     public class HostEnvironmentAbstraction
     {
-        private IHostingEnvironment env;
-
-
         public HostEnvironmentAbstraction(IServiceProvider provider)
         {
             if (CurrentHost == null)

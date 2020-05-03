@@ -1,7 +1,11 @@
 # Westwind.AspNetCore Change Log
 <small>[Nuget](https://www.nuget.org/packages/Westwind.AspNetCore/) &bull; [Github](https://github.com/RickStrahl/Westwind.AspNetCore)</small>
 
+
 ### Version 3.3
+
+* **HttpRequest.IsLocal() Extension Method**  
+Lets you quickly determine if a request is running on the local IP Address.
 
 * **Add new BaseApiController Class**  
 Add new BaseApiController class that by default adds the `ApiExceptionFilterAttribute` and the new `UserStateBaseApiControllerFilterAttribute` properties for transforming exceptions and automatically parsing Identity claims into a UserState object if provided.

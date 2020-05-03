@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
@@ -47,7 +48,7 @@ namespace Westwind.AspNetCore.Extensions
             }
         }
 
-
+#if NETCORE2
         /// <summary>
         /// Maps a virtual or relative path to a physical path in a Web site
         /// </summary>
@@ -92,6 +93,52 @@ namespace Westwind.AspNetCore.Extensions
                 .Replace("\\", slash)
                 .Replace(slash + slash, slash);            
         }
+#else
+        /// <summary>
+        /// Maps a virtual or relative path to a physical path in a Web site
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="relativePath"></param>
+        /// <param name="host">Optional - IHostingEnvironment instance. If not passed retrieved from RequestServices DI</param>
+        /// <param name="basePath">Optional - Optional physical base path. By default host.WebRootPath</param>
+        /// <returns></returns>
+        public static string MapPath(this HttpRequest request, string relativePath, IWebHostEnvironment host = null, string basePath = null)
+        {
+            if (string.IsNullOrEmpty(relativePath))
+                return string.Empty;
+
+            if (basePath == null)
+            {
+                if (string.IsNullOrEmpty(WebRootPath))
+                {
+                    if (host == null)
+                        host =
+                            request.HttpContext.RequestServices.GetService(typeof(IWebHostEnvironment)) as
+                                IWebHostEnvironment;
+                    WebRootPath = host.WebRootPath;
+
+                }
+
+                if (string.IsNullOrEmpty(relativePath))
+                    return WebRootPath;
+
+                basePath = WebRootPath;
+            }
+
+            relativePath = relativePath.TrimStart('~').TrimStart('/', '\\');
+
+            if (relativePath.StartsWith("~"))
+                relativePath = relativePath.TrimStart('~');
+            
+            string path = Path.Combine(basePath, relativePath);
+
+            string slash = Path.DirectorySeparatorChar.ToString();
+            return path
+                .Replace("/", slash)
+                .Replace("\\", slash)
+                .Replace(slash + slash, slash);            
+        }
+#endif
 
         /// <summary>
         /// Returns the absolute Url of the current request as a string.
@@ -118,6 +165,31 @@ namespace Westwind.AspNetCore.Extensions
                 value = request.HttpContext.Session.GetString(key);
             
             return value;
+        }
+
+        /// <summary>
+        /// Determines if the request is a local request where the local and remote IP addresses match
+        /// </summary>
+        /// <param name="req"></param>
+        /// <returns></returns>
+        public static bool IsLocal(this HttpRequest req)
+        {
+            var connection = req.HttpContext.Connection;
+            if (connection.RemoteIpAddress != null)
+            {
+                if (connection.LocalIpAddress != null)
+                    return connection.RemoteIpAddress.Equals(connection.LocalIpAddress);
+
+                return IPAddress.IsLoopback(connection.RemoteIpAddress);
+            }
+
+            // for in memory TestServer or when dealing with default connection info
+            if (connection.RemoteIpAddress == null && connection.LocalIpAddress == null)
+                return true;
+            //if (req.Host.HasValue && req.Host.Value.StartsWith("localhost:") )
+            //    return true;
+
+            return false;
         }
 
         /// TODO: Create a generic way to retrieve the route dictionary
