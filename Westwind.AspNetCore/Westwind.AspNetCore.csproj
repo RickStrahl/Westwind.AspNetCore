@@ -15,7 +15,15 @@
     <RepositoryType>Github</RepositoryType>
     <PackageTags>Westwind AspNetCore Web</PackageTags>
     <PackageIconUrl>http://www.west-wind.com/westwindToolkit/images/WestwindWebToolkit_128x128.png</PackageIconUrl>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
+  </ItemGroup>
+
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp2.1'">
     <DefineConstants>NETCORE2</DefineConstants>
