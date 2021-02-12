@@ -11,12 +11,12 @@ using Westwind.AspNetCore.Security;
 namespace Westwind.AspNetCore
 {
 
-    
+
     /// <summary>
     /// Base Controller implementation that holds ViewState options,
     /// ErrorDisplay and UserState objects that are preinitialized
     /// </summary>
-    public class BaseController : BaseController<UserState>
+    public class AppBaseController : BaseController<UserState>
     {
 
     }
@@ -24,7 +24,7 @@ namespace Westwind.AspNetCore
 
     public class BaseController<TUserState> : Controller
         where TUserState : UserState, new()
-    {        
+    {
         /// <summary>
         /// ErrorDisplay control that holds page level error information
         /// </summary>
@@ -40,10 +40,10 @@ namespace Westwind.AspNetCore
         /// via <seealso cref="UserState.ToString"/>
         /// </summary>
         public UserState UserState;
-               
+
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-            Initialize(context);           
+            Initialize(context);
             base.OnActionExecuting(context);
         }
 
@@ -51,7 +51,7 @@ namespace Westwind.AspNetCore
         /// Initialize the controller by setting up UserState and ErrorDisplay
         /// </summary>
         protected virtual void Initialize(ActionExecutingContext context)
-        {                        
+        {
             ViewBag.ErrorDisplay = ErrorDisplay;
 
             if (User != null && User.Identity != null && User.Identity.IsAuthenticated)
@@ -59,17 +59,17 @@ namespace Westwind.AspNetCore
             if (UserState == null)
                 UserState = new UserState();
         }
-        
+
 
         /// <summary>
         /// Creates or updates a ViewModel and adds values to some of the
-        /// stock properties of the Controller. 
-        /// 
+        /// stock properties of the Controller.
+        ///
         /// This default implementation initializes the ErrorDisplay and UserState
         /// objects after creation.
         /// </summary>
         /// <typeparam name="TViewModel"></typeparam>
-        /// <returns></returns>        
+        /// <returns></returns>
         protected virtual TViewModel CreateViewModel<TViewModel>()
              where TViewModel : class, new()
         {
@@ -86,8 +86,8 @@ namespace Westwind.AspNetCore
 
         /// <summary>
         /// Updates a ViewModel and adds values to some of the
-        /// stock properties of the Controller. 
-        /// 
+        /// stock properties of the Controller.
+        ///
         /// This default implementation initializes the ErrorDisplay and UserState
         /// objects after creation.
         /// </summary>
@@ -100,7 +100,7 @@ namespace Westwind.AspNetCore
             baseModel.ErrorDisplay = ErrorDisplay;
         }
 
-        
+
         ///// <summary>
         ///// Displays a self contained error page without redirecting.
         ///// Depends on ErrorController.ShowError() to exist
@@ -140,10 +140,10 @@ namespace Westwind.AspNetCore
         {
             Response.Clear();
             Response.StatusCode = statusCode;
-            var cb = new ApiError(ex.GetBaseException().Message);                            
+            var cb = new ApiError(ex.GetBaseException().Message);
 #if DEBUG
             cb.detail = ex.StackTrace;
-#endif      
+#endif
             return Json(cb,new JsonSerializerSettings {Formatting = Formatting.Indented});
         }
 

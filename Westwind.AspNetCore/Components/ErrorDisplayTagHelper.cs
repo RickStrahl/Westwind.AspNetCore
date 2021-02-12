@@ -132,7 +132,7 @@ namespace Westwind.AspNetCore.Components
             }
             if (icon == "success")
             {
-                icon = "check";
+                icon = "check-circle";
                 if (string.IsNullOrEmpty(alertClass))
                     alertClass = "success";
             }
@@ -169,7 +169,7 @@ namespace Westwind.AspNetCore.Components
             else
             {
                 sb.Append(
-                    $"<h3><i class='fa fa-{icon}'></i> {headerText}</h3>\r\n" +
+                    $"<h3><i class='fas fa-{icon}'></i> {headerText}</h3>\r\n" +
                     "<hr/>\r\n" +
                     $"{messageText}\r\n");
             }

@@ -1,6 +1,10 @@
 # Westwind.AspNetCore Change Log
 <small>[Nuget](https://www.nuget.org/packages/Westwind.AspNetCore/) &bull; [Github](https://github.com/RickStrahl/Westwind.AspNetCore)</small>
 
+### Version 3.4
+
+* **Add explicit support for .NET 5.0**
+Added `net5.0` target and removed the `netcoreapp2.1` target.
 
 ### Version 3.3
 

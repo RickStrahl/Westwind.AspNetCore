@@ -10,7 +10,10 @@ namespace Westwind.AspNetCore.Security
 {
     /// <summary>
     /// User information container that can easily 'serialize'
-    /// to a string and back. Meant to hold basic logon information
+    /// to a string and back, that can be stored easily in
+    /// single cookie or in a single User Claim value.
+    ///
+    /// Meant to hold basic logon information
     /// to avoid trips to the database for common information required
     /// by an app to validate and display user info.
     ///
@@ -23,6 +26,8 @@ namespace Westwind.AspNetCore.Security
     [DebuggerDisplay("{Name ?? \"Empty\"}")]
     public class UserState
     {
+        private string _initialState = null;
+
         public UserState()
         {        
             Name = string.Empty;
@@ -60,7 +65,7 @@ namespace Westwind.AspNetCore.Security
         public virtual int UserIdInt { get; set; }
 
         /// <summary>
-        /// Returns the User Id as an int if convertiable
+        /// Returns the User Id as a GUID if convertiable
         /// </summary>
         public virtual Guid? UserIdGuid { get; set; }
 
@@ -266,7 +271,47 @@ namespace Westwind.AspNetCore.Security
             return state;
         }
 
-        
+        /// <summary>
+        /// Retrieves userstate from a given cookie
+        /// </summary>
+        /// <param name="cookieName"></param>
+        /// <param name="context"></param>
+        /// <param name="userStateType"></param>
+        /// <returns></returns>
+        public static UserState CreateFromCookie(string cookieName, HttpContext context, Type userStateType)
+        {                  
+            if (context == null)
+                throw new InvalidOperationException("Can't set cookie in AppUser. Make sure HttpContext is set when you create the AppUser.");
+
+            if (!context.Request.Cookies.Keys.Contains(cookieName))
+                return null;
+
+            var state = CreateFromString(context.Request.Cookies[cookieName], userStateType);
+            return state;
+        }
+
+
+        /// <summary>
+        /// Retrieves userstate from a given cookie
+        /// </summary>
+        /// <param name="cookieName"></param>
+        /// <param name="context"></param>
+        /// <param name="userStateType"></param>
+        /// <returns></returns>
+        public static TUserState CreateFromCookie<TUserState>(string cookieName, HttpContext context)
+             where TUserState : UserState, new()
+        {
+            if (context == null)
+                throw new InvalidOperationException("Can't set cookie in AppUser. Make sure HttpContext is set when you create the AppUser.");
+
+            if (!context.Request.Cookies.Keys.Contains(cookieName))
+                return default;
+
+            var state = CreateFromString<TUserState>(context.Request.Cookies[cookieName]);
+            return state;
+        }
+
+
         /// <summary>
         /// Determines whether UserState instance
         /// holds user information - specifically

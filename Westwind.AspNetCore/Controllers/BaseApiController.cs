@@ -31,8 +31,8 @@ namespace Westwind.AspNetCore
     /// Uses BaseController as its base class.
     /// </summary>
     [ApiExceptionFilter(false)]
-    [UserStateBaseApiControllerFilter(false)]    
-    public class BaseApiController<TUserState> : BaseController
+    [UserStateBaseApiControllerFilter(false)]
+    public class BaseApiController<TUserState> : BaseController<TUserState>
         where TUserState : UserState, new()
     {
         /// <summary>
@@ -45,8 +45,8 @@ namespace Westwind.AspNetCore
         /// via <seealso cref="UserState.ToString"/>
         /// </summary>
         public new TUserState UserState = new TUserState();
-               
-      
+
+
         /// <summary>
         /// Returns a Json error response to the client
         /// </summary>
@@ -70,10 +70,10 @@ namespace Westwind.AspNetCore
         {
             Response.Clear();
             Response.StatusCode = statusCode;
-            var cb = new ApiError(ex.GetBaseException().Message);                            
+            var cb = new ApiError(ex.GetBaseException().Message);
 #if DEBUG
             cb.detail = ex.StackTrace;
-#endif      
+#endif
             return new JsonResult(cb,new JsonSerializerSettings {Formatting = Formatting.Indented});
         }
 
@@ -96,7 +96,7 @@ namespace Westwind.AspNetCore
     /// Base Controller implementation that holds a custom UserState object
     /// and provides ApiException Handling, UserState initialization
     /// and JsonError functionality
-    /// 
+    ///
     /// Uses Controller as its base class.
     /// </summary>
     [ApiExceptionFilter(false)]
@@ -142,19 +142,19 @@ namespace Westwind.AspNetCore
             var cb = new ApiError(ex.GetBaseException().Message);
 #if DEBUG
             cb.detail = ex.StackTrace;
-#endif      
+#endif
             return new JsonResult(cb, new JsonSerializerSettings { Formatting = Formatting.Indented });
         }
 
     }
 
-  
+
 
     /// <summary>
     /// Filter that handles parsing UserState if it exists
     /// in the User claims. Basically looks
     /// </summary>
-    public class UserStateBaseApiControllerFilterAttribute : ActionFilterAttribute          
+    public class UserStateBaseApiControllerFilterAttribute : ActionFilterAttribute
     {
         private bool DontProcess { get;  }
 
@@ -175,14 +175,14 @@ namespace Westwind.AspNetCore
         protected virtual void Initialize(ActionExecutingContext context)
         {
             if (!DontProcess)
-                ParseUserState(context);    
+                ParseUserState(context);
         }
 
 
         /// <summary>
         /// This method Parses user state from the User.Identity if the
         /// user is Authenticated. Otherwise the UserState object is
-        /// left as an empty object.       
+        /// left as an empty object.
         /// </summary>
         /// <param name="context"></param>
         protected virtual void ParseUserState(ActionExecutingContext context)
@@ -192,10 +192,10 @@ namespace Westwind.AspNetCore
                 return;  // can't parse return without userstate
 
             var user = context.HttpContext.User;
-            var userStateType = controller.UserState.GetType();            
-                
+            var userStateType = controller.UserState.GetType();
+
             if (user != null && user.Identity != null && user.Identity.IsAuthenticated)
-                controller.UserState = UserState.CreateFromUserClaims(context.HttpContext, userStateType);            
+                controller.UserState = UserState.CreateFromUserClaims(context.HttpContext, userStateType);
         }
     }
 
