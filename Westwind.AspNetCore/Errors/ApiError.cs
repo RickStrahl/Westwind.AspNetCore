@@ -25,12 +25,18 @@ namespace Westwind.AspNetCore.Errors
         public bool isError { get; set; }
 
         /// <summary>
+        /// Optional error code 
+        /// </summary>
+        public string errorCode {get; set; }
+
+
+        /// <summary>
         /// Any additional error detail to display
         /// </summary>
         public string detail { get; set; }
 
         
-        public string code { get; set; }
+        public string source { get; set; }
 
         /// <summary>
         /// Optional collection of errors.
@@ -38,16 +44,15 @@ namespace Westwind.AspNetCore.Errors
         public ValidationErrorCollection errors { get; set; }
 
         
-
-
         /// <summary>
         /// Create a new API Error with a string message
         /// </summary>
         /// <param name="message"></param>
-        public ApiError(string message)
+        public ApiError(string message, string errorCode = null)
         {
             this.message = message;
             isError = true;
+            this.errorCode = errorCode;
         }
 
 

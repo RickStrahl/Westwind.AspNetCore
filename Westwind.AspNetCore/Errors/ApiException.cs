@@ -24,20 +24,26 @@ namespace Westwind.AspNetCore.Errors
         public ValidationErrorCollection Errors { get; set; }
 
 
+        public string ErrorCode {get; set;}
+
+
         /// <summary>
         /// Create a new exception with a message, status code
         /// and optional error collection
         /// </summary>
         /// <param name="message"></param>
-        /// <param name="statusCode"></param>
-        /// <param name="errors"></param>
+        /// <param name="statusCode">Optional - Http Status code to display</param>
+        /// <param name="errors">Optional - Collection of validation errors</param>
+        /// <param name="errorCode">Optional - An error code for this error</param>
         public ApiException(string message,
             int statusCode = 500,
-            ValidationErrorCollection errors = null) :
+            ValidationErrorCollection errors = null,
+            string errorCode = null) :
             base(message)
         {
             StatusCode = statusCode;
             Errors = errors;
+            ErrorCode = errorCode;
         }
 
         /// <summary>
@@ -46,9 +52,10 @@ namespace Westwind.AspNetCore.Errors
         /// </summary>
         /// <param name="ex"></param>
         /// <param name="statusCode"></param>
-        public ApiException(Exception ex, int statusCode = 500) : base(ex.Message)
+        public ApiException(Exception ex, int statusCode = 500, string errorCode = null) : base(ex.Message)
         {
             StatusCode = statusCode;
+            ErrorCode = errorCode;
         }
     }
 }

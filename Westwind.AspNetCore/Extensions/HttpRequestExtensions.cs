@@ -192,6 +192,19 @@ namespace Westwind.AspNetCore.Extensions
             return false;
         }
 
+        /// <summary>
+        /// Checks to see if a given form variable exists in the request form collection.
+        /// </summary>
+        /// <param name="req"></param>
+        /// <param name="formVarName"></param>
+        /// <returns></returns>
+        public static bool IsFormVar(this HttpRequest req, string formVarName)
+        {
+            if (!req.HasFormContentType) return false;
+
+            return req.Form[formVarName].Count > 0;
+        }
+
         /// TODO: Create a generic way to retrieve the route dictionary
         //public static string GetRouteValue(this HttpRequest request, string routeKey)
         //{

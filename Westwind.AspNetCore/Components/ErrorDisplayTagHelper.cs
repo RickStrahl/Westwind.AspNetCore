@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Text;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using Westwind.Utilities;
 
@@ -92,7 +93,12 @@ namespace Westwind.AspNetCore.Components
         [HtmlAttributeName("error-display-model")]
         public ErrorDisplayModel   errorDisplay { get; set; }
 
-        public override void Process(TagHelperContext context, TagHelperOutput output)
+
+        public ErrorDisplayTagHelper() 
+        {
+        }
+        
+        public override Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
             if (errorDisplay != null)
             {
@@ -106,7 +112,7 @@ namespace Westwind.AspNetCore.Components
             }
 
             if (string.IsNullOrEmpty(message) && string.IsNullOrEmpty(header))
-                return;
+                return Task.CompletedTask;
 
             if (string.IsNullOrEmpty(icon))
                 icon = "warning";
@@ -184,6 +190,8 @@ namespace Westwind.AspNetCore.Components
             }
 
             output.Content.SetHtmlContent(sb.ToString());
+
+            return Task.CompletedTask;
         }
     }
 }

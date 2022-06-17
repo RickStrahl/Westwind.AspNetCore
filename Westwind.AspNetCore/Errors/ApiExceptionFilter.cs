@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Westwind.Utilities;
 
+
 namespace Westwind.AspNetCore.Errors
 {
     /// <inheritdoc />
@@ -16,19 +17,31 @@ namespace Westwind.AspNetCore.Errors
     /// </summary>
     public class ApiExceptionFilterAttribute : ExceptionFilterAttribute
     {
-        private readonly bool _dontProcess;
+        /// <summary>
+        /// Global static value that allows you to output detailed
+        /// error information. Set this during startup in the
+        /// `IsDevelopment()` startup block.
+        /// </summary>
+        public static bool ShowExceptionDetail {get; set; }= false;
 
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private bool _dontProcess {get;}
+
+
+        /// <summary>
+        /// Handles exceptions for API requests and displays an error response
+        /// </summary>
+        /// <param name="dontProcess">Optional - can be used to bypass the exception handling temporarily. Useful for debugging at times. Mirrors base exception filter.</param>
         public ApiExceptionFilterAttribute(bool dontProcess = false)
         {
             _dontProcess = dontProcess;
         }
         public override void OnException(ExceptionContext context)
         {
-            if (_dontProcess)
-            {
-                base.OnException(context);
-                return;                
-            }
+            
 
             ApiError apiError = null;
             if (context.Exception is ApiException)
@@ -38,6 +51,7 @@ namespace Westwind.AspNetCore.Errors
                 context.Exception = null;
                 apiError = new ApiError(ex.Message);
                 apiError.errors = ex.Errors;
+                apiError.errorCode = ex.ErrorCode;
 
                 context.HttpContext.Response.StatusCode = ex.StatusCode;
             }
@@ -51,14 +65,19 @@ namespace Westwind.AspNetCore.Errors
             }
             else
             {
+                string msg, stack;
+
                 // Unhandled errors
-#if !DEBUG
-                var msg = "An unhandled error occurred.";
-                string stack = null;
-#else
-                var msg = context.Exception.GetBaseException().Message;
-                string stack = context.Exception.StackTrace;
-#endif
+                if (!ShowExceptionDetail)
+                {
+                    msg = "An unhandled error occurred.";
+                    stack = null;
+                }
+                else
+                {
+                    msg = context.Exception.GetBaseException().Message;
+                    stack = context.Exception.StackTrace;
+                }
 
                 apiError = new ApiError(msg);
                 apiError.detail = stack;
@@ -68,9 +87,9 @@ namespace Westwind.AspNetCore.Errors
                 // handle logging here
             }
 
-#if DEBUG
+
             // Get Code Line 
-            if (!string.IsNullOrEmpty(apiError.detail))
+            if (ShowExceptionDetail && !string.IsNullOrEmpty(apiError.detail))
             {
                 try
                 {
@@ -87,13 +106,12 @@ namespace Westwind.AspNetCore.Errors
                             var line = int.Parse(tokens[1]);
                             var fc = File.ReadAllText(tokens[0]);
                             var lines = StringUtils.GetLines(fc);
-                            apiError.code = lines[line - 1].Trim();
+                            apiError.source = lines[line - 1].Trim();
                         }
                     }
                 }
                 catch { }
             }
-#endif
 
             // always return a JSON result
             context.Result = new JsonResult(apiError);

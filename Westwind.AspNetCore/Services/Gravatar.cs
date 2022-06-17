@@ -31,7 +31,7 @@ namespace Westwind.AspNetCore.Services
                 hash = new byte[] { 0 };
             else
             {
-                var provider = new System.Security.Cryptography.MD5CryptoServiceProvider();
+                var provider = MD5.Create();
                 hash = provider.ComputeHash(Encoding.UTF8.GetBytes(email));
             }
 

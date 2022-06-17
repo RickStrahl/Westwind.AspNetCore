@@ -26,7 +26,9 @@ namespace Westwind.AspNetCore.Security
     [DebuggerDisplay("{Name ?? \"Empty\"}")]
     public class UserState
     {
+#pragma warning disable CS0414
         private string _initialState = null;
+#pragma warning restore CS0414
 
         public UserState()
         {        

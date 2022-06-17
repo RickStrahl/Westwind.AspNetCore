@@ -1,10 +1,21 @@
 # Westwind.AspNetCore Change Log
 <small>[Nuget](https://www.nuget.org/packages/Westwind.AspNetCore/) &bull; [Github](https://github.com/RickStrahl/Westwind.AspNetCore)</small>
 
+
+### Version 3.5
+* **Add explicit support for .NET 6.0**  
+Added support for .NET 6.0 and reset targeting for `net60;net50;netcoreapp3.1`.
+
+* **ViewRenderer for Razor Views**  
+Allows rendering of Razor views to string, based on an active ControllerContext.
+
 ### Version 3.4
 
 * **Add explicit support for .NET 5.0**
 Added `net5.0` target and removed the `netcoreapp2.1` target.
+
+* **IQueryCollectionExtensions**  
+Added helpers for retrieving values from a StringCollection used in Request collections like Query and Form.
 
 ### Version 3.3
 

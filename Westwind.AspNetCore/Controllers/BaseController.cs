@@ -11,7 +11,7 @@ using Westwind.AspNetCore.Security;
 namespace Westwind.AspNetCore
 {
 
-
+    
     /// <summary>
     /// Base Controller implementation that holds ViewState options,
     /// ErrorDisplay and UserState objects that are preinitialized
@@ -123,7 +123,7 @@ namespace Westwind.AspNetCore
         /// <param name="errorMessage">Message of the error to return</param>
         /// <param name="statusCode">Optional status code.</param>
         /// <returns></returns>
-        public JsonResult JsonError(string errorMessage, int statusCode = 500)
+        protected JsonResult JsonError(string errorMessage, int statusCode = 500)
         {
             Response.Clear();
             Response.StatusCode = statusCode;
@@ -136,7 +136,7 @@ namespace Westwind.AspNetCore
         /// <param name="ex">Exception that generates the error message and info to return</param>
         /// <param name="statusCode">Optional status code</param>
         /// <returns></returns>
-        public JsonResult ReturnJsonError(Exception ex, int statusCode = 500)
+        protected JsonResult ReturnJsonError(Exception ex, int statusCode = 500)
         {
             Response.Clear();
             Response.StatusCode = statusCode;

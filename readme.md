@@ -52,7 +52,10 @@ API formatter that allows for receiving raw non-json content to `string` and `by
 #### MVC Functionality
 
 * **BaseController and BaseViewModel implementation**  
-A common base controller class that adds support for an auto-initialized BaseViewModel from which other VMs can inherit. Allows for automatic initialization of common features like ErrorDisplay or 
+A common base controller class that adds support for an auto-initialized BaseViewModel from which other VMs can inherit. Allows for automatic initialization of common features like ErrorDisplay and Base View models.
+
+* **ViewRenderer**  
+Render view output to a string using a controller context.
 
 * **AppUser ClaimsPrincipal and Cookie Authentication Helper**  
 A `AppUser` class that wraps a `ClaimsPrincipal` and makes it easier to add and retrieve claims as well as easily login and logout all from a single helper object.

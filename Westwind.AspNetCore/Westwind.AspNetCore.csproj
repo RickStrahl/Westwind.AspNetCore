@@ -1,54 +1,63 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net5.0;netcoreapp3.1</TargetFrameworks>
+    <TargetFrameworks>net6.0;net5.0;netcoreapp3.1</TargetFrameworks>
     <!--<TargetFrameworks>netcoreapp3.1;netcoreapp2.1;net5.0</TargetFrameworks>-->
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>3.4</Version>
+    <Version>3.4.6</Version>
     <Authors>Rick Strahl</Authors>
     <Company>West Wind Technologies</Company>
     <Product>West Wind AspNet Core Toolkit</Product>
     <Title>Westwind Web AspNet Core Support Library</Title>
     <Description>Support library for ASP.NET Core and ASP.NET Core MVC.</Description>
-    <Copyright>(c) West Wind Technologies, 2017-2021</Copyright>
-
-
+    <Copyright>(c) West Wind Technologies, 2017-2022</Copyright>
   </PropertyGroup>
 
   <PropertyGroup>
-    <IncludeSymbols>true</IncludeSymbols>
+    <DebugType>embedded</DebugType>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <PackageOutputPath>./nupkg</PackageOutputPath>
 
-    <PackageCopyright>Rick Strahl, West Wind Technologies 2017-2021</PackageCopyright>
+    <PackageCopyright>Rick Strahl, West Wind Technologies 2017-2022</PackageCopyright>
     <PackageTags>Westwind AspNetCore Web</PackageTags>
-    <PackageIcon>icon.png</PackageIcon>
     <PackageProjectUrl>https://github.com/RickStrahl/Westwind.AspNetCore/tree/master/Westwind.AspNetCore</PackageProjectUrl>
-    <PackageLicenseUrl>https://github.com/RickStrahl/Westwind.AspNetCore/tree/master/Westwind.AspNetCore#License</PackageLicenseUrl>
     <RepositoryUrl>https://github.com/RickStrahl/Westwind.AspNetCore/tree/master/Westwind.AspNetCore</RepositoryUrl>
     <RepositoryType>Github</RepositoryType>
+
+    <PackageIcon>icon.png</PackageIcon>
+    <PackageLicense>LICENSE.MD</PackageLicense>
   </PropertyGroup>
 
-
-  <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp2.1'">
-    <DefineConstants>NETCORE2</DefineConstants>
-  </PropertyGroup>
 
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Westwind.Utilities" Version="3.0.49.6" />
   </ItemGroup>
 
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.2" />
-  </ItemGroup>
+
   <ItemGroup Condition="'$(TargetFramework)' == 'net5.0'">
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.3" />
   </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.3" />
+  </ItemGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DefineConstants>TRACE</DefineConstants>
+  </PropertyGroup>
 
   <ItemGroup>
     <None Include="icon.png" Pack="true" PackagePath="" />
+    <None Include="LICENSE.md" Pack="true" PackagePath="" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Westwind.Utilities" Version="3.1.10" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="nupkg\" />
   </ItemGroup>
 </Project>
