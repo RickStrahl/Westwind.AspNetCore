@@ -9,6 +9,9 @@ Added support for .NET 6.0 and reset targeting for `net60;net50;netcoreapp3.1`.
 * **ViewRenderer for Razor Views**  
 Allows rendering of Razor views to string, based on an active ControllerContext.
 
+* **Custom Headers Middleware**  
+Added custom HTTP Headers middleware that allows adding and removing of HTTP headers to every request.
+
 ### Version 3.4
 
 * **Add explicit support for .NET 5.0**
