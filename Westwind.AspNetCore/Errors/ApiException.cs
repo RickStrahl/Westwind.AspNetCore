@@ -5,20 +5,20 @@ namespace Westwind.AspNetCore.Errors
 {
     /// <summary>
     /// A special exception that you can throw to return a specific
-    /// HTTP response and error when combined with the 
+    /// HTTP response and error when combined with the
     /// cref="UnhandledApiExceptionFilter".
     /// </summary>
     public class ApiException : Exception
     {
         /// <summary>
-        /// HTTP Status code to return when this exception is 
+        /// HTTP Status code to return when this exception is
         /// handled by UnhandledExceptionFilter
         /// </summary>
         public int StatusCode { get; set; }
 
 
         /// <summary>
-        /// An optional collection of errors that can be set 
+        /// An optional collection of errors that can be set
         /// to provide more error detail
         /// </summary>
         public ValidationErrorCollection Errors { get; set; }
@@ -58,4 +58,6 @@ namespace Westwind.AspNetCore.Errors
             ErrorCode = errorCode;
         }
     }
+
+  
 }

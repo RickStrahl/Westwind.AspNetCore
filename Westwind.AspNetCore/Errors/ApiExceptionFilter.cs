@@ -26,7 +26,7 @@ namespace Westwind.AspNetCore.Errors
 
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         private bool _dontProcess {get;}
 
@@ -41,10 +41,10 @@ namespace Westwind.AspNetCore.Errors
         }
         public override void OnException(ExceptionContext context)
         {
-            
+
 
             ApiError apiError = null;
-            if (context.Exception is ApiException)
+            if (context.Exception is Westwind.AspNetCore.Errors.ApiException)
             {
                 // handle explicit 'known' API errors
                 var ex = context.Exception as ApiException;
@@ -57,7 +57,7 @@ namespace Westwind.AspNetCore.Errors
             }
             else if (context.Exception is UnauthorizedAccessException)
             {
-                apiError = new ApiError("Unauthorized Access"); 
+                apiError = new ApiError("Unauthorized Access");
                 apiError.detail = context.Exception.Message;
                 context.HttpContext.Response.StatusCode = 401;
 
@@ -88,7 +88,7 @@ namespace Westwind.AspNetCore.Errors
             }
 
 
-            // Get Code Line 
+            // Get Code Line
             if (ShowExceptionDetail && !string.IsNullOrEmpty(apiError.detail))
             {
                 try
