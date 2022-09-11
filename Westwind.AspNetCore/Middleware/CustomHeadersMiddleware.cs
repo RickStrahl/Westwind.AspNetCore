@@ -28,6 +28,9 @@ namespace Westwind.AspNetCore.Middleware
 
         public async Task Invoke(HttpContext context)
         {
+            if (!CheckforPrimaryRequests(context))
+                return;
+
             foreach (var headerValuePair in _headers.HeadersToAdd)
             {
                 context.Response.Headers[headerValuePair.Key] = headerValuePair.Value;
@@ -39,12 +42,46 @@ namespace Westwind.AspNetCore.Middleware
 
             await _next(context);
         }
+
+        /// <summary>
+        /// Checks for specific mime types to add/remove headers on
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns>true if request should continue processing</returns>
+        private bool CheckforPrimaryRequests(HttpContext context)
+        {
+            if (!_headers.PrimaryRequestsOnly)
+                return true;
+
+            var ct = context.Response.ContentType;
+
+            foreach (var mt in _headers.PrimaryRequestMimeTypes)
+            {
+                if (ct.StartsWith(mt, StringComparison.OrdinalIgnoreCase))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
     }
 
     public class CustomHeadersToAddAndRemove
     {
         public Dictionary<string, string> HeadersToAdd = new();
         public HashSet<string> HeadersToRemove = new();
+
+        public bool PrimaryRequestsOnly { get; set;  }= false;
+
+        public List<string> PrimaryRequestMimeTypes { get; set; } = new List<string>()
+        {
+            "text/html",
+            "application/json",
+            "text/xml",
+            "application/xml"
+        };
+
     }
 
     public static class MiddlewareExtensions

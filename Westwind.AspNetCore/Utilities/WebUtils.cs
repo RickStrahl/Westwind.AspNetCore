@@ -17,8 +17,8 @@ namespace Westwind.AspNetCore.Utilities
         /// <summary>
         /// Encodes a string to be represented as a string literal. The format
         /// is essentially a JSON string that is returned in double quotes.
-        /// 
-        /// The string returned includes outer quotes: 
+        ///
+        /// The string returned includes outer quotes:
         /// "Hello \"Rick\"!\r\nRock on"
         /// </summary>
         /// <param name="text">Text to encode</param>
@@ -81,7 +81,7 @@ namespace Westwind.AspNetCore.Utilities
         /// <returns>unencoded string</returns>
         public static string DecodeJsString(string encodedString)
         {
-            // actual value of null is not valid for 
+            // actual value of null is not valid for
             if (encodedString == null)
                 return null;
 
@@ -115,7 +115,7 @@ namespace Westwind.AspNetCore.Utilities
                 encodedString = Regex.Replace(encodedString, @"\\u....",
                                       new MatchEvaluator(UnicodeEscapeMatchEvaluator));
 
-            // Convert escaped characters back to the actual backslash char 
+            // Convert escaped characters back to the actual backslash char
             encodedString = encodedString.Replace(ESCAPE_ESCAPECHARS, "\\");
 
             return encodedString;
@@ -148,8 +148,8 @@ namespace Westwind.AspNetCore.Utilities
                 sb.Append(@"""\/Date(");
                 sb.Append(milliseconds);
 
-                
-                // Add Timezone 
+
+                // Add Timezone
                 sb.Append((TimeZoneInfo.Local.GetUtcOffset(date).Hours * 100).ToString("0000").PadLeft(4, '0'));
 
                 sb.Append(@")\/""");

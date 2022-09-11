@@ -19,7 +19,7 @@ namespace Westwind.AspNetCore.Security
     ///
     /// The **UserId** (or Int/Guid) value should always be set with
     /// a value to indicate that this object is not empty.
-    /// 
+    ///
     /// I use this class a lot to attach to serialize as a singl
     /// User Claim in User Claims, or Forms Authentication tickets
     /// </summary>
@@ -31,13 +31,8 @@ namespace Westwind.AspNetCore.Security
 #pragma warning restore CS0414
 
         public UserState()
-        {        
-            Name = string.Empty;
-            Email = string.Empty;
-            UserId = string.Empty;
-            UserIdInt = -1;
-            IsAdmin = false;
-            SecurityToken = string.Empty;
+        {
+            Clear();
         }
 
         /// <summary>
@@ -59,8 +54,8 @@ namespace Westwind.AspNetCore.Security
         /// The users admin status
         /// </summary>
         public virtual bool IsAdmin { get; set; }
-        
-        
+
+
         /// <summary>
         /// Returns the User Id as an int if convertiable
         /// </summary>
@@ -75,8 +70,8 @@ namespace Westwind.AspNetCore.Security
         /// A unique id created for this entry that can be used to
         /// identify the user outside of the UserState context
         /// </summary>
-        public virtual string SecurityToken { 
-            get 
+        public virtual string SecurityToken {
+            get
             {
                 if (string.IsNullOrEmpty(_SecurityToken))
                     _SecurityToken = StringUtils.NewStringId();
@@ -90,7 +85,7 @@ namespace Westwind.AspNetCore.Security
         }
         private string _SecurityToken = null;
 
-        
+
 
         /// <summary>
         /// Exports a short string list of Id, Email, Name separated by |
@@ -124,22 +119,22 @@ namespace Westwind.AspNetCore.Security
         /// <summary>
         /// Creates an instance of a userstate object from serialized
         /// data.
-        /// 
-        /// IsEmpty() will return true if data was not loaded. A 
+        ///
+        /// IsEmpty() will return true if data was not loaded. A
         /// UserData object is always returned.
         /// </summary>
         /// <param name="userData"></param>
         /// <returns></returns>
         public static UserState CreateFromString(string userData)
         {
-            return CreateFromString<UserState>(userData);            
+            return CreateFromString<UserState>(userData);
         }
 
         /// <summary>
         /// Creates an instance of a userstate object from serialized
         /// data.
-        /// 
-        /// IsEmpty() will return true if data was not loaded. A 
+        ///
+        /// IsEmpty() will return true if data was not loaded. A
         /// UserData object is always returned.
         /// </summary>
         /// <param name="userData"></param>
@@ -168,8 +163,8 @@ namespace Westwind.AspNetCore.Security
         /// <summary>
         /// Creates an instance of a userstate object from serialized
         /// data.
-        /// 
-        /// IsEmpty() will return true if data was not loaded. A 
+        ///
+        /// IsEmpty() will return true if data was not loaded. A
         /// UserData object is always returned.
         /// </summary>
         /// <param name="userData"></param>
@@ -179,7 +174,7 @@ namespace Westwind.AspNetCore.Security
         {
             if (string.IsNullOrEmpty(userData))
                 return null;
-            
+
             T result = null;
             try
             {
@@ -195,35 +190,35 @@ namespace Westwind.AspNetCore.Security
             return result;
         }
 
-       
+
 
 
         /// <summary>
-        /// Creates a UserState object from authentication information in the 
+        /// Creates a UserState object from authentication information in the
         /// Forms Authentication ticket.
-        /// 
+        ///
         /// IsEmpty() will return false if no data was loaded but
         /// a Userdata object is always returned
         /// </summary>
         /// <returns></returns>
         public static UserState CreateFromFormsAuthTicket(HttpContext context)
-        {            
+        {
             var identity = context.User.Identity as ClaimsIdentity;
             if (identity == null)
                 return new UserState();
 
-            
+
             var claim = identity.FindFirst("UserState");
             if (claim == null)
                 return new UserState();
 
             return CreateFromString(claim.Value) as UserState;
         }
-        
+
         /// <summary>
-        /// Creates a UserState object from authentication information in the 
+        /// Creates a UserState object from authentication information in the
         /// Forms Authentication ticket.
-        /// 
+        ///
         /// IsEmpty() will return false if no data was loaded but
         /// a Userdata object is always returned
         /// </summary>
@@ -231,13 +226,13 @@ namespace Westwind.AspNetCore.Security
         public static T CreateFromUserClaims<T>(HttpContext context)
             where T : UserState, new()
         {
-            return CreateFromUserClaims(context, typeof(T)) as T;            
+            return CreateFromUserClaims(context, typeof(T)) as T;
         }
 
         /// <summary>
-        /// Creates a UserState object from authentication information in the 
+        /// Creates a UserState object from authentication information in the
         /// Forms Authentication ticket.
-        /// 
+        ///
         /// IsEmpty() will return false if no data was loaded but
         /// a Userdata object is always returned
         /// </summary>
@@ -249,9 +244,9 @@ namespace Westwind.AspNetCore.Security
         }
 
         /// <summary>
-        /// Creates a UserState object from authentication information in the 
+        /// Creates a UserState object from authentication information in the
         /// Forms Authentication ticket.
-        /// 
+        ///
         /// IsEmpty() will return false if no data was loaded but
         /// a Userdata object is always returned
         /// </summary>
@@ -269,7 +264,7 @@ namespace Westwind.AspNetCore.Security
                 return Activator.CreateInstance(userStateType) as UserState;
 
             var state = CreateFromString(claim.Value,userStateType);
-            
+
             return state;
         }
 
@@ -281,7 +276,7 @@ namespace Westwind.AspNetCore.Security
         /// <param name="userStateType"></param>
         /// <returns></returns>
         public static UserState CreateFromCookie(string cookieName, HttpContext context, Type userStateType)
-        {                  
+        {
             if (context == null)
                 throw new InvalidOperationException("Can't set cookie in AppUser. Make sure HttpContext is set when you create the AppUser.");
 
@@ -325,6 +320,19 @@ namespace Westwind.AspNetCore.Security
             return string.IsNullOrEmpty(UserId) &&
                    UserIdInt < 1
                    && (UserIdGuid==null || UserIdGuid == Guid.Empty);
+        }
+
+        /// <summary>
+        /// Initializes the data to empty defaults
+        /// </summary>
+        public virtual void Clear()
+        {
+            Name = string.Empty;
+            Email = string.Empty;
+            UserId = string.Empty;
+            SecurityToken = string.Empty;
+            UserIdInt = -1;
+            IsAdmin = false;
         }
     }
 }

@@ -3,11 +3,15 @@
 
 
 ### Version 3.5
+
 * **Add explicit support for .NET 6.0**  
 Added support for .NET 6.0 and reset targeting for `net60;net50;netcoreapp3.1`.
 
 * **ViewRenderer for Razor Views**  
 Allows rendering of Razor views to string, based on an active ControllerContext.
+
+* **Form Variable Binder Unbinding to existing Objects**  
+Added FormVariableBinder class that unbinds `Request.Form` data to an existing object. Supports flat, single-level unbinding, but supports prefixes to allow for child object unbinding as well as property exclusions.
 
 * **Custom Headers Middleware**  
 Added custom HTTP Headers middleware that allows adding and removing of HTTP headers to every request.
