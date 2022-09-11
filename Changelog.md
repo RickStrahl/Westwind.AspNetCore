@@ -2,16 +2,26 @@
 <small>[Nuget](https://www.nuget.org/packages/Westwind.AspNetCore/) &bull; [Github](https://github.com/RickStrahl/Westwind.AspNetCore)</small>
 
 
-### Version 3.5
+### Version 3.6
 
 * **Add explicit support for .NET 6.0**  
 Added support for .NET 6.0 and reset targeting for `net60;net50;netcoreapp3.1`.
 
-* **ViewRenderer for Razor Views**  
-Allows rendering of Razor views to string, based on an active ControllerContext.
-
 * **Form Variable Binder Unbinding to existing Objects**  
 Added FormVariableBinder class that unbinds `Request.Form` data to an existing object. Supports flat, single-level unbinding, but supports prefixes to allow for child object unbinding as well as property exclusions.
+
+* **Add SQL based UserTokenService for short lived Token Generation**   
+This database service lets you generate, store, validate and manage the lifetime of short lived tokens often used for Bearer tokens. Useful for scenarios where you sign in first to generate a token which can then be used for subsequent request on an API which can then validate the token.
+
+* **Add base ApiResponse Base Class**  
+Added a base ApiResponse class that can be used to return consistent API messages back to API clients. Message includes Message, Status and Data fields where data contains the payload. Both typed and untyped versions.
+
+
+
+### Version 3.5
+
+* **ViewRenderer for Razor Views**  
+Allows rendering of Razor views to string, based on an active ControllerContext.
 
 * **Custom Headers Middleware**  
 Added custom HTTP Headers middleware that allows adding and removing of HTTP headers to every request.
