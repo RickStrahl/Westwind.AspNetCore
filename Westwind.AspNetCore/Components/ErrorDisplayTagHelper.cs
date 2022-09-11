@@ -10,16 +10,16 @@ namespace Westwind.AspNetCore.Components
 {
     /// <summary>
     /// Taghelper to display a BootStrap Alert box and FontAwesome icon.
-    /// 
+    ///
     /// Message and Header values can be assigned from model values using
     /// standard Razor expressions.
-    /// 
+    ///
     /// The Helper only displays content when message or header are set
-    /// otherwise the content is not displayed, so when binding to your 
+    /// otherwise the content is not displayed, so when binding to your
     /// model and the model value is empty nothing displays.
     /// </summary>
     /// <remarks>
-    /// Requires FontAwesome in addition to bootstrap in order to display icons    
+    /// Requires FontAwesome in addition to bootstrap in order to display icons
     /// </remarks>
     [HtmlTargetElement("error-display")]
     public class ErrorDisplayTagHelper : TagHelper
@@ -31,7 +31,7 @@ namespace Westwind.AspNetCore.Components
         public string message { get; set; }
 
         /// <summary>
-        /// Optional header that is displayed in big text. Use for 
+        /// Optional header that is displayed in big text. Use for
         /// 'noisy' warnings and stop errors only please :-)
         /// The message is displayed below the header.
         /// </summary>
@@ -40,7 +40,7 @@ namespace Westwind.AspNetCore.Components
 
         /// <summary>
         /// Font-awesome icon name without the fa- prefix.
-        /// Example: info, warning, lightbulb-o, 
+        /// Example: info, warning, lightbulb-o,
         /// If none is specified - "warning" is used
         /// To force no icon use "none"
         /// </summary>
@@ -56,7 +56,7 @@ namespace Westwind.AspNetCore.Components
 
         /// <summary>
         /// Optional - specifies the alert class used on the top level
-        /// window. If not specified uses the same as the icon. 
+        /// window. If not specified uses the same as the icon.
         /// Override this if the icon and alert classes are different
         /// (often they are not).
         /// </summary>
@@ -64,7 +64,7 @@ namespace Westwind.AspNetCore.Components
         public string alertClass { get; set; }
 
         /// <summary>
-        /// If true embeds the message text as HTML. Use this 
+        /// If true embeds the message text as HTML. Use this
         /// flag if you need to display HTML text. If false
         /// the text is HtmlEncoded.
         /// </summary>
@@ -73,7 +73,7 @@ namespace Westwind.AspNetCore.Components
 
 
         /// <summary>
-        /// If true embeds the header text as HTML. Use this 
+        /// If true embeds the header text as HTML. Use this
         /// flag if you need to display raw HTML text. If false
         /// the text is HtmlEncoded, true the entire text left
         /// as raw HTML.
@@ -94,10 +94,10 @@ namespace Westwind.AspNetCore.Components
         public ErrorDisplayModel   errorDisplay { get; set; }
 
 
-        public ErrorDisplayTagHelper() 
+        public ErrorDisplayTagHelper()
         {
         }
-        
+
         public override Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
             if (errorDisplay != null)
@@ -154,7 +154,7 @@ namespace Westwind.AspNetCore.Components
 
             output.TagName = "div";
 
-            // fix up CSS class            
+            // fix up CSS class
             if (cssClass != null)
                 cssClass = cssClass + " alert alert-" + alertClass;
             else
@@ -171,7 +171,7 @@ namespace Westwind.AspNetCore.Components
                     "</button>\r\n");
 
             if (string.IsNullOrEmpty(header))
-                sb.AppendLine($"<i class='fa fa-{icon}'></i> {messageText}");
+                sb.AppendLine($"<i class='fas fa-{icon}'></i> {messageText}");
             else
             {
                 sb.Append(
