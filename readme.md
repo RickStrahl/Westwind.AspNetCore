@@ -48,7 +48,10 @@ dotnet add package westwind.aspnetcore.markdown
 A common base controller class that adds support for an auto-initialized BaseViewModel from which other VMs can inherit. Allows for automatic initialization of common features like ErrorDisplay and Base View models.
 
 * **ViewRenderer**  
-Render view output to a string using a controller context.
+Render Razor/MVC view output to a string using a controller context.
+
+* **FormVariable Binder**  
+`Request.Form` unbind routine that allows you to unbind form variables into an existing object only updating properties that are are available in the request form context.
 
 * **AppUser ClaimsPrincipal and Cookie Authentication Helper**  
 A `AppUser` class that wraps a `ClaimsPrincipal` and makes it easier to add and retrieve claims as well as easily login and logout all from a single helper object.
@@ -61,8 +64,14 @@ In most MVC applications you need some sort of error display and this ErrorDispl
 * **Api Error Handling Filter**  
 A custom API error filter implementation that returns API responses on exceptions. Also provides a standardized `ApiExecption` class that can be used to force responses with specific HTTP response codes.
 
+* **Api Base Response Object**  
+`ApiResponse` base class that can be used to return consistent API results that include error status, error message, status code as well as the actual data. Both typed and untyped versions.
+
 * **RawRequest Body String Formatter**   
 API formatter that allows for receiving raw non-json content to `string` and `byte[]` parameters, which otherwise isn't supported by MVC's API implementation. [More info in blog post](https://weblog.west-wind.com/posts/2017/Sep/14/Accepting-Raw-Request-Body-Content-in-ASPNET-Core-API-Controllers).
+
+* **User Token Manager**  
+A database driven token manager that can create, store, validate and manage the life time of short lived generated tokens. Useful for creating tokens that are assigned after an initial authentication and then used for API access.
 
 
 #### General ASP.NET Core
