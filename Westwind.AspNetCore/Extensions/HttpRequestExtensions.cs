@@ -1,10 +1,13 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Westwind.Utilities;
+using Westwind.Web;
 
 namespace Westwind.AspNetCore.Extensions
 {
@@ -84,14 +87,14 @@ namespace Westwind.AspNetCore.Extensions
 
             if (relativePath.StartsWith("~"))
                 relativePath = relativePath.TrimStart('~');
-            
+
             string path = Path.Combine(basePath, relativePath);
 
             string slash = Path.DirectorySeparatorChar.ToString();
             return path
                 .Replace("/", slash)
                 .Replace("\\", slash)
-                .Replace(slash + slash, slash);            
+                .Replace(slash + slash, slash);
         }
 #else
         /// <summary>
@@ -129,14 +132,14 @@ namespace Westwind.AspNetCore.Extensions
 
             if (relativePath.StartsWith("~"))
                 relativePath = relativePath.TrimStart('~');
-            
+
             string path = Path.Combine(basePath, relativePath);
 
             string slash = Path.DirectorySeparatorChar.ToString();
             return path
                 .Replace("/", slash)
                 .Replace("\\", slash)
-                .Replace(slash + slash, slash);            
+                .Replace(slash + slash, slash);
         }
 #endif
 
@@ -145,25 +148,24 @@ namespace Westwind.AspNetCore.Extensions
         /// </summary>
         /// <param name="request"></param>
         public static string GetUrl(this HttpRequest request)
-        {                        
+        {
             return $"{request.Scheme}://{request.Host}{request.Path}{request.QueryString}";
         }
 
 
         /// <summary>
-        /// Returns a value based on a key against the Form, Query and Session collections
+        /// Returns a value based on a key against the Form, Query and Session collections.
         /// </summary>
         /// <param name="request"></param>
         /// <param name="key"></param>
+        /// <param name="noSession">If true Session object is not check</param>
         /// <returns></returns>
         public static string Params(this HttpRequest request, string key)
         {
             string value = request.Form[key].FirstOrDefault();
             if (string.IsNullOrEmpty(value))
-                value = request.Query[key].FirstOrDefault();            
-            if (string.IsNullOrEmpty(value))            
-                value = request.HttpContext.Session.GetString(key);
-            
+                value = request.Query[key].FirstOrDefault();
+
             return value;
         }
 
@@ -203,6 +205,21 @@ namespace Westwind.AspNetCore.Extensions
             if (!req.HasFormContentType) return false;
 
             return req.Form[formVarName].Count > 0;
+        }
+
+        /// <summary>
+        /// Unbinds form variable data to an instantiated object by matching form variable name to a property name
+        /// and only updating properties that have matching form variables and leaving the rest alone.
+        /// </summary>
+        /// <remarks>Only updates immediate instance properties - does not handle nested objects or collections</remarks>
+        /// <param name="request">ASP.NET HttpRequest object </param>
+        /// <param name="targetObject">Existing object to update with Form data</param>
+        /// <param name="propertyExceptions">Optional comma delimited list of properties that shouldn't be updated.</param>
+        /// <param name="formvarPrefixes">Optional prefix to</param>
+        /// <returns></returns>
+        public static List<ValidationError> UnbindFormVarsToObject(this HttpRequest request, object targetObject, string propertyExceptions, string formvarPrefixes)
+        {
+            return FormVariableBinder.Unbind(request, targetObject, propertyExceptions, formvarPrefixes);
         }
 
         /// TODO: Create a generic way to retrieve the route dictionary
