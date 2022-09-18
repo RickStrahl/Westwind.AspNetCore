@@ -8,7 +8,7 @@
 Added support for .NET 6.0 and reset targeting for `net60;net50;netcoreapp3.1`.
 
 * **Form Variable Binder Unbinding to existing Objects**  
-Added FormVariableBinder class that unbinds `Request.Form` data to an existing object. Supports flat, single-level unbinding, but supports prefixes to allow for child object unbinding as well as property exclusions.
+Added FormVariableBinder class that unbinds `Request.Form` data to an existing object. Supports flat, single-level unbinding, but supports prefixes to allow for child object unbinding as well as property exclusions and explicit inclusions.
 
 * **Add SQL based UserTokenService for short lived Token Generation**   
 This database service lets you generate, store, validate and manage the lifetime of short lived tokens often used for Bearer tokens. Useful for scenarios where you sign in first to generate a token which can then be used for subsequent request on an API which can then validate the token.
