@@ -56,8 +56,25 @@ namespace Westwind.Web
 
         /// <summary>
         /// List of exceptions that aren't to be bound. Uses the Form variable name.
+        ///
+        /// Values in the list can either be:
+        /// * Full key name that includes the Prefix (ie. "Product.Price")
+        /// * Partial key name that has stripped the Prefix (ie. "Price")
         /// </summary>
         public List<string> PropertyExclusionList { get; set; }
+
+        /// <summary>
+        /// Explicit List of properties that should be unbound.
+        ///
+        /// If you specify **any** values in this list **only** these
+        /// keys will be checked for in the Request.Form collection - all
+        /// others are excluded regardless of the exclusion list.
+        ///
+        /// Values in the list can either be:
+        /// * Full key name that includes the Prefix (ie. "Product.Price")
+        /// * Partial key name that has stripped the Prefix (ie. "Price")
+        /// </summary>
+        public List<string> PropertyInclusionList { get; set; }
 
         /// <summary>
         /// Binding Errors that occur on unbinding into the model
@@ -66,21 +83,28 @@ namespace Westwind.Web
 
 
         /// <summary>
+        /// Initialize the binder with property values
         /// </summary>
+        /// <param name="request">HttpRequest object from which Form Variables are retrieved</param>
         /// <param name="model">The object to unbind to</param>
         /// <param name="propertyExclusions">Comma seperated list of properties to exclude</param>
-        public FormVariableBinder( HttpRequest request, object model, string propertyExclusions = null, string prefixes = null)
+        /// <param name="prefixe">Comma seperated list of prefixes that should be parsed.</param>
+        /// <param name="propertyInclusionList">Comma separated list of explicit properties to include. Only these properties are used if specified.</param>
+        public FormVariableBinder( HttpRequest request, object model, string propertyExclusions = null, string prefixes = null, string propertyInclusionList = null)
         {
             FormVarPropertySeparator = ".";
             Prefixes = prefixes ?? string.Empty;
 
             Model = model;
             Request = request;
+
             PropertyExclusionList = new List<string>();
-            if (propertyExclusions != null)
+            if (!string.IsNullOrEmpty(propertyExclusions))
                 PropertyExclusionList.AddRange(propertyExclusions.Split(','));
-            else
-                propertyExclusions = string.Empty;
+
+            PropertyInclusionList = new List<string>();
+            if (!string.IsNullOrEmpty(propertyInclusionList))
+                PropertyInclusionList.AddRange(propertyInclusionList.Split(','));
         }
 
         /// <summary>
@@ -120,7 +144,6 @@ namespace Westwind.Web
                     }
                     else
                     {
-
                         // check each of the prefixes
                         foreach (string prefix in prefixes)
                         {
@@ -140,10 +163,14 @@ namespace Westwind.Web
                     if (!string.IsNullOrEmpty(activePrefix) )
                         key = key.Replace(activePrefix, "");
 
-                    // Check for invalid property names or excluded keys
-                    if (key.StartsWith(".") ||
-                        PropertyExclusionList.Where(s => s.ToLower() == reqKey.ToLower()).Count() > 0)
+                    // Check for invalid property names,excluded keys or explicit inclusion props if provided
+                    if (key.StartsWith(".") |
+                        PropertyExclusionList.Any(s => s.ToLower() == reqKey.ToLower() || s.ToLower() == key.ToLower()) ||
+                        (PropertyInclusionList.Count > 0 &&
+                         !PropertyInclusionList.Any(s => s.ToLower() == reqKey.ToLower() || s.ToLower() == key.ToLower())) )
+                    {
                         continue;
+                    }
 
                     // We'll check the the first 'property' in chain against our property list
                     // to see whether it's a property we need to look up
