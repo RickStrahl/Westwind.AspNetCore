@@ -25,7 +25,7 @@ dotnet add package westwind.aspnetcore
 #### MVC Functionality
 
 * **BaseController and BaseViewModel implementation**  
-A common base controller class that adds support for an auto-initialized BaseViewModel from which other VMs can inherit. Allows for automatic initialization of common features like ErrorDisplay and Base View models.
+A common base controller class that adds support for an auto-initialized BaseViewModel from which other VMs can inherit. Allows for automatic initialization of common features like ErrorDisplay and Base View models. Also optionally sets up a UserState object that can be used to persist user data (display name, stats, etc) across requests.
 
 * **ViewRenderer**  
 Render Razor/MVC view output to a string using a controller context.
@@ -68,7 +68,7 @@ Allows adding and removing of HTTP headers to every request using middleware con
 Helper to make it easier to use the DataProtector API to create secure tokens.
 
 * **UserState Helper**  
-The UserState object greatly simplifies working with auth 'cached' token data more easily by storing a single value in a user claim or forms auth ticket that can be easily restored into an typed object. The class supports easily serialization and auto-loading from Claims. Can be extended by subclassing and adding your own values. 
+The UserState object greatly simplifies working with auth 'cached' user data that can be stored across requests. Useful for caching things like username, main IDs to reduce data base lookups or simply to carry global values across requests. Data is stored either in an Identity Claim or a custom encrypted cookie. The class supports easily serialization and auto-loading and saving. Can be extended by subclassing and adding your own custom properties to track beyond several common ones.
 
 
 ## License
@@ -81,9 +81,4 @@ All source code is **&copy; West Wind Technologies**, regardless of changes made
 There's no charge to use, integrate or modify the code for this project. You are free to use it in personal, commercial, government and any other type of application and you are free to modify the code for use in your own projects.
 
 ### Give back
-If you find this library useful, consider making a small donation:
-
-<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=BA3NHHFHTMXD8" 
-    title="Find this library useful? Consider making a small donation." alt="Make Donation" style="text-decoration: none;">
-	<img src="https://weblog.west-wind.com/images/donation.png" />
-</a>
+If you find this library useful, consider making a small donation using the Sponsor link.
