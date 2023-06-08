@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -29,7 +30,7 @@ namespace Westwind.AspNetCore.Extensions
 
             if (inputStream == null)
                 inputStream = request.Body;
-
+            
             using (StreamReader reader = new StreamReader(inputStream, encoding))
                 return await reader.ReadToEndAsync();
         }
@@ -208,6 +209,17 @@ namespace Westwind.AspNetCore.Extensions
         }
 
         /// <summary>
+        /// Determines whether request is a postback operation
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        public static bool IsPostback(this HttpRequest request)
+        {
+            return request.Method.Equals("POST", StringComparison.InvariantCultureIgnoreCase) ||
+                   request.Method.Equals("PUT", StringComparison.InvariantCultureIgnoreCase);
+        }
+
+        /// <summary>
         /// Unbinds form variable data to an instantiated object by matching form variable name to a property name
         /// and only updating properties that have matching form variables and leaving the rest alone.
         /// </summary>
@@ -217,7 +229,7 @@ namespace Westwind.AspNetCore.Extensions
         /// <param name="propertyExceptions">Optional comma delimited list of properties that shouldn't be updated.</param>
         /// <param name="formvarPrefixes">Optional prefix to</param>
         /// <returns></returns>
-        public static List<ValidationError> UnbindFormVarsToObject(this HttpRequest request, object targetObject, string propertyExceptions, string formvarPrefixes)
+        public static List<ValidationError> UnbindFormVarsToObject(this HttpRequest request, object targetObject, string propertyExceptions = null, string formvarPrefixes = null)
         {
             return FormVariableBinder.Unbind(request, targetObject, propertyExceptions, formvarPrefixes);
         }
