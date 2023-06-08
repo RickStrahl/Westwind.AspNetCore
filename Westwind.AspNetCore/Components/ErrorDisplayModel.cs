@@ -1,4 +1,5 @@
-﻿using System.Web;
+﻿using System.Collections.Generic;
+using System.Web;
 using System.Text;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Http;
@@ -120,6 +121,34 @@ namespace Westwind.AspNetCore.Components
                 Header = header;
         }
 
+        /// <summary>
+        /// Adds an existing set of Validation Errors to the DisplayErrors
+        /// </summary>
+        /// <param name="validationErrors">List of validation errors</param>
+        public void AddMessages(IEnumerable<ValidationError> validationErrors, string fieldPrefix = null)
+        {
+            fieldPrefix = fieldPrefix ?? string.Empty;
+
+            foreach (var error in validationErrors)
+            {
+                DisplayErrors.Add(error.Message, fieldPrefix + error.ControlID);
+            }
+        }
+
+
+        /// <summary>
+        /// Adds an existing set of Validation Errors to the DisplayErrors
+        /// </summary>
+        /// <param name="validationErrors">List of validation errors</param>
+        public void AddMessages(ValidationErrorCollection validationErrors, string fieldPrefix = null)
+        {
+            fieldPrefix = fieldPrefix ?? string.Empty;
+
+            foreach (ValidationError error in validationErrors)
+            {
+                DisplayErrors.Add(error.Message, fieldPrefix + error.ControlID);
+            }
+        }
 
         /// <summary>
         /// Adds ModelState errors to the validationErrors
@@ -136,19 +165,8 @@ namespace Westwind.AspNetCore.Components
             }
         }
 
-        /// <summary>
-        /// Adds an existing set of Validation Errors to the DisplayErrors
-        /// </summary>
-        /// <param name="validationErrors"></param>
-        public void AddMessages(ValidationErrorCollection validationErrors,string fieldPrefix = null)
-        {
-            fieldPrefix = fieldPrefix ?? string.Empty;
 
-            foreach (ValidationError error in validationErrors)
-            {
-                DisplayErrors.Add(error.Message,fieldPrefix + error.ControlID);
-            }
-        }
+        
 
         /// <summary>
         /// Tries to populate the error display object from the request
