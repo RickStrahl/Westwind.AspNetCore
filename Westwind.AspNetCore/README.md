@@ -5,12 +5,6 @@
 
 This is a small helper package that provides a number of small helper and extension classes that facilitate common operations in ASP.NET Core and MVC applications.
 
-> #### Westwind.AspnetCore.Markdown has moved
-> The **Westwind.AspnetCore.Markdown** sub-component has moved to its own repository:
-> 
-> [Westwind.AspNetCore.Markdown on GitHub](https://github.com/RickStrahl/Westwind.AspNetCore.Markdown)
-
-
 ### Installation
 You can install the package [from NuGet](https://www.nuget.org/packages/Westwind.AspNetCore/) in Visual Studio:
 
@@ -26,21 +20,7 @@ or the `dotnet` command line:
 dotnet add package westwind.aspnetcore
 ```
 
-#### Westwind.AspnetCore.Markdown Package
-There is also a separate package for [Westwind.AspNetCore.Markdown](https://www.nuget.org/packages/Westwind.AspNetCore.Markdown) which provides a Markdown TagHelper and Markdown Parsing services:
-
-```ps
-PM> install-package westwind.aspnetcore.markdown
-```
-
-or the `dotnet` command line:
-
-```ps
-dotnet add package westwind.aspnetcore.markdown
-```
-
 ### Features
-
 
 #### MVC Functionality
 
@@ -50,7 +30,7 @@ A common base controller class that adds support for an auto-initialized BaseVie
 * **ViewRenderer**  
 Render Razor/MVC view output to a string using a controller context.
 
-* **FormVariable Binder**  
+* **FormVariable to Object Instance Binder**  
 `Request.Form` unbind routine that allows you to unbind form variables into an existing object only updating properties that are are available in the request form context.
 
 * **AppUser ClaimsPrincipal and Cookie Authentication Helper**  

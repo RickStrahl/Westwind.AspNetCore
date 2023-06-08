@@ -2,6 +2,12 @@
 <small>[Nuget](https://www.nuget.org/packages/Westwind.AspNetCore/) &bull; [Github](https://github.com/RickStrahl/Westwind.AspNetCore)</small>
 
 
+### Version 3.7
+
+* **Add .NET 7.0 Target**  
+Added support for .NET 7.0 and reset targeting for `net60;net70;net50`.
+
+
 ### Version 3.6
 
 * **Add explicit support for .NET 6.0**  

@@ -1,18 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net6.0;net5.0;netcoreapp3.1</TargetFrameworks>
+    <TargetFrameworks>net6.0;net7.0;net50</TargetFrameworks>
     <!--<TargetFrameworks>netcoreapp3.1;netcoreapp2.1;net5.0</TargetFrameworks>-->
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <LangVersion>9.0</LangVersion>
     <Nullable>disable</Nullable>
-    <Version>3.6.2</Version>
+    <Version>3.7</Version>
     <Authors>Rick Strahl</Authors>
     <Company>West Wind Technologies</Company>
     <Product>West Wind AspNet Core Toolkit</Product>
     <Title>Westwind Web AspNet Core Support Library</Title>
     <Description>
  </Description>
-    <Copyright>(c) West Wind Technologies, 2017-2022</Copyright>
+    <Copyright>(c) West Wind Technologies, 2017-2023</Copyright>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -27,7 +27,7 @@
     <RepositoryType>Github</RepositoryType>
 
     <PackageIcon>icon.png</PackageIcon>
-    <PackageLicense>LICENSE.MD</PackageLicense>
+    <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
@@ -50,7 +50,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Westwind.Utilities" Version="3.1.14" />
+    <PackageReference Include="Westwind.Utilities" Version="3.1.18" />
   </ItemGroup>
 
   <ItemGroup>
