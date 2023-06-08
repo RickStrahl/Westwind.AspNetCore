@@ -315,12 +315,11 @@ namespace Westwind.AspNetCore.Security
         /// whether one of the UserID values is set.
         /// </summary>
         /// <returns></returns>
-        public bool IsEmpty()
-        {
-            return string.IsNullOrEmpty(UserId) &&
+        public virtual bool IsEmpty()=> string.IsNullOrEmpty(UserId) &&
                    UserIdInt < 1
                    && (UserIdGuid==null || UserIdGuid == Guid.Empty);
-        }
+        
+        public virtual bool IsAuthenticated() => !IsEmpty();
 
         /// <summary>
         /// Initializes the data to empty defaults

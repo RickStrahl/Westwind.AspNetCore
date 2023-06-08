@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Westwind.AspNetCore.Components;
+using Westwind.AspNetCore.Security;
 
 namespace Westwind.AspNetCore
 {
@@ -15,6 +16,24 @@ namespace Westwind.AspNetCore
 
         public BaseViewModel()
         {
+        }
+    }
+
+    public class BaseViewModel<TUserState> : BaseViewModel
+        where TUserState : UserState, new()
+    {
+
+        public TUserState UserState { get; set; }
+
+
+        public BaseViewModel()
+        {
+
+        }
+
+        public BaseViewModel(TUserState userState)
+        {
+            UserState = userState ?? new TUserState();
         }
     }
 }
