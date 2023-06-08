@@ -55,7 +55,7 @@ namespace Westwind.AspNetCore
         {
             base.OnActionExecuted(context);
             if (UserStateWebSettings.Current.IsUserStateEnabled)
-                PersistUserState(UserState);
+                PersistUserState(UserState).FireAndForget();
         }
 
         /// <summary>

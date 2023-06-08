@@ -2,6 +2,11 @@
 <small>[Nuget](https://www.nuget.org/packages/Westwind.AspNetCore/) &bull; [Github](https://github.com/RickStrahl/Westwind.AspNetCore)</small>
 
 
+### Version 3.8
+
+* **Refactor BaseController, BaseViewModel and UserState for easier Integration**  
+Base controller can now automatically be set up for handling custom userstate objects by providing the generic type overload removing the need to create custom overrides of the `Initialize()` and `OnActionExecuted()` in implemented controllers. A new `UserStateSettings` object also allows global configuration and it now supports both plain Cookie and Identity Claims for storing user state.
+
 ### Version 3.7
 
 * **Add .NET 7.0 Target**  
