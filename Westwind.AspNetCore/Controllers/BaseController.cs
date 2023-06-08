@@ -181,6 +181,8 @@ namespace Westwind.AspNetCore
             if (settings.PersistanceMode == UserStatePersistanceModes.Cookie)
             {
                 rawCookie = HttpContext.Request.Cookies[settings.CookieName];
+                if(!string.IsNullOrEmpty(rawCookie))
+                    rawCookie = Encryption.DecryptString(rawCookie, UserStateWebSettings.Current.CookieEncryptionKey, true);
             }
             else
             {
@@ -189,7 +191,6 @@ namespace Westwind.AspNetCore
                 {
                     userState = new TUserState();
                 }
-
                 rawCookie = httpUser.FindFirst("UserState")?.Value;
             }
 
@@ -201,8 +202,7 @@ namespace Westwind.AspNetCore
             {
                 try
                 {
-                    _initialAppUserState = Encryption.DecryptString(rawCookie,
-                        UserStateWebSettings.Current.CookieEncryptionKey, true);
+                    _initialAppUserState = rawCookie;
 
                     userState =  Westwind.AspNetCore.Security.UserState.CreateFromString<TUserState>(_initialAppUserState);
                     if (userState == null)
@@ -235,16 +235,22 @@ namespace Westwind.AspNetCore
             var updatedUserState = userState.ToString();
             if (updatedUserState != _initialAppUserState)
             {
-                var rawCookie = Encryption.EncryptString(updatedUserState,
-                    UserStateWebSettings.Current.CookieEncryptionKey, true);
+                string rawCookie = updatedUserState;
+
+                // cookie has to be encrypted
+                if (settings.PersistanceMode == UserStatePersistanceModes.Cookie)
+                {
+                    rawCookie = Encryption.EncryptString(updatedUserState, UserStateWebSettings.Current.CookieEncryptionKey, true);
+                }
+                
 
                 if (settings.PersistanceMode == UserStatePersistanceModes.Cookie)
                 {
                     HttpContext.Response.Cookies.Delete(settings.CookieName);
 
-                    var cookieTimeoutDays = !userState.IsAdmin ? settings.CookieTimeoutDays : 7;
                     var cookieOptions = new CookieOptions { SameSite = SameSiteMode.Strict, HttpOnly = true };
-                    cookieOptions.Expires = DateTimeOffset.UtcNow.AddDays(cookieTimeoutDays);
+                    if (settings.CookieTimeoutDays > 0)
+                        cookieOptions.Expires = DateTimeOffset.UtcNow.AddDays(settings.CookieTimeoutDays);
 
                     HttpContext.Response.Cookies.Append(settings.CookieName, rawCookie, cookieOptions);
                 }
