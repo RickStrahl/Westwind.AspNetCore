@@ -82,14 +82,17 @@ namespace Westwind.AspNetCore
         /// <typeparam name="TViewModel"></typeparam>
         /// <returns></returns>
         protected virtual TViewModel CreateViewModel<TViewModel>()
-            where TViewModel : class, new()
+            where TViewModel : BaseViewModel, new()
         {
-            var model = new TViewModel();
-
-            if (model is BaseViewModel)
+            var model = new TViewModel
             {
-                BaseViewModel baseModel = model as BaseViewModel;
-                baseModel.ErrorDisplay = ErrorDisplay;
+                ErrorDisplay = ErrorDisplay,
+                IdentityUser = HttpContext.User
+            };
+
+            if (model is BaseViewModel<TUserState> baseModel)
+            {
+                baseModel.UserState = UserState;
             }
 
             return model;
@@ -107,12 +110,11 @@ namespace Westwind.AspNetCore
             if (model == null)
                 return;
 
-            BaseViewModel baseModel = model as BaseViewModel;
-            baseModel.ErrorDisplay = ErrorDisplay;
+            model.ErrorDisplay = ErrorDisplay;
+            model.IdentityUser = HttpContext.User;
 
-            if (baseModel is BaseViewModel<TUserState>)
+            if (model is BaseViewModel<TUserState> baseUserModel)
             {
-                var baseUserModel = baseModel as BaseViewModel<TUserState>;
                 baseUserModel.UserState = UserState;
             }
         }
@@ -242,7 +244,7 @@ namespace Westwind.AspNetCore
                 {
                     rawCookie = Encryption.EncryptString(updatedUserState, UserStateWebSettings.Current.CookieEncryptionKey, true);
                 }
-                
+
 
                 if (settings.PersistanceMode == UserStatePersistanceModes.Cookie)
                 {

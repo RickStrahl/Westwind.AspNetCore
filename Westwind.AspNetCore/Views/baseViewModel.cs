@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using System.Security.Claims;
+using Newtonsoft.Json;
 using Westwind.AspNetCore.Components;
 using Westwind.AspNetCore.Security;
 
@@ -6,17 +7,11 @@ namespace Westwind.AspNetCore
 {
     public class BaseViewModel
     {
-        [JsonIgnore]
-        public ErrorDisplayModel ErrorDisplay = null;
-        
-        [JsonIgnore]
-        public string PageTitle = null;
+        [JsonIgnore] public ErrorDisplayModel ErrorDisplay;
 
-        //public PagingDetails Paging = null;
+        [JsonIgnore] public ClaimsPrincipal IdentityUser;
 
-        public BaseViewModel()
-        {
-        }
+        [JsonIgnore] public string PageTitle;
     }
 
     public class BaseViewModel<TUserState> : BaseViewModel
@@ -25,10 +20,8 @@ namespace Westwind.AspNetCore
 
         public TUserState UserState { get; set; }
 
-
         public BaseViewModel()
         {
-
         }
 
         public BaseViewModel(TUserState userState)

@@ -1,17 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
-    <!--<TargetFrameworks>netcoreapp3.1;netcoreapp2.1;net5.0</TargetFrameworks>-->
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <LangVersion>9.0</LangVersion>
     <Nullable>disable</Nullable>
-    <Version>3.8</Version>
+    <Version>3.8.5</Version>
     <Authors>Rick Strahl</Authors>
     <Company>West Wind Technologies</Company>
     <Product>West Wind AspNet Core Toolkit</Product>
     <Title>Westwind Web AspNet Core Support Library</Title>
-    <Description>
- </Description>
     <Copyright>(c) West Wind Technologies, 2017-2023</Copyright>
   </PropertyGroup>
 
@@ -20,7 +16,7 @@
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageOutputPath>./nupkg</PackageOutputPath>
 
-    <PackageCopyright>Rick Strahl, West Wind Technologies 2017-2022</PackageCopyright>
+    <PackageCopyright>Rick Strahl, West Wind Technologies 2017-2023</PackageCopyright>
     <PackageTags>Westwind AspNetCore Web</PackageTags>
     <PackageProjectUrl>https://github.com/RickStrahl/Westwind.AspNetCore/tree/master/Westwind.AspNetCore</PackageProjectUrl>
     <RepositoryUrl>https://github.com/RickStrahl/Westwind.AspNetCore/tree/master/Westwind.AspNetCore</RepositoryUrl>
@@ -50,7 +46,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Westwind.Utilities" Version="3.1.18" />
+    <PackageReference Include="Westwind.Utilities" Version="4.0.2" />
+    <PackageReference Include="Westwind.Utilities.Data" Version="4.0.0" />
   </ItemGroup>
 
   <ItemGroup>
