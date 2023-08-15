@@ -62,6 +62,7 @@ namespace Westwind.AspNetCore.Extensions
         /// <param name="basePath">Optional - Optional physical base path. By default host.WebRootPath</param>
         /// <param name="useAppBasePath">Optional - if true returns the launch folder rather than the wwwroot folder</param>
         /// <returns>physical path of the relative path</returns>
+        [Obsolete("Please use HttpContextExtensions.MapPath() instead.")]
         public static string MapPath(this HttpRequest request, string relativePath = null, IWebHostEnvironment host = null, string basePath = null, bool useAppBasePath= false)
         {
             if (string.IsNullOrEmpty(relativePath))
