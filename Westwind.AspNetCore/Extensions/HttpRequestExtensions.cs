@@ -52,42 +52,42 @@ namespace Westwind.AspNetCore.Extensions
             }
         }
 
-#if NETCORE2
         /// <summary>
-        /// Maps a virtual or relative path to a physical path in a Web site
+        /// Maps a virtual or relative path to a physical path in a Web site,
+        /// using the WebRootPath as the base path (ie. the `wwwroot` folder)
         /// </summary>
-        /// <param name="request"></param>
-        /// <param name="relativePath"></param>
+        /// <param name="request">HttpRequest instance</param>
+        /// <param name="relativePath">Site relative path using either `~/` or `/` as indicating root</param>
         /// <param name="host">Optional - IHostingEnvironment instance. If not passed retrieved from RequestServices DI</param>
         /// <param name="basePath">Optional - Optional physical base path. By default host.WebRootPath</param>
-        /// <returns></returns>
-        public static string MapPath(this HttpRequest request, string relativePath, IHostingEnvironment host = null, string basePath = null)
+        /// <param name="useAppBasePath">Optional - if true returns the launch folder rather than the wwwroot folder</param>
+        /// <returns>physical path of the relative path</returns>
+        public static string MapPath(this HttpRequest request, string relativePath = null, IWebHostEnvironment host = null, string basePath = null, bool useAppBasePath= false)
         {
             if (string.IsNullOrEmpty(relativePath))
-                return string.Empty;
+                relativePath = "/";
 
-            if (basePath == null)
+            // Ignore absolute paths
+            if (relativePath.StartsWith("https://", StringComparison.OrdinalIgnoreCase) ||
+                relativePath.StartsWith("http://", StringComparison.OrdinalIgnoreCase))
+                return relativePath;
+
+            if (useAppBasePath || basePath == null)
             {
-                if (string.IsNullOrEmpty(WebRootPath))
+                basePath = WebRootPath;
+                if (useAppBasePath || string.IsNullOrEmpty(basePath))
                 {
-                    if (host == null)
-                        host =
-                            request.HttpContext.RequestServices.GetService(typeof(IHostingEnvironment)) as
-                                IHostingEnvironment;
+                    host ??= request.HttpContext.RequestServices.GetService(typeof(IWebHostEnvironment)) as IWebHostEnvironment;
                     WebRootPath = host.WebRootPath;
-
+                    basePath = useAppBasePath ? host.ContentRootPath.TrimEnd('/','\\') : WebRootPath;
                 }
-
-                if (string.IsNullOrEmpty(relativePath))
-                    return WebRootPath;
-
+            }
+            else
+            {
                 basePath = WebRootPath;
             }
 
-            relativePath = relativePath.TrimStart('~').TrimStart('/', '\\');
-
-            if (relativePath.StartsWith("~"))
-                relativePath = relativePath.TrimStart('~');
+            relativePath = relativePath.TrimStart('~', '/', '\\');
 
             string path = Path.Combine(basePath, relativePath);
 
@@ -97,52 +97,7 @@ namespace Westwind.AspNetCore.Extensions
                 .Replace("\\", slash)
                 .Replace(slash + slash, slash);
         }
-#else
-        /// <summary>
-        /// Maps a virtual or relative path to a physical path in a Web site
-        /// </summary>
-        /// <param name="request"></param>
-        /// <param name="relativePath"></param>
-        /// <param name="host">Optional - IHostingEnvironment instance. If not passed retrieved from RequestServices DI</param>
-        /// <param name="basePath">Optional - Optional physical base path. By default host.WebRootPath</param>
-        /// <returns></returns>
-        public static string MapPath(this HttpRequest request, string relativePath, IWebHostEnvironment host = null, string basePath = null)
-        {
-            if (string.IsNullOrEmpty(relativePath))
-                return string.Empty;
 
-            if (basePath == null)
-            {
-                if (string.IsNullOrEmpty(WebRootPath))
-                {
-                    if (host == null)
-                        host =
-                            request.HttpContext.RequestServices.GetService(typeof(IWebHostEnvironment)) as
-                                IWebHostEnvironment;
-                    WebRootPath = host.WebRootPath;
-
-                }
-
-                if (string.IsNullOrEmpty(relativePath))
-                    return WebRootPath;
-
-                basePath = WebRootPath;
-            }
-
-            relativePath = relativePath.TrimStart('~').TrimStart('/', '\\');
-
-            if (relativePath.StartsWith("~"))
-                relativePath = relativePath.TrimStart('~');
-
-            string path = Path.Combine(basePath, relativePath);
-
-            string slash = Path.DirectorySeparatorChar.ToString();
-            return path
-                .Replace("/", slash)
-                .Replace("\\", slash)
-                .Replace(slash + slash, slash);
-        }
-#endif
 
         /// <summary>
         /// Returns the absolute Url of the current request as a string.
