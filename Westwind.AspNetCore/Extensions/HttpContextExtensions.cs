@@ -15,7 +15,7 @@ public static class HttpContextExtensions
     /// Maps a virtual or relative path to a physical path in a Web site,
     /// using the WebRootPath as the base path (ie. the `wwwroot` folder)
     /// </summary>
-    /// <param name="request">HttpRequest instance</param>
+    /// <param name="context">HttpContext instance</param>
     /// <param name="relativePath">Site relative path using either `~/` or `/` as indicating root</param>
     /// <param name="host">Optional - IHostingEnvironment instance. If not passed retrieved from RequestServices DI</param>
     /// <param name="basePath">Optional - Optional physical base path. By default host.WebRootPath</param>

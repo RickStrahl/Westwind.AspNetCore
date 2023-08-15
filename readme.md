@@ -51,7 +51,10 @@ A custom API error filter implementation that returns API responses on exception
 API formatter that allows for receiving raw non-json content to `string` and `byte[]` parameters, which otherwise isn't supported by MVC's API implementation. [More info in blog post](https://weblog.west-wind.com/posts/2017/Sep/14/Accepting-Raw-Request-Body-Content-in-ASPNET-Core-API-Controllers).
 
 * **User Token Manager**  
-A database driven token manager that can create, store, validate and manage the life time of short lived generated tokens. Useful for creating tokens that are assigned after an initial authentication and then used for API access.
+A database driven token manager that can create, store, validate and manage the life time of short lived generated tokens. Useful for creating tokens that are assigned after an initial authentication and then used for API access and can be easily validated.
+
+* **JWT Helper**  
+Helper class that makes it easier to create and retrieve JWT tokens.
 
 
 #### General ASP.NET Core
@@ -61,8 +64,14 @@ Allows adding and removing of HTTP headers to every request using middleware con
 
 * **HttpRequest Extensions**  
     * `GetBodyStringAsync()` and `GetRawBodyBytesAsync()`  - retrieve raw non-JSON content
-    * `MapPath()` - Map virtual path to physical path on disk
+    * `GetUrl()` - Returns the Absolute URL for the current request.
     * `Params()` - Return an item from Form, Query or Session collections.
+    * `IsFormVar()` -  Determines if a Form variable exists
+    * `IsPostback()` - Determines if request is a Post/Put operation
+    * `IsLocal` - Determines if the current URL is a local machine URL
+    
+* **HttpContext Extensions**
+    * `MapPath()` - Map virtual path to physical path on disk
 
 * **DataProtector Wrapper**  
 Helper to make it easier to use the DataProtector API to create secure tokens.

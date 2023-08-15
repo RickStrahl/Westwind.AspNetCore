@@ -21,6 +21,7 @@ namespace Microsoft.AspNetCore.Hosting
     ///  * Use HostEnvironmentAbstraction.CurrentHost
     ///  * Or inject `HostEnvironmentAbstraction` with DI
     /// </example>
+    [Obsolete("This abstraction is no longer needed post .NET 3.0 - Use IWebHostEnvironment directly from DI.")]
     public class HostEnvironmentAbstraction
     {
         public HostEnvironmentAbstraction(IServiceProvider provider)
@@ -28,23 +29,7 @@ namespace Microsoft.AspNetCore.Hosting
             if (CurrentHost == null)
                 InitializeHost(provider);
         }
-#if NETCORE2
-        /// <summary>
-        /// Active Web Hosting Environment instance appropriate for the
-        /// .NET version you're running.
-        /// </summary>
-        public static IHostingEnvironment CurrentHost { get; set; }
 
-
-        /// <summary>
-        /// Active Web Hosting Environment instance appropriate for the
-        /// .NET version you're running.
-        /// </summary>
-        public IHostingEnvironment Host
-        {
-            get { return CurrentHost; }
-        }
-#else
         /// <summary>
         /// Active Web Hosting Environment instance appropriate for the
         /// .NET version you're running.
@@ -60,7 +45,7 @@ namespace Microsoft.AspNetCore.Hosting
         {
             get { return CurrentHost; }
         }
-#endif
+
 
         /// <summary>
         /// Initializes the host by retrieving either IWebHostEnvironment or IHostingEnvironment
@@ -69,12 +54,7 @@ namespace Microsoft.AspNetCore.Hosting
         /// <param name="serviceProvider"></param>
         public static void InitializeHost(IServiceProvider serviceProvider)
         {
-
-#if NETCORE2
-            CurrentHost = serviceProvider.GetService<IHostingEnvironment>();
-#else
             CurrentHost = serviceProvider.GetService<IWebHostEnvironment>();
-#endif
         }
 
     }

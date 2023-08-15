@@ -4,8 +4,12 @@
 
 ### Version 3.8
 
+* **Moved HttpRequestExtensions.MapPath() to HttpContextExtensions.MapPath()**  
+Moved `MapPath()`  function to new `HttpContextExtensions` to allow easier access in non request scenarios. `MapPath()` is available during startup and so can be used for middleware configuration.
+
 * **Refactor BaseController, BaseViewModel and UserState for easier Integration**  
 Base controller can now automatically be set up for handling custom userstate objects by providing the generic type overload removing the need to create custom overrides of the `Initialize()` and `OnActionExecuted()` in implemented controllers. A new `UserStateSettings` object also allows global configuration and it now supports both plain Cookie and Identity Claims for storing user state.
+
 
 ### Version 3.7
 
