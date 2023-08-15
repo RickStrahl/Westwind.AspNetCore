@@ -3,7 +3,7 @@
     <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Nullable>disable</Nullable>
-    <Version>3.8.5</Version>
+    <Version>3.8.6</Version>
     <Authors>Rick Strahl</Authors>
     <Company>West Wind Technologies</Company>
     <Product>West Wind AspNet Core Toolkit</Product>
@@ -46,8 +46,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Westwind.Utilities" Version="4.0.2" />
-    <PackageReference Include="Westwind.Utilities.Data" Version="4.0.0" />
+    <PackageReference Include="Westwind.Utilities" Version="4.0.4" />
+    <PackageReference Include="Westwind.Utilities.Data" Version="4.0.3" />
   </ItemGroup>
 
   <ItemGroup>
