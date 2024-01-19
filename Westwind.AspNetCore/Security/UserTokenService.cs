@@ -51,7 +51,7 @@ namespace Westwind.AspNetCode.Security
         }
 
         /// <summary>
-        ///
+        /// Retrieves the full token based on the id
         /// </summary>
         /// <param name="tokenId"></param>
         /// <param name="checkForExpiration">if true doesn't retrieve token if it's expired</param>
@@ -74,6 +74,8 @@ namespace Westwind.AspNetCode.Security
                 if (checkForExpiration && token.Updated.AddSeconds(TokenTimeoutSeconds) < DateTime.UtcNow)
                 {
                     SetError("Token has expired.");
+                    if (!string.IsNullOrEmpty(token.Id))
+                        DeleteToken(token.Id);
                     return null;
                 }
 
@@ -82,6 +84,49 @@ namespace Westwind.AspNetCode.Security
                     sql = $@"update [{Tablename}] set updated = GetUtcDate() where Id = @0";
                     data.ExecuteNonQuery(sql, tokenId);
                 }
+            }
+
+            token.TokenIdentifier = null;
+            return token;
+        }
+
+
+        /// <summary>
+        /// Returns a token based on a Token Identifier. This is useful in non-Web
+        /// auth scenarios where you can check for the token being validated based on
+        /// a token identifier.
+        ///
+        /// Expired tokens are not returned and automatically deleted.
+        /// </summary>
+        /// <param name="tokenIdentifier"></param>
+        /// <returns></returns>
+        public UserToken GetTokenByTokenIdentifier(string tokenIdentifier)
+        {
+            UserToken token;
+            using (var data = GetSqlData())
+            {
+                string sql = $@"select  Top 1 * from [{Tablename}] where TokenIdentifier = @0 Order by Updated Desc";
+
+                token = data.Find<UserToken>(sql, tokenIdentifier);
+                if (token == null)
+                {
+                    SetError(data.ErrorMessage);
+                    return null;
+                }
+
+                // expired token
+                if (token.Updated.AddSeconds(TokenTimeoutSeconds) < DateTime.UtcNow)
+                {
+                    SetError("Token has expired.");
+                    if (!string.IsNullOrEmpty(token.Id))
+                        DeleteToken(token.Id);
+                    return null;
+                }
+
+                sql = $@"update [{Tablename}] set TokenIdentifier = null where TokenIdentifier = @0";
+                data.ExecuteNonQuery(sql, tokenIdentifier);
+
+                token.TokenIdentifier = null;
             }
 
             return token;
@@ -93,7 +138,7 @@ namespace Westwind.AspNetCode.Security
         /// <param name="userId"></param>
         /// <param name="referenceId"></param>
         /// <returns>A new token Id</returns>
-        public string CreateNewToken(string userId, string referenceId = null)
+        public string CreateNewToken(string userId, string referenceId = null, string tokenIdentifier = null)
         {
             string tokenId;
             int result;
@@ -120,16 +165,16 @@ namespace Westwind.AspNetCode.Security
 
                     sql = $@"
 insert into [{Tablename}]
-            (Id,UserId,ReferenceId) Values
-            (@0,@1,@2)
+            (Id,UserId,ReferenceId,TokenIdentifier) Values
+            (@0,@1,@2, @3)
 ";
-                    result = data.ExecuteNonQuery(sql, tokenId, userId, referenceId);
+                    result = data.ExecuteNonQuery(sql, tokenId, userId, referenceId, tokenIdentifier);
                 }
                 else
                 {
                     tokenId = DataUtils.GenerateUniqueId(15);
-                    sql = $@"update [{Tablename}] set Id=@0, UserId=@1, ReferenceId=@2, Updated=@3 where Id=@4";
-                    result = data.ExecuteNonQuery(sql, tokenId, userId, referenceId ?? token.ReferenceId, DateTime.UtcNow, token.Id);
+                    sql = $@"update [{Tablename}] set Id=@0, UserId=@1, ReferenceId=@2, TokenIdentifier=@3, Updated=@4 where Id=@5";
+                    result = data.ExecuteNonQuery(sql, tokenId, userId, referenceId ?? token.ReferenceId, tokenIdentifier, DateTime.UtcNow, token.Id);
                 }
             }
 
@@ -211,6 +256,7 @@ CREATE TABLE [{Tablename}](
 	[Id] [nvarchar](20) NOT NULL,
 	[UserId] [nvarchar](100) NULL,
 	[ReferenceId] [nvarchar](255) NULL,
+	[TokenIdentifier] [nvarchar](100) NULL,
 	[Updated] [datetime] NOT NULL
 ) ON [PRIMARY]
 ALTER TABLE [{Tablename}] ADD  CONSTRAINT [DF_{Tablename}_Updated]  DEFAULT (getutcdate()) FOR [Updated]
@@ -323,6 +369,14 @@ Commit Transaction T1
         /// and stored with the key token.
         /// </summary>
         public string ReferenceId { get; set; }
+
+        /// <summary>
+        /// An optional value that can be passed in to act as a token
+        /// identifier for an external application. Used in token validation
+        /// and retrieving a token from a local/desktop app by querying
+        /// for the key.
+        /// </summary>
+        public string TokenIdentifier { get; set; }
     }
 
 }
