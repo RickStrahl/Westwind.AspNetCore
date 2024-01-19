@@ -3,12 +3,12 @@
     <TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Nullable>disable</Nullable>
-    <Version>3.8.7</Version>
+    <Version>3.9.2</Version>
     <Authors>Rick Strahl</Authors>
     <Company>West Wind Technologies</Company>
     <Product>West Wind AspNet Core Toolkit</Product>
     <Title>Westwind Web AspNet Core Support Library</Title>
-    <Copyright>(c) West Wind Technologies, 2017-2023</Copyright>
+    <Copyright>(c) West Wind Technologies, 2017-2024</Copyright>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -32,6 +32,12 @@
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Westwind.Utilities" Version="4.0.8" />
+    <PackageReference Include="Westwind.Utilities.Data" Version="4.0.8" />
+  </ItemGroup>
+  
+
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DefineConstants>DEBUG;TRACE</DefineConstants>
   </PropertyGroup>
@@ -45,10 +51,6 @@
     <None Include="README.md" Pack="true" PackagePath="" />
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Westwind.Utilities" Version="4.0.8" />
-    <PackageReference Include="Westwind.Utilities.Data" Version="4.0.8" />
-  </ItemGroup>
 
   <ItemGroup>
     <Folder Include="nupkg\" />

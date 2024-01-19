@@ -2,6 +2,11 @@
 <small>[Nuget](https://www.nuget.org/packages/Westwind.AspNetCore/) &bull; [Github](https://github.com/RickStrahl/Westwind.AspNetCore)</small>
 
 
+### Version 3.9.2
+
+* **Add TokenIdentifier to UserTokenManager**  
+Add an extra field and retrieval mechanism to retrieve a token based on a separate token. This can be useful in local/desktop authentication scenarios where you provide a token identifier that you can query for via an API until the auth operation is complete.
+
 ### Version 3.8
 
 * **Moved HttpRequestExtensions.MapPath() to HttpContextExtensions.MapPath()**  
