@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using Azure.Core;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Westwind.Utilities;
@@ -14,42 +15,105 @@ namespace Westwind.AspNetCore.Extensions
 {
     public static class HttpRequestExtensions
     {
+
+        /// <summary>
+        /// Internally cached root path for Web content (not the content root)
+        /// </summary>
         static string WebRootPath { get; set; }
 
         /// <summary>
         /// Retrieve the raw body as a string from the Request.Body stream
         /// </summary>
         /// <param name="request">Request instance to apply to</param>
+        /// <param name="enableBuffering">
+        /// Optional - Enables buffering so the body stream can be read mutliple times
+        /// In order for this to work this has to be the first read operation on the body stream
+        /// so this is useful mostly for logging and diagnostic operations that preceed normal
+        /// body access for POST/PUT operations.
+        /// </param>
         /// <param name="encoding">Optional - Encoding, defaults to UTF8</param>
         /// <param name="inputStream">Optional - Pass in the stream to retrieve from. Other Request.Body</param>
         /// <returns></returns>
-        public static async Task<string> GetRawBodyStringAsync(this HttpRequest request, Encoding encoding = null, Stream inputStream = null)
+        public static async Task<string> GetRawBodyStringAsync(this HttpRequest request,
+                                                                bool enableBuffering = false,
+                                                                Encoding encoding = null,
+                                                                Stream inputStream = null )
         {
             if (encoding == null)
                 encoding = Encoding.UTF8;
 
             if (inputStream == null)
+            {
+                if (enableBuffering)
+                    request.EnableBuffering();                
                 inputStream = request.Body;
-            
-            using (StreamReader reader = new StreamReader(inputStream, encoding))
-                return await reader.ReadToEndAsync();
+            }
+
+            string bodyString = null;
+            using (var reader = new StreamReader(inputStream,
+                encoding,
+                detectEncodingFromByteOrderMarks: false,
+                leaveOpen: enableBuffering))
+            {
+                try
+                {
+                    bodyString = await reader.ReadToEndAsync();
+                }
+                catch(Exception)
+                {
+                    bodyString = null;
+                }
+
+                if (inputStream.CanSeek)
+                   inputStream.Position = 0;                
+            }
+
+            return bodyString;
         }
 
         /// <summary>
         /// Retrieves the raw body as a byte array from the Request.Body stream
         /// </summary>
-        /// <param name="request"></param>
+        /// <param name="request">HttpRequest</param>
+        /// <param name="enableBuffering">
+        /// Optional - Enables buffering so the body stream can be read mutliple times
+        /// In order for this to work this has to be the first read operation on the body stream
+        /// so this is useful mostly for logging and diagnostic operations that preceed normal
+        /// body access for POST/PUT operations.
+        /// </param>
+        /// <param name="inputStream">Optional - stream to read from. Null for context.Request.Body</param>
         /// <returns></returns>
-        public static async Task<byte[]> GetRawBodyBytesAsync(this HttpRequest request, Stream inputStream = null)
+        public static async Task<byte[]> GetRawBodyBytesAsync(this HttpRequest request,
+                                                                bool enableBuffering = false,
+                                                                Stream inputStream = null)
         {
             if (inputStream == null)
-                inputStream = request.Body;
-
-            using (var ms = new MemoryStream(2048))
             {
-                await inputStream.CopyToAsync(ms);
-                return ms.ToArray();
+                if (enableBuffering)
+                    request.EnableBuffering();
+                inputStream = request.Body;
             }
+
+            byte[] bytes;
+            try
+            {
+                await using (var ms = new MemoryStream(2048))
+                {
+                    await inputStream.CopyToAsync(ms);
+                    bytes = ms.ToArray();                    
+                }
+            }
+            catch
+            {
+                return null;
+            }
+          
+            if (inputStream.CanSeek)
+            {
+                inputStream.Position = 0;
+            }
+                      
+            return bytes;
         }
 
         /// <summary>
