@@ -102,6 +102,12 @@ namespace Westwind.AspNetCode.Security
         /// <returns></returns>
         public UserToken GetTokenByTokenIdentifier(string tokenIdentifier)
         {
+            if (string.IsNullOrEmpty(tokenIdentifier) || tokenIdentifier.Length < 8)
+            {
+                SetError("Missing or invalid token identifier.");
+                return null;
+            }
+
             UserToken token;
             using (var data = GetSqlData())
             {
@@ -110,6 +116,9 @@ namespace Westwind.AspNetCode.Security
                 token = data.Find<UserToken>(sql, tokenIdentifier);
                 if (token == null)
                 {
+                    if (string.IsNullOrEmpty(data.ErrorMessage))
+                        data.ErrorMessage = "No matching Token Identifier";
+
                     SetError(data.ErrorMessage);
                     return null;
                 }
@@ -135,11 +144,19 @@ namespace Westwind.AspNetCode.Security
         /// <summary>
         /// adds a new token record into the db and returns the new token id
         /// </summary>
-        /// <param name="userId"></param>
-        /// <param name="referenceId"></param>
+        /// <param name="userId">A mapping user id that maps into a user/customer table of the application</param>
+        /// <param name="referenceId">An optional reference id</param>
+        /// <param name="tokenIdentifier">An optional token identifier that can be used to retrieve a token after creation. Must be 8 or more chars long or null if not provided</param>
         /// <returns>A new token Id</returns>
         public string CreateNewToken(string userId, string referenceId = null, string tokenIdentifier = null)
         {
+            if (tokenIdentifier is { Length: < 8 })
+            {
+                SetError("Invalid token identifier - token must be at least 8 characters");
+                return null;
+            }
+
+
             string tokenId;
             int result;
             using (var data = GetSqlData())
@@ -252,14 +269,15 @@ insert into [{Tablename}]
             {
                 string sql = $@"
 Begin Transaction T1
-CREATE TABLE [{Tablename}](
-	[Id] [nvarchar](20) NOT NULL,
-	[UserId] [nvarchar](100) NULL,
-	[ReferenceId] [nvarchar](255) NULL,
-	[TokenIdentifier] [nvarchar](100) NULL,
-	[Updated] [datetime] NOT NULL
-) ON [PRIMARY]
-ALTER TABLE [{Tablename}] ADD  CONSTRAINT [DF_{Tablename}_Updated]  DEFAULT (getutcdate()) FOR [Updated]
+CREATE TABLE [{Tablename}]
+(
+    Id              nvarchar(20) not null Primary Key,
+    UserId          nvarchar(100),
+    ReferenceId     nvarchar(255),
+    TokenIdentifier nvarchar(100) ,
+    Scope           nvarchar(100),
+    Updated         datetime not null
+)
 Commit Transaction T1
 ";
 
@@ -377,6 +395,12 @@ Commit Transaction T1
         /// for the key.
         /// </summary>
         public string TokenIdentifier { get; set; }
+
+        /// <summary>
+        /// An application scope or other identifier that separates
+        /// user tokens
+        /// </summary>
+        public string Scope { get; set;  }
     }
 
 }

@@ -13,7 +13,7 @@ using Westwind.Utilities;
 using Westwind.Utilities.Data;
 using Westwind.Web;
 
-#if false // disabled for now - config not set up. You can manually remove and set the connection string
+#if true // disabled for now - config not set up. You can manually remove and set the connection string
 
 namespace Westwind.AspNetCore.Tests
 {
@@ -26,7 +26,7 @@ namespace Westwind.AspNetCore.Tests
         public void CreateTokenTest()
         {
             var manager = new UserTokenManager(ConnectionString);
-            var token = manager.CreateNewToken("1111", "Reference #1", "1234");
+            var token = manager.CreateNewToken("1111", "Reference #1", "12345678");
             
             Assert.IsNotNull(token, manager.ErrorMessage);
             Console.WriteLine(token);
