@@ -37,11 +37,14 @@ namespace Westwind.AspNetCode.Security
         /// <summary>
         /// Check to see if a token is valid
         /// </summary>
-        /// <param name="tokenId"></param>
+        /// <param name="tokenId">A string token id. Can also contain "Bearer xxxx" which strips the preamble</param>
         /// <param name="renewLease">If true updates the Updated property and moves the expiration window out</param>
         /// <returns></returns>
         public bool IsTokenValid(string tokenId, bool renewLease = true)
         {
+            if (tokenId.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
+                tokenId = tokenId.Substring(7);
+
             var token = GetToken(tokenId, checkForExpiration: true, renewLease: renewLease);
 
             if (token == null)
@@ -182,10 +185,10 @@ namespace Westwind.AspNetCode.Security
 
                     sql = $@"
 insert into [{Tablename}]
-            (Id,UserId,ReferenceId,TokenIdentifier) Values
-            (@0,@1,@2, @3)
+            (Id,UserId,ReferenceId,TokenIdentifier,Updated) Values
+            (@0,@1,@2, @3,@4)
 ";
-                    result = data.ExecuteNonQuery(sql, tokenId, userId, referenceId, tokenIdentifier);
+                    result = data.ExecuteNonQuery(sql, tokenId, userId, referenceId, tokenIdentifier,DateTime.UtcNow);
                 }
                 else
                 {
