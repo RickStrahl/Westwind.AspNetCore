@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -157,15 +158,27 @@ namespace Westwind.AspNetCore
     public class UserStateBaseApiControllerFilterAttribute : ActionFilterAttribute
     {
         private bool DontProcess { get;  }
+        protected bool _isInitialized = false;
 
         public UserStateBaseApiControllerFilterAttribute(bool dontProcess = false)
         {
             DontProcess = dontProcess;
         }
 
+
+        public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
+        {
+            if (_isInitialized)
+                Initialize(context);
+
+            await base.OnActionExecutionAsync(context, next);
+        }
+
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-            Initialize(context);
+            if (!_isInitialized)
+                Initialize(context);
+
             base.OnActionExecuting(context);
         }
 
@@ -174,6 +187,9 @@ namespace Westwind.AspNetCore
         /// </summary>
         protected virtual void Initialize(ActionExecutingContext context)
         {
+        
+            _isInitialized = true;
+
             if (!DontProcess)
                 ParseUserState(context);
         }
