@@ -279,6 +279,7 @@ CREATE TABLE [{Tablename}]
     ReferenceId     nvarchar(255),
     TokenIdentifier nvarchar(100) ,
     Scope           nvarchar(100),
+    Data            nvarchar(max),
     Updated         datetime not null
 )
 Commit Transaction T1
@@ -404,6 +405,12 @@ Commit Transaction T1
         /// user tokens
         /// </summary>
         public string Scope { get; set;  }
+
+
+        /// <summary>
+        /// An extra data field
+        /// </summary>
+        public string Data { get; set;  }
     }
 
 }
