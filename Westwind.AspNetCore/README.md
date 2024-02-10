@@ -92,8 +92,11 @@ If you find this library useful, consider making a small donation:
 
 ### Update History
 
-* **Version 3.2**  
+* **Version 4.0**  
+Physically removed UserTokenManager from the package (see `v3.20` for initial deprecation).
+
+* **Version 3.20**  
 Removed the UserTokenManager class from this package and moved it into Westwind.Utilities.Data in order to remove the default footprint for the SQL libraries from this package. 
 
 #### Breaking Changes
-The structure of the UserTokens table for `UserTokenManager` has changed with some additional fields. The table has to be updated to include additional fields. If your DB has write access for the connection string you can delete the table and let it rebuild. Otherwise look at the `UserTokenManager.CreateUserTokenSqlTable()` method for the lastest structure and SQL statement.
+The structure of the UserTokens table for `UserTokenManager` has changed with some additional fields. The table has to be updated to include additional fields. If your DB has write access for the connection string you can delete the table and let it rebuild. Otherwise look at the `UserTokenManager.CreateUserTokenSqlTable()` method for the latest structure and SQL statement.
