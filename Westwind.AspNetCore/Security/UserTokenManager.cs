@@ -15,6 +15,7 @@ namespace Westwind.AspNetCode.Security
     ///
     /// Works with SQL Server but can be customized
     /// </summary>
+    [Obsolete("This class has moved to the `Westwind.Utilities.Data` Package to reduce the footprint of this NuGet package. . Please use the new class and remove this one!")]
     public class UserTokenManager
     {
         /// <summary>
@@ -98,12 +99,16 @@ namespace Westwind.AspNetCode.Security
         /// Returns a token based on a Token Identifier. This is useful in non-Web
         /// auth scenarios where you can check for the token being validated based on
         /// a token identifier.
-        ///
+        /// 
         /// Expired tokens are not returned and automatically deleted.
+        ///
+        /// By default the token identifier is removed after reading it and you can
+        /// prevent by passing the `
         /// </summary>
         /// <param name="tokenIdentifier"></param>
+        /// <param name="dontRemoveTokenIdentifier">If true doesn't remove the token identifier after reading it</param>
         /// <returns></returns>
-        public UserToken GetTokenByTokenIdentifier(string tokenIdentifier)
+        public UserToken GetTokenByTokenIdentifier(string tokenIdentifier, bool dontRemoveTokenIdentifier = false)
         {
             if (string.IsNullOrEmpty(tokenIdentifier) || tokenIdentifier.Length < 8)
             {
@@ -135,10 +140,13 @@ namespace Westwind.AspNetCode.Security
                     return null;
                 }
 
-                sql = $@"update [{Tablename}] set TokenIdentifier = null where TokenIdentifier = @0";
-                data.ExecuteNonQuery(sql, tokenIdentifier);
-
-                token.TokenIdentifier = null;
+                // clear out the token identifier if requested
+                if (!dontRemoveTokenIdentifier && !string.IsNullOrEmpty(token.TokenIdentifier))
+                {
+                    sql = $@"update [{Tablename}] set TokenIdentifier = null where TokenIdentifier = @0";
+                    data.ExecuteNonQuery(sql, tokenIdentifier);
+                    token.TokenIdentifier = null;
+                }                
             }
 
             return token;
@@ -153,6 +161,8 @@ namespace Westwind.AspNetCode.Security
         /// <returns>A new token Id</returns>
         public string CreateNewToken(string userId, string referenceId = null, string tokenIdentifier = null)
         {
+            var dt = DateTime.UtcNow;
+
             if (tokenIdentifier is { Length: < 8 })
             {
                 SetError("Invalid token identifier - token must be at least 8 characters");
@@ -179,22 +189,24 @@ namespace Westwind.AspNetCode.Security
                     }
                 }
 
+                
                 if (token == null)
                 {
                     tokenId = DataUtils.GenerateUniqueId(15);
 
                     sql = $@"
 insert into [{Tablename}]
-            (Id,UserId,ReferenceId,TokenIdentifier,Updated) Values
-            (@0,@1,@2, @3,@4)
+            (Id,UserId,ReferenceId,TokenIdentifier,Updated,Created,IsValidated) Values
+            (@0,@1,@2, @3,@4,@5,@6)
 ";
-                    result = data.ExecuteNonQuery(sql, tokenId, userId, referenceId, tokenIdentifier,DateTime.UtcNow);
+                    result = data.ExecuteNonQuery(sql, tokenId, userId, referenceId, tokenIdentifier,dt, dt, false);
                 }
                 else
                 {
+                    // replace an existing token for this user id
                     tokenId = DataUtils.GenerateUniqueId(15);
-                    sql = $@"update [{Tablename}] set Id=@0, UserId=@1, ReferenceId=@2, TokenIdentifier=@3, Updated=@4 where Id=@5";
-                    result = data.ExecuteNonQuery(sql, tokenId, userId, referenceId ?? token.ReferenceId, tokenIdentifier, DateTime.UtcNow, token.Id);
+                    sql = $@"update [{Tablename}] set Id=@0, UserId=@1, ReferenceId=@2, TokenIdentifier=@3, Updated=@4, IsValidated=@5  where Id=@6";
+                    result = data.ExecuteNonQuery(sql, tokenId, userId, referenceId ?? token.ReferenceId, tokenIdentifier, dt, token.IsValidated, token.Id);
                 }
             }
 
@@ -208,12 +220,12 @@ insert into [{Tablename}]
         /// <summary>
         /// Deletes a token by its token id
         /// </summary>
-        /// <param name="tokenId"></param>
-        public bool DeleteToken(string tokenId)
+        /// <param name="userTokenId"></param>
+        public bool DeleteToken(string userTokenId)
         {
             using (var data = GetSqlData())
             {
-                int result = data.ExecuteNonQuery($"delete from [{Tablename}] where id=@0", tokenId);
+                int result = data.ExecuteNonQuery($"delete from [{Tablename}] where id=@0", userTokenId);
                 if (result == -1)
                 {
                     SetError(data.ErrorMessage);
@@ -271,7 +283,6 @@ insert into [{Tablename}]
             using (var data = GetSqlData())
             {
                 string sql = $@"
-Begin Transaction T1
 CREATE TABLE [{Tablename}]
 (
     Id              nvarchar(20) not null Primary Key,
@@ -280,9 +291,10 @@ CREATE TABLE [{Tablename}]
     TokenIdentifier nvarchar(100) ,
     Scope           nvarchar(100),
     Data            nvarchar(max),
+    IsValidated     bit,
+    Created         datetime not null,
     Updated         datetime not null
 )
-Commit Transaction T1
 ";
 
                 if (data.ExecuteNonQuery(sql) < 0)
@@ -359,7 +371,9 @@ Commit Transaction T1
     }
 
 
-
+    /// <summary>
+    /// User token entity that maps the user token db table data
+    /// </summary>
     public class UserToken
     {
         public UserToken()
@@ -393,24 +407,34 @@ Commit Transaction T1
         public string ReferenceId { get; set; }
 
         /// <summary>
-        /// An optional value that can be passed in to act as a token
+        /// An Application specific identifier that can be passed in to act as a token
         /// identifier for an external application. Used in token validation
-        /// and retrieving a token from a local/desktop app by querying
-        /// for the key.
+        /// and retrieving a token from a local/desktop app that allows for querying
+        /// for the Token Identifier rather than the token.        
         /// </summary>
         public string TokenIdentifier { get; set; }
 
         /// <summary>
-        /// An application scope or other identifier that separates
-        /// user tokens
+        /// An Application specific scope or other identifier that allows you
+        /// specify additional information about the token with the a token query.
         /// </summary>
-        public string Scope { get; set;  }
+        public string Scope { get; set; }
 
 
         /// <summary>
-        /// An extra data field
+        /// Application specific extra data field
         /// </summary>
-        public string Data { get; set;  }
+        public string Data { get; set; }
+
+        /// <summary>
+        /// Application specific flag that can be used to indicate
+        /// that this user token have been validated.
+        ///
+        /// Note: Not explicitly set by the UserTokenManager.
+        /// </summary>
+        public bool IsValidated { get; set; }
+
+        public override string ToString() => Id ?? "no id set";
     }
 
 }

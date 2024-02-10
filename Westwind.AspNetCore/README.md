@@ -50,8 +50,9 @@ A custom API error filter implementation that returns API responses on exception
 * **RawRequest Body String Formatter**   
 API formatter that allows for receiving raw non-json content to `string` and `byte[]` parameters, which otherwise isn't supported by MVC's API implementation. [More info in blog post](https://weblog.west-wind.com/posts/2017/Sep/14/Accepting-Raw-Request-Body-Content-in-ASPNET-Core-API-Controllers).
 
-* **User Token Manager**  
-A database driven token manager that can create, store, validate and manage the life time of short lived generated tokens. Useful for creating tokens that are assigned after an initial authentication and then used for API access.
+* ~~**User Token Manager**~~  
+*Moved to Westwind.Utilities.Data*  
+~~A database driven token manager that can create, store, validate and manage the life time of short lived generated tokens. Useful for creating tokens that are assigned after an initial authentication and then used for API access.~~
 
 
 #### General ASP.NET Core
@@ -87,3 +88,12 @@ If you find this library useful, consider making a small donation:
     title="Find this library useful? Consider making a small donation." alt="Make Donation" style="text-decoration: none;">
 	<img src="https://weblog.west-wind.com/images/donation.png" />
 </a>
+
+
+### Update History
+
+* **Version 3.2**  
+Removed the UserTokenManager class from this package and moved it into Westwind.Utilities.Data in order to remove the default footprint for the SQL libraries from this package. 
+
+#### Breaking Changes
+The structure of the UserTokens table for `UserTokenManager` has changed with some additional fields. The table has to be updated to include additional fields. If your DB has write access for the connection string you can delete the table and let it rebuild. Otherwise look at the `UserTokenManager.CreateUserTokenSqlTable()` method for the lastest structure and SQL statement.

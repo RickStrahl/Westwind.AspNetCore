@@ -3,7 +3,7 @@
     <TargetFrameworks>net8.0;net6.0;net7.0;</TargetFrameworks>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Nullable>disable</Nullable>
-    <Version>3.11</Version>
+    <Version>3.2.1</Version>
     <Authors>Rick Strahl</Authors>
     <Company>West Wind Technologies</Company>
     <Product>West Wind AspNet Core Toolkit</Product>
@@ -16,7 +16,7 @@
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageOutputPath>./nupkg</PackageOutputPath>
 
-    <PackageCopyright>Rick Strahl, West Wind Technologies 2017-2023</PackageCopyright>
+    <PackageCopyright>Rick Strahl, West Wind Technologies 2017-2024</PackageCopyright>
     <PackageTags>Westwind AspNetCore Web</PackageTags>
     <PackageProjectUrl>https://github.com/RickStrahl/Westwind.AspNetCore/tree/master/Westwind.AspNetCore</PackageProjectUrl>
     <RepositoryUrl>https://github.com/RickStrahl/Westwind.AspNetCore/tree/master/Westwind.AspNetCore</RepositoryUrl>
