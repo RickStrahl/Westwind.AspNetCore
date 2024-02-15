@@ -22,15 +22,30 @@ namespace Westwind.AspNetCore.Errors
         /// error information. Set this during startup in the
         /// `IsDevelopment()` startup block.
         /// </summary>
-        public static bool ShowExceptionDetail {get; set; }= false;
+        public static bool ShowExceptionDetail { get; set; } = false;
+
+        /// <summary>
+        /// Global static interception operation you can use to handle exceptions.
+        ///
+        /// Return true to indicate you handled the exception and default processing
+        /// should not proceed.
+        /// </summary>
+        public static Func<ExceptionContext, bool> OnBeginExceptionProcessed { get; set; }
+
+        /// <summary>
+        /// Global static interception operation you can use to handle exceptions.
+        /// This handler is called at the end of the error processing and contains
+        /// the JSON Error context.Result that was generated and returned.
+        /// </summary>
+        public static Action<ExceptionContext> OnEndExceptionProcessed { get; set; }
 
 
         /// <summary>
         ///
         /// </summary>
-        private bool _dontProcess {get;}
-
-
+        private bool _dontProcess { get; }
+                    
+                    
         /// <summary>
         /// Handles exceptions for API requests and displays an error response
         /// </summary>
@@ -41,8 +56,14 @@ namespace Westwind.AspNetCore.Errors
         }
         public override void OnException(ExceptionContext context)
         {
-
-
+            // allow interception via static event handler
+            // configure in startup code - useful for logging etc.
+            if(OnBeginExceptionProcessed != null)
+            {
+                if (OnBeginExceptionProcessed.Invoke(context))
+                    return;
+            }              
+            
             ApiError apiError = null;
             if (context.Exception is Westwind.AspNetCore.Errors.ApiException)
             {
@@ -117,6 +138,8 @@ namespace Westwind.AspNetCore.Errors
             context.Result = new JsonResult(apiError);
 
             base.OnException(context);
+
+            OnEndExceptionProcessed?.Invoke(context) ;
         }
     }
 
