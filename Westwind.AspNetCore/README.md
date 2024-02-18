@@ -41,8 +41,11 @@ In most MVC applications you need some sort of error display and this ErrorDispl
 
 #### Api Functionality
 
-* **Api Error Handling Filter**  
-A custom API error filter implementation that returns API responses on exceptions. Also provides a standardized `ApiExecption` class that can be used to force responses with specific HTTP response codes.
+* **BaseApiController** 
+API base class that includes exception trapping and display and can be used with UserState that is passed through requests from Auth tokens or other custom auth mechanism. Similar to BaseControl but optimized for API operation.
+
+* **ApiExceptionFilter Error Handling and ApiException**  
+A custom API error filter implementation that returns JSON API responses on exceptions. Also provides a standardized `ApiExecption` class that can be used to easily throw exceptions that returns specific HTTP response codes.
 
 * **Api Base Response Object**  
 `ApiResponse` base class that can be used to return consistent API results that include error status, error message, status code as well as the actual data. Both typed and untyped versions.
@@ -54,6 +57,8 @@ API formatter that allows for receiving raw non-json content to `string` and `by
 *Moved to Westwind.Utilities.Data*  
 ~~A database driven token manager that can create, store, validate and manage the life time of short lived generated tokens. Useful for creating tokens that are assigned after an initial authentication and then used for API access.~~
 
+* **JWT Helper** 
+Make it easier to create JWT Tokens in the ASP.NET Auth configuration
 
 #### General ASP.NET Core
 
@@ -61,15 +66,23 @@ API formatter that allows for receiving raw non-json content to `string` and `by
 Allows adding and removing of HTTP headers to every request using middleware configuration.
 
 * **HttpRequest Extensions**  
-    * `GetBodyStringAsync()` and `GetRawBodyBytesAsync()`  - retrieve raw non-JSON content
-    * `MapPath()` - Map virtual path to physical path on disk
+    * `GetBodyStringAsync()` and `GetRawBodyBytesAsync()`  - retrieve raw Request content
     * `Params()` - Return an item from Form, Query or Session collections.
+    * `IsFormVar()` - checks to see if a form variable exists
+    * `IsPostback()` - Checks to see if current operation is a POST
+    * `IsLocal()` - Determines whether the current request runs on a local IP
+    * `GetUrl()` - Returns an absolute Url from a site relative url
+    * `UnbindFormVars()` - Unbinds form variables into an object
+
+* **HttpContext Extensions** 
+    * `SetUserLocale()` - set user local based on browser language or explicitly
+    * `MapPath()` - Map a physical path from a virtual path
 
 * **DataProtector Wrapper**  
 Helper to make it easier to use the DataProtector API to create secure tokens.
 
 * **UserState Helper**  
-The UserState object greatly simplifies working with auth 'cached' token data more easily by storing a single value in a user claim or forms auth ticket that can be easily restored into an typed object. The class supports easily serialization and auto-loading from Claims. Can be extended by subclassing and adding your own values. 
+The UserState object greatly simplifies working with auth 'cached' token data more easily by storing a single value in a user claim or forms auth ticket that can be easily restored into an typed object. The class supports easily serialization and auto-loading from Claims. Can be extended by subclassing and adding your own values. Integrated with the Base controller classes.
 
 
 ## License

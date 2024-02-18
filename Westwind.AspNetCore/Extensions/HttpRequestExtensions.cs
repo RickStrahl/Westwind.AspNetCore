@@ -178,7 +178,6 @@ namespace Westwind.AspNetCore.Extensions
         /// </summary>
         /// <param name="request"></param>
         /// <param name="key"></param>
-        /// <param name="noSession">If true Session object is not check</param>
         /// <returns></returns>
         public static string Params(this HttpRequest request, string key)
         {
