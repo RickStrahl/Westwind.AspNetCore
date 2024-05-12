@@ -3,7 +3,7 @@
     <TargetFrameworks>net8.0;net6.0;net7.0;</TargetFrameworks>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Nullable>disable</Nullable>
-    <Version>4.0.2</Version>
+    <Version>4.0.3</Version>
     <Authors>Rick Strahl</Authors>
     <Company>West Wind Technologies</Company>
     <Product>West Wind AspNet Core Toolkit</Product>
@@ -33,8 +33,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.3.1" />
-    <PackageReference Include="Westwind.Utilities" Version="4.0.18" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.5.1" />
+    <PackageReference Include="Westwind.Utilities" Version="5.0.1" />
   </ItemGroup>
   
 
