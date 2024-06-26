@@ -172,6 +172,16 @@ namespace Westwind.AspNetCore.Extensions
             return $"{request.Scheme}://{request.Host}{request.Path}{request.QueryString}";
         }
 
+        /// <summary>
+        /// Returns the site base URL for the current request:
+        /// https://localhost:5200/test/sub -> https://localhost:5200/
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        public static string GetSiteBaseUrl(this HttpRequest request)
+        {
+            return $"{request.Scheme}://{request.Host}/";            
+        }
 
         /// <summary>
         /// Returns a value based on a key against the Form, Query and Session collections.
