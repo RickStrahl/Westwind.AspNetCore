@@ -110,10 +110,35 @@ namespace Westwind.AspNetCore.Utilities
 
         /// <summary>
         /// The name of the object generated in client script code
+        ///
+        /// Can be either single object name like `serverVars` or a complex
+        /// name like `window.global.authData`.
+        ///
+        /// If a single variable name is used a `var` declaration is prefixed
+        /// unless you explicitly opt out via noVar
+        /// 
+        /// If using a complex name make sure the object hierarchy above
+        /// exists so you can assign the new object to it (ie. in the aboove
+        /// window.global has to exist in order to assing window.global.authData)
         /// </summary>
         public string ClientObjectName { get; set; } = "serverVars";
 
-        public bool useCamelCase { get; set; }
+
+        /// <summary>
+        /// Determines whether script variables that objects or collections are
+        /// automatically serialized using camelCase names.
+        /// </summary>
+        public bool UseCamelCase { get; set; }
+
+        /// <summary>
+        /// If true no `var` prefix is added to the single variable name
+        /// used in ClientObjectName. This is useful when assigning to
+        /// pre-existing objects or for creating 'global' objects.
+        ///
+        /// Applies only only ClientObjectName values that don't have a .
+        /// in the name as . implies a prexisting object structure.
+        /// </summary>
+        public bool NoVar { get; set; }
 
         /// <summary>
         /// Internally tracked prefix code
@@ -130,7 +155,7 @@ namespace Westwind.AspNetCore.Utilities
         /// Constructor that optionally accepts the name of the
         /// variable that is to be created
         /// </summary>
-        /// <param name="clientObjectName">Name of the JavaScript variable to create</param>
+        /// <param name="clientObjectName">Name of the JavaScript variable to create. Can be a single variable name, or a previous existing object or subobject name. Example: serverVars, window.global.authData. Note if you specify a sub-object make sure the object hierarchy above exists.</param>
         public ScriptVariables(string clientObjectName = "serverVariables")
         {
         }
@@ -323,6 +348,7 @@ namespace Westwind.AspNetCore.Utilities
         /// You can use this method with MVC Views to embedd generated JavaScript
         /// into the the View page.
         /// <param name="addScriptTags">If provided wraps the script text with script tags</param>
+        /// <param name="noVar">If true doesn't previx single variable with 'var'</param>
         /// </summary>
         public string ToString(bool addScriptTags)
         {
@@ -340,7 +366,7 @@ namespace Westwind.AspNetCore.Utilities
 
             // If the name includes a . assignment is made to an existing
             // object or namespaced reference - don't create var instance.
-            if (!ClientObjectName.Contains("."))
+            if (!NoVar && !ClientObjectName.Contains("."))
                 sb.Append("var ");
 
             sb.AppendLine(ClientObjectName + " = {");
@@ -360,10 +386,10 @@ namespace Westwind.AspNetCore.Utilities
                     if (entry.Value != null)
                         propertyValue = ReflectionUtils.GetPropertyEx(entry.Value, property);
 
-                    sb.AppendLine("\t" + varName + ": " + Serialize(propertyValue,useCamelCase) + ",");
+                    sb.AppendLine("\t" + varName + ": " + Serialize(propertyValue,UseCamelCase) + ",");
                 }
                 else
-                    sb.AppendLine("\t" + entry.Key + ": " + Serialize(entry.Value,useCamelCase) + ",");
+                    sb.AppendLine("\t" + entry.Key + ": " + Serialize(entry.Value,UseCamelCase) + ",");
             }
 
             // Strip off last comma plus CRLF
@@ -389,6 +415,7 @@ namespace Westwind.AspNetCore.Utilities
         /// @scriptVars.ToHtmlString()
         /// </summary>
         /// <param name="addScriptTags"></param>
+        /// <param name="noVar">If true doesn't previx single variable with 'var'</param>
         /// <returns></returns>
         public HtmlString ToHtmlString(bool addScriptTags = false)
         {
