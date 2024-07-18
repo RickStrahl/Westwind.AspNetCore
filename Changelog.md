@@ -7,6 +7,9 @@
 * **Add TokenIdentifier to UserTokenManager**  
 Add an extra field and retrieval mechanism to retrieve a token based on a separate token. This can be useful in local/desktop authentication scenarios where you provide a token identifier that you can query for via an API until the auth operation is complete.
 
+* **Fix: UserState.IsAdmin**  
+UserState IsAdmin flag now explicitly checks for authentication in addition to the flags value, when returning its state to avoid potential issues with multi-factor authentication where flag may be set before two-factor has completed.
+
 ### Version 3.8
 
 * **Moved HttpRequestExtensions.MapPath() to HttpContextExtensions.MapPath()**  

@@ -59,11 +59,7 @@ namespace Westwind.AspNetCore.Security
         /// </summary>
         public virtual bool IsAdmin
         {
-            get
-            {
-                var result = _isAdmin && IsAuthenticated();
-                return result;
-            }
+            get=>  _isAdmin && IsAuthenticated();
             set => _isAdmin = value;
         }
 
