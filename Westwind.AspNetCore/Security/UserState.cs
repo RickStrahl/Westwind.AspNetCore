@@ -51,7 +51,11 @@ namespace Westwind.AspNetCore.Security
         public virtual string UserId { get; set; }
 
         /// <summary>
-        /// The users admin status
+        /// The users admin status - must be explicitly set.
+        ///
+        /// Also implicitly checks if the userstate record
+        /// to avoid scenarios where applications might not
+        /// be explicitly checking both for authentication and admin
         /// </summary>
         public virtual bool IsAdmin
         {
