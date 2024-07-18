@@ -53,7 +53,15 @@ namespace Westwind.AspNetCore.Security
         /// <summary>
         /// The users admin status
         /// </summary>
-        public virtual bool IsAdmin { get; set; }
+        public virtual bool IsAdmin
+        {
+            get
+            {
+                var result = _isAdmin && IsAuthenticated();
+                return result;
+            }
+            set => _isAdmin = value;
+        }
 
 
         /// <summary>
@@ -84,7 +92,7 @@ namespace Westwind.AspNetCore.Security
             }
         }
         private string _SecurityToken = null;
-
+        private bool _isAdmin;
 
 
         /// <summary>
@@ -315,10 +323,10 @@ namespace Westwind.AspNetCore.Security
         /// whether one of the UserID values is set.
         /// </summary>
         /// <returns></returns>
-        public virtual bool IsEmpty()=> string.IsNullOrEmpty(UserId) &&
-                   UserIdInt < 1
-                   && (UserIdGuid==null || UserIdGuid == Guid.Empty);
-        
+        public virtual bool IsEmpty()=>
+                   string.IsNullOrEmpty(UserId) &&
+                   UserIdInt < 1 && (UserIdGuid==null || UserIdGuid == Guid.Empty);
+
         public virtual bool IsAuthenticated() => !IsEmpty();
 
         /// <summary>
