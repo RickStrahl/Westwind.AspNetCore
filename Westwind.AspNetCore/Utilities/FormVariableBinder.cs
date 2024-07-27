@@ -88,7 +88,7 @@ namespace Westwind.Web
         /// <param name="request">HttpRequest object from which Form Variables are retrieved</param>
         /// <param name="model">The object to unbind to</param>
         /// <param name="propertyExclusions">Comma seperated list of properties to exclude</param>
-        /// <param name="prefixe">Comma seperated list of prefixes that should be parsed.</param>
+        /// <param name="prefixes">Comma seperated list of prefixes that should be parsed.</param>
         /// <param name="propertyInclusionList">Comma separated list of explicit properties to include. Only these properties are used if specified.</param>
         public FormVariableBinder( HttpRequest request, object model, string propertyExclusions = null, string prefixes = null, string propertyInclusionList = null)
         {
