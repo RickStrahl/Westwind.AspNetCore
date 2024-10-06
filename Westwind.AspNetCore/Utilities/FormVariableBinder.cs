@@ -235,10 +235,10 @@ namespace Westwind.Web
         /// <returns></returns>
         public static List<ValidationError> Unbind(HttpRequest Request,
                                                  object model,
-                                                 string propertyExceptions = null,
+                                                 string propertyExclusions = null,
                                                  string formvarPrefixes = null)
         {
-            var binder = new FormVariableBinder(Request, model,  propertyExceptions, formvarPrefixes);
+            var binder = new FormVariableBinder(Request, model,  propertyExclusions, formvarPrefixes);
             binder.Prefixes = formvarPrefixes;
 
             binder.Unbind();
