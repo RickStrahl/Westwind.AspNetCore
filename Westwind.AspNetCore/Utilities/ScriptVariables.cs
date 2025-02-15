@@ -46,22 +46,20 @@ using Westwind.Utilities.Properties;
 namespace Westwind.AspNetCore.Utilities
 {
     /// <summary>
-    /// ScriptVariables allows you to easily push server side values into JavaScript
-    /// code. It allows you add properties to a collection which can then be rendered
-    /// into a JavaScript object using the ToString() or ToHtmlString(). Output is
-    /// rendered as a single JavaScript object literal with properties for each
-    /// item/value added. Any type of value or object can be added including nested
-    /// objects and collections. It's an easy way to serialize complex data into
-    /// a JavaScript code from the server.
+    /// ScriptVariables is a utility class that lets you safely render server side
+    /// variables/values into JavaScript code so it can be used by client side code.
     ///
-    /// The component also supports posting back of updated values from the client
-    /// and a generic Items[] collection that allows page data to update generic
-    /// values and post them back to the server. The items are available
+    /// It works by creating a JavaScript object that is rendered into a script block
+    /// based on server side values you add to this object. Each key and value pair is
+    /// then rendered into the page as part of a client side Javascript object using the
+    /// `.ToString()` or `.ToHtmlString()` methods.
     ///
-    /// This component produces either straight string or HtmlString output when used directly
-    /// using the ToString() or HtmlString() methods for use in ASP.NET MVC or Web Pages,
-    /// or can be used as WebForms control that automatically handles embedding of
-    /// the script and deserialization of return values on the server.
+    /// Definitions automatically handle:
+    ///
+    /// * Variable name declaration
+    /// * Safe Serialization of values
+    /// * Optional pre and post script code
+    /// * Optional wrapping of script in script tags
     ///
     /// This component supports:&lt;&lt;ul&gt;&gt;
     /// &lt;&lt;li&gt;&gt; Creating individual client side variables
@@ -116,7 +114,7 @@ namespace Westwind.AspNetCore.Utilities
         ///
         /// If a single variable name is used a `var` declaration is prefixed
         /// unless you explicitly opt out via noVar
-        /// 
+        ///
         /// If using a complex name make sure the object hierarchy above
         /// exists so you can assign the new object to it (ie. in the aboove
         /// window.global has to exist in order to assing window.global.authData)
@@ -131,22 +129,24 @@ namespace Westwind.AspNetCore.Utilities
         public bool UseCamelCase { get; set; }
 
         /// <summary>
-        /// If true no `var` prefix is added to the single variable name
+        /// If true, no `var` prefix is added to the single variable name
         /// used in ClientObjectName. This is useful when assigning to
         /// pre-existing objects or for creating 'global' objects.
         ///
-        /// Applies only only ClientObjectName values that don't have a .
+        /// Applies only ClientObjectName values that don't have a .
         /// in the name as . implies a prexisting object structure.
         /// </summary>
         public bool NoVar { get; set; }
 
         /// <summary>
-        /// Internally tracked prefix code
+        /// Internally tracked prefix code that is rendered before the
+        /// embedded variable in .ToString().
         /// </summary>
         private StringBuilder sbPrefixScriptCode = new StringBuilder();
 
         /// <summary>
-        /// Internally tracked postfix code
+        /// Internally tracked postfix code that is rendered after the
+        /// embedded variable in .ToString().
         /// </summary>
         private StringBuilder sbPostFixScriptCode = new StringBuilder();
 
@@ -168,20 +168,21 @@ namespace Westwind.AspNetCore.Utilities
         /// * Indented formatting for objects
         /// * Dates formatted as `new Data(3123312312)`
         /// </summary>
-        /// <param name="value"></param>
+        /// <param name="value">Value to serialize</param>
+        /// <param name="useCamelCase">If true serializes to camelCase</param>
         /// <returns></returns>
-        public static string Serialize(object value, bool useJavaScriptNaming = false)
+        public static string Serialize(object value, bool useCamelCase = false)
         {
             var contractResolver = new DefaultContractResolver();
 
-            if (useJavaScriptNaming)
+            if (useCamelCase)
                 contractResolver.NamingStrategy = new CamelCaseNamingStrategy();
 
             var settings = new JsonSerializerSettings
             {
                 Formatting = Formatting.Indented,
                 ContractResolver = contractResolver,
-
+                Converters = { new StringEnumConverter() }
             };
 
             // serialize dates to new Date(xxxx)
@@ -259,78 +260,6 @@ namespace Westwind.AspNetCore.Utilities
         {
             sbPostFixScriptCode.AppendLine(scriptCode);
         }
-
-        ///// <summary>
-        ///// Returns a value that has been updated on the client
-        /////
-        ///// Note this method will throw if it is not called
-        ///// during PostBack or if AllowUpdates is false.
-        ///// </summary>
-        ///// <typeparam name="TType"></typeparam>
-        ///// <param name="key"></param>
-        ///// <returns></returns>
-        //public TType GetValue<TType>(string key)
-        //{
-        //    HttpRequest Request = HttpContext.Current.Request;
-
-        //    if (UpdateMode == AllowUpdateTypes.None || UpdateMode == AllowUpdateTypes.ItemsOnly)
-        //        throw new InvalidOperationException("Can't get values if AllowUpdates is not set to true");
-
-        //    if (Request.HttpMethod != "POST")
-        //        throw new InvalidOperationException("GetValue can only be called during postback");
-
-        //    // Get the postback value which is __ + ClientObjectName
-        //    string textValue = PostBackValue;
-        //    if (textValue == null)
-        //        return default(TType);
-
-        //    // Retrieve individual Url encoded value from the bufer
-        //    textValue = WebUtils.GetUrlEncodedKey(textValue, key);
-        //    if (textValue == null)
-        //        return default(TType);
-
-        //    // And deserialize as JSON
-        //    object value = JsonSerializer.Deserialize(textValue, typeof(TType));
-
-        //    return (TType)value;
-        //}
-
-        ///// <summary>
-        ///// Returns a value from the client Items collection
-        ///// </summary>
-        ///// <typeparam name="TType"></typeparam>
-        ///// <param name="key"></param>
-        ///// <returns></returns>
-        //public TType GetItemValue<TType>(string key)
-        //{
-        //    HttpRequest Request = HttpContext.Current.Request;
-
-        //    if (UpdateMode == AllowUpdateTypes.None || UpdateMode == AllowUpdateTypes.PropertiesOnly)
-        //        throw new InvalidOperationException(Resources.CanTRetrieveItemsInUpdateMode + UpdateMode);
-
-        //    if (Request.HttpMethod != "POST")
-        //        return default(TType); // throw new InvalidOperationException("GetValue can only be called during postback");
-
-        //    // Get the postback value which is __ + ClientObjectName
-        //    string textValue = PostBackValue;
-        //    if (string.IsNullOrEmpty(textValue))
-        //        return default(TType);
-
-        //    // Retrieve individual Url encoded value from the buffer
-        //    textValue = WebUtils.GetUrlEncodedKey(textValue, "_Items");
-        //    if (string.IsNullOrEmpty(textValue))
-        //        return default(TType);
-
-        //    textValue = WebUtils.GetUrlEncodedKey(textValue, key);
-        //    if (textValue == null)
-        //        return default(TType);
-
-        //    // And deserialize as JSON
-        //    object value = JsonSerializer.Deserialize(textValue, typeof(TType));
-
-        //    return (TType)value;
-        //}
-
 
         /// <summary>
         /// Returns the rendered JavaScript as a string
