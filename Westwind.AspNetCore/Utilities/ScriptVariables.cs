@@ -158,6 +158,7 @@ namespace Westwind.AspNetCore.Utilities
         /// <param name="clientObjectName">Name of the JavaScript variable to create. Can be a single variable name, or a previous existing object or subobject name. Example: serverVars, window.global.authData. Note if you specify a sub-object make sure the object hierarchy above exists.</param>
         public ScriptVariables(string clientObjectName = "serverVariables")
         {
+            ClientObjectName = clientObjectName;
         }
 
         public JsonSerializerSettings Setting { get; set; }
