@@ -302,7 +302,7 @@ namespace Westwind.AspNetCore.Utilities
             sb.AppendLine(ClientObjectName + " = {");
 
 
-            foreach (KeyValuePair<string, object> entry in ScriptVars)
+            foreach (var entry in ScriptVars)
             {
                 if (entry.Key.StartsWith("."))
                 {

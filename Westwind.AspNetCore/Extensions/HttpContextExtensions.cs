@@ -57,6 +57,36 @@ public static class HttpContextExtensions
             .Replace(slash + slash, slash);
     }
 
+    /// <summary>
+    /// Resolves of a virtual Url to a fully qualified Url.
+    ///
+    /// * ~/ ~ as base path
+    /// * / as base path
+    /// * https:// http:// return as is
+    /// * Any relative path: returned as is
+    /// * Empty or null: returned as is
+    /// </summary>
+    /// <returns>Updated path</returns>
+    public static string ResolveUrl(this HttpContext context, string url)
+    {
+        if (string.IsNullOrEmpty(url) ||
+            url.StartsWith("http://", StringComparison.OrdinalIgnoreCase) ||
+            url.StartsWith("https://", StringComparison.OrdinalIgnoreCase) )
+            return url;
+
+        var basepath = context.Request.GetSiteBaseUrl();
+
+        if (url.StartsWith("~/"))
+            url = basepath + url.Substring(2);
+        else if (url.StartsWith("~") || url.StartsWith("/"))
+            url = basepath + url.Substring(1);        
+
+        // no leading path, ./ or ../
+        // any relative Urls we can't do anything with
+        // so return them as is and hope for the best
+
+        return url;
+    }
 
     /// <summary>
     /// Sets the culture and UI culture to a specific culture. Allows overriding of currency
