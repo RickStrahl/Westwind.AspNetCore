@@ -1,0 +1,1566 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Westwind.AspNetCore</name>
+    </assembly>
+    <members>
+        <member name="T:Westwind.AspNetCore.Components.ErrorDisplayModel">
+             <summary>
+             An error display component that allows rich rendering of individual messages
+             as well as validation error messages.
+            
+             Object should be passed in to view end rendered with
+             &lt;%= ((ErrorDisplay) ViewData["ErrorDisplay"]).Show(450,true) %&gt;
+             or via a view.
+            
+             Relies on several CSS Styles:
+             .errordisplay, errordisplay-text, errordisplay-warning-icon, errordisplay-info-icon
+             The icon links link to images.
+             </summary>
+        </member>
+        <member name="P:Westwind.AspNetCore.Components.ErrorDisplayModel.Message">
+            <summary>
+            The message that is displayed
+            </summary>
+        </member>
+        <member name="P:Westwind.AspNetCore.Components.ErrorDisplayModel.Icon">
+            <summary>
+            Name of an font-awesome icon to display
+            'warning', 'error', 'info', 'success' have special
+            meaning and display custom colors
+            </summary>
+        </member>
+        <member name="P:Westwind.AspNetCore.Components.ErrorDisplayModel.MessageAsRawHtml">
+            <summary>
+            Flag that determines whether the message is displayed
+            as HTML or as text. By default message is encoded as text (false).
+            </summary>
+        </member>
+        <member name="P:Westwind.AspNetCore.Components.ErrorDisplayModel.HeaderAsRawHtml">
+            <summary>
+            Flag that determines whether the message is displayed
+            as HTML or as text. By default message is encoded as text (false).
+            </summary>
+        </member>
+        <member name="P:Westwind.AspNetCore.Components.ErrorDisplayModel.Dismissable">
+            <summary>
+            Determines whether the alert can be closed
+            </summary>
+        </member>
+        <member name="P:Westwind.AspNetCore.Components.ErrorDisplayModel.HasMessage">
+            <summary>
+            Determines whether there is a message present.
+            </summary>
+        </member>
+        <member name="P:Westwind.AspNetCore.Components.ErrorDisplayModel.Timeout">
+            <summary>
+            Timeout in milliseconds before the error display is hidden
+            </summary>
+        </member>
+        <member name="P:Westwind.AspNetCore.Components.ErrorDisplayModel.DisplayErrors">
+            <summary>
+            Holds a modelstate errors collection
+            </summary>
+        </member>
+        <member name="M:Westwind.AspNetCore.Components.ErrorDisplayModel.AddMessages(System.Collections.Generic.IEnumerable{Westwind.Utilities.ValidationError},System.String)">
+            <summary>
+            Adds an existing set of Validation Errors to the DisplayErrors
+            </summary>
+            <param name="validationErrors">List of validation errors</param>
+        </member>
+        <member name="M:Westwind.AspNetCore.Components.ErrorDisplayModel.AddMessages(Westwind.Utilities.ValidationErrorCollection,System.String)">
+            <summary>
+            Adds an existing set of Validation Errors to the DisplayErrors
+            </summary>
+            <param name="validationErrors">List of validation errors</param>
+        </member>
+        <member name="M:Westwind.AspNetCore.Components.ErrorDisplayModel.AddMessages(Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary,System.String)">
+            <summary>
+            Adds ModelState errors to the validationErrors
+            </summary>
+            <param name="modelErrors"></param>
+        </member>
+        <member name="M:Westwind.AspNetCore.Components.ErrorDisplayModel.FromRequest(Microsoft.AspNetCore.Http.HttpRequest)">
+            <summary>
+            Tries to populate the error display object from the request
+            object's Query and Form Variables.
+            Variables:
+            error-message, error-icon, error-class
+            </summary>
+            <param name="request"></param>
+        </member>
+        <member name="M:Westwind.AspNetCore.Components.ErrorDisplayModel.AddMessage(System.String,System.String)">
+            <summary>
+            Adds an individual model error
+            </summary>
+            <param name="errorMessage"></param>
+            <param name="control"></param>
+        </member>
+        <member name="T:Westwind.AspNetCore.Components.ErrorDisplayTagHelper">
+             <summary>
+             Taghelper to display a BootStrap Alert box and FontAwesome icon.
+            
+             Message and Header values can be assigned from model values using
+             standard Razor expressions.
+            
+             The Helper only displays content when message or header are set
+             otherwise the content is not displayed, so when binding to your
+             model and the model value is empty nothing displays.
+             </summary>
+             <remarks>
+             Requires FontAwesome in addition to bootstrap in order to display icons
+             </remarks>
+        </member>
+        <member name="P:Westwind.AspNetCore.Components.ErrorDisplayTagHelper.message">
+            <summary>
+            the main message that gets displayed
+            </summary>
+        </member>
+        <member name="P:Westwind.AspNetCore.Components.ErrorDisplayTagHelper.header">
+            <summary>
+            Optional header that is displayed in big text. Use for
+            'noisy' warnings and stop errors only please :-)
+            The message is displayed below the header.
+            </summary>
+        </member>
+        <member name="P:Westwind.AspNetCore.Components.ErrorDisplayTagHelper.icon">
+            <summary>
+            Font-awesome icon name without the fa- prefix.
+            Example: info, warning, lightbulb-o,
+            If none is specified - "warning" is used
+            To force no icon use "none"
+            </summary>
+        </member>
+        <member name="P:Westwind.AspNetCore.Components.ErrorDisplayTagHelper.cssClass">
+            <summary>
+            CSS class. Handled here so we can capture the existing
+            class value and append the BootStrap alert class.
+            </summary>
+        </member>
+        <member name="P:Westwind.AspNetCore.Components.ErrorDisplayTagHelper.alertClass">
+            <summary>
+            Optional - specifies the alert class used on the top level
+            window. If not specified uses the same as the icon.
+            Override this if the icon and alert classes are different
+            (often they are not).
+            </summary>
+        </member>
+        <member name="P:Westwind.AspNetCore.Components.ErrorDisplayTagHelper.messageAsRawHtml">
+            <summary>
+            If true embeds the message text as HTML. Use this
+            flag if you need to display HTML text. If false
+            the text is HtmlEncoded.
+            </summary>
+        </member>
+        <member name="P:Westwind.AspNetCore.Components.ErrorDisplayTagHelper.headerAsRawHtml">
+            <summary>
+            If true embeds the header text as HTML. Use this
+            flag if you need to display raw HTML text. If false
+            the text is HtmlEncoded, true the entire text left
+            as raw HTML.
+            </summary>
+        </member>
+        <member name="P:Westwind.AspNetCore.Components.ErrorDisplayTagHelper.dismissible">
+            <summary>
+            If true displays a close icon to close the alert.
+            </summary>
+        </member>
+        <member name="P:Westwind.AspNetCore.Components.ErrorDisplayTagHelper.errorDisplay">
+            <summary>
+            Error display instance - if provided overrides any other values set
+            </summary>
+        </member>
+        <member name="T:Westwind.AspNetCore.BaseApiController">
+             <summary>
+             Base Controller implementation that holds the default UserState object
+             and provides ApiException Handling, UserState initialization
+             and JsonError functionality.
+            
+             Uses BaseController as its base class.
+             </summary>
+        </member>
+        <member name="T:Westwind.AspNetCore.BaseApiController`1">
+             <summary>
+             Base Controller implementation that holds a custom UserState object
+             and provides ApiException Handling, UserState initialization
+             and JsonError functionality.
+            
+             Uses BaseController as its base class.
+             </summary>
+        </member>
+        <member name="F:Westwind.AspNetCore.BaseApiController`1.UserState">
+             <summary>
+             UserState instance that holds cached user data info that
+             gets persisted into an authentication cookie or token for
+             easy reuse without reloading a user record.
+            
+             Works with Auth Cookie or JWT token Authentication just ensure
+             you write out UserState into claims when creating Cookie/Token
+             via <seealso cref="M:Westwind.AspNetCore.Security.UserState.ToString"/>
+             </summary>
+        </member>
+        <member name="M:Westwind.AspNetCore.BaseApiController`1.JsonError(System.String,System.Int32)">
+            <summary>
+            Returns a Json error response to the client
+            </summary>
+            <param name="errorMessage">Message of the error to return</param>
+            <param name="statusCode">Optional status code.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Westwind.AspNetCore.BaseApiController`1.ReturnJsonError(System.Exception,System.Int32)">
+            <summary>
+            Returns a JSON error response to the client
+            </summary>
+            <param name="ex">Exception that generates the error message and info to return</param>
+            <param name="statusCode">Optional status code</param>
+            <returns></returns>
+        </member>
+        <member name="T:Westwind.AspNetCore.BaseApiFromFullController">
+             <summary>
+             Base Controller implementation that holds the default UserState object
+             and provides ApiException Handling, UserState initialization
+             and JsonError functionality.
+            
+             Uses Controller as its base class.
+             </summary>
+        </member>
+        <member name="T:Westwind.AspNetCore.BaseApiFromFullController`1">
+             <summary>
+             Base Controller implementation that holds a custom UserState object
+             and provides ApiException Handling, UserState initialization
+             and JsonError functionality
+            
+             Uses Controller as its base class.
+             </summary>
+        </member>
+        <member name="F:Westwind.AspNetCore.BaseApiFromFullController`1.UserState">
+             <summary>
+             UserState instance that holds cached user data info that
+             gets persisted into an authentication cookie or token for
+             easy reuse without reloading a user record.
+            
+             Works with Auth Cookie or JWT token Authentication just ensure
+             you write out UserState into claims when creating Cookie/Token
+             via <seealso cref="M:Westwind.AspNetCore.Security.UserState.ToString"/>
+             </summary>
+        </member>
+        <member name="M:Westwind.AspNetCore.BaseApiFromFullController`1.JsonError(System.String,System.Int32)">
+            <summary>
+            Returns a Json error response to the client
+            </summary>
+            <param name="errorMessage">Message of the error to return</param>
+            <param name="statusCode">Optional status code.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Westwind.AspNetCore.BaseApiFromFullController`1.ReturnJsonError(System.Exception,System.Int32)">
+            <summary>
+            Returns a JSON error response to the client
+            </summary>
+            <param name="ex">Exception that generates the error message and info to return</param>
+            <param name="statusCode">Optional status code</param>
+            <returns></returns>
+        </member>
+        <member name="T:Westwind.AspNetCore.UserStateBaseApiControllerFilterAttribute">
+            <summary>
+            Filter that handles parsing UserState if it exists
+            in the User claims. Basically looks
+            </summary>
+        </member>
+        <member name="M:Westwind.AspNetCore.UserStateBaseApiControllerFilterAttribute.Initialize(Microsoft.AspNetCore.Mvc.Filters.ActionExecutingContext)">
+            <summary>
+            Initialize the controller by setting up UserState and ErrorDisplay
+            </summary>
+        </member>
+        <member name="M:Westwind.AspNetCore.UserStateBaseApiControllerFilterAttribute.ParseUserState(Microsoft.AspNetCore.Mvc.Filters.ActionExecutingContext)">
+            <summary>
+            This method Parses user state from the User.Identity if the
+            user is Authenticated. Otherwise the UserState object is
+            left as an empty object.
+            </summary>
+            <param name="context"></param>
+        </member>
+        <member name="T:Westwind.AspNetCore.AppBaseController">
+            <summary>
+            Base Controller implementation that holds ViewState options,
+            ErrorDisplay and UserState objects that are preinitialized
+            </summary>
+        </member>
+        <member name="F:Westwind.AspNetCore.BaseController`1.ErrorDisplay">
+            <summary>
+            ErrorDisplay control that holds page level error information
+            </summary>
+        </member>
+        <member name="P:Westwind.AspNetCore.BaseController`1.UserState">
+             <summary>
+             UserState instance that holds cached user data info that
+             gets persisted into an authentication cookie or token for
+             easy reuse without reloading a user record.
+            
+             Works with Auth Cookie or JWT token Authentication just ensure
+             you write out UserState into claims when creating Cookie/Token
+             via <seealso cref="M:Westwind.AspNetCore.Security.UserState.ToString"/>
+             </summary>
+        </member>
+        <member name="M:Westwind.AspNetCore.BaseController`1.Initialize(Microsoft.AspNetCore.Mvc.Filters.ActionExecutingContext)">
+            <summary>
+            Initialize the controller by setting up UserState and ErrorDisplay
+            </summary>
+        </member>
+        <member name="M:Westwind.AspNetCore.BaseController`1.CreateViewModel``1">
+             <summary>
+             Creates or updates a ViewModel and adds values to some of the
+             stock properties of the Controller.
+            
+             This default implementation initializes the ErrorDisplay and UserState
+             objects after creation.
+             </summary>
+             <typeparam name="TViewModel"></typeparam>
+             <returns></returns>
+        </member>
+        <member name="M:Westwind.AspNetCore.BaseController`1.InitializeViewModel(Westwind.AspNetCore.BaseViewModel)">
+             <summary>
+             Updates a ViewModel and adds values to some of the
+             stock properties of the Controller.
+            
+             This default implementation initializes the ErrorDisplay and UserState
+             objects after creation.
+             </summary>
+        </member>
+        <member name="M:Westwind.AspNetCore.BaseController`1.JsonError(System.String,System.Int32)">
+            <summary>
+            Returns a Json error response to the client
+            </summary>
+            <param name="errorMessage">Message of the error to return</param>
+            <param name="statusCode">Optional status code.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Westwind.AspNetCore.BaseController`1.ReturnJsonError(System.Exception,System.Int32)">
+            <summary>
+            Returns a JSON error response to the client
+            </summary>
+            <param name="ex">Exception that generates the error message and info to return</param>
+            <param name="statusCode">Optional status code</param>
+            <returns></returns>
+        </member>
+        <member name="F:Westwind.AspNetCore.BaseController`1._initialAppUserState">
+            <summary>
+            Keep track of initial state in this Request, so we don't write out cookies
+            when nothing has changed.
+            </summary>
+        </member>
+        <member name="M:Westwind.AspNetCore.BaseController`1.CreateUserState">
+            <summary>
+            Use this to create a UserState instance - typically call from `Initialize()` method of controller
+            prior to action execution.
+            </summary>
+            <param name="mode">Mode using either Identity Claims or an Http Cookie to store data</param>
+            <param name="cookieName">Name of the cookie to use if using cookies. Cookie is only used in CookieMode</param>
+        </member>
+        <member name="M:Westwind.AspNetCore.BaseController`1.PersistUserState(Westwind.AspNetCore.Security.UserState)">
+            <summary>
+            Persists UserState in a cookie or as an Identity Claim so it can be picked up
+            in subsequent requests.
+            </summary>
+            <param name="userState">UserState to save</param>
+            <param name="mode"></param>
+            <param name="cookieName"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Westwind.AspNetCore.UserStateWebSettings">
+            <summary>
+            Application wide configuration for UserState Web Settings
+            for Cookie and Identity use.
+            </summary>
+        </member>
+        <member name="T:Westwind.AspNetCore.Errors.ApiError">
+            <summary>
+            An error that is serialized to JSON. Includes an 
+            isError property as interface marker along with a
+            message and various error details that are displayed.
+            </summary>
+        </member>
+        <member name="P:Westwind.AspNetCore.Errors.ApiError.message">
+            <summary>
+            Error message or other message returned
+            </summary>
+        </member>
+        <member name="P:Westwind.AspNetCore.Errors.ApiError.isError">
+            <summary>
+            Error interface marker
+            </summary>
+        </member>
+        <member name="P:Westwind.AspNetCore.Errors.ApiError.errorCode">
+            <summary>
+            Optional error code 
+            </summary>
+        </member>
+        <member name="P:Westwind.AspNetCore.Errors.ApiError.detail">
+            <summary>
+            Any additional error detail to display
+            </summary>
+        </member>
+        <member name="P:Westwind.AspNetCore.Errors.ApiError.errors">
+            <summary>
+            Optional collection of errors.
+            </summary>
+        </member>
+        <member name="M:Westwind.AspNetCore.Errors.ApiError.#ctor(System.String,System.String)">
+            <summary>
+            Create a new API Error with a string message
+            </summary>
+            <param name="message"></param>
+        </member>
+        <member name="M:Westwind.AspNetCore.Errors.ApiError.#ctor(Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary)">
+            <summary>
+            Create a new API Error from model state dictionary 
+            Error values.
+            </summary>
+            <param name="modelState"></param>
+        </member>
+        <member name="T:Westwind.AspNetCore.Errors.ApiException">
+            <summary>
+            A special exception that you can throw to return a specific
+            HTTP response and error when combined with the
+            cref="UnhandledApiExceptionFilter".
+            </summary>
+        </member>
+        <member name="P:Westwind.AspNetCore.Errors.ApiException.StatusCode">
+            <summary>
+            HTTP Status code to return when this exception is
+            handled by UnhandledExceptionFilter
+            </summary>
+        </member>
+        <member name="P:Westwind.AspNetCore.Errors.ApiException.Errors">
+            <summary>
+            An optional collection of errors that can be set
+            to provide more error detail
+            </summary>
+        </member>
+        <member name="M:Westwind.AspNetCore.Errors.ApiException.#ctor(System.String,System.Int32,Westwind.Utilities.ValidationErrorCollection,System.String)">
+            <summary>
+            Create a new exception with a message, status code
+            and optional error collection
+            </summary>
+            <param name="message"></param>
+            <param name="statusCode">Optional - Http Status code to display</param>
+            <param name="errors">Optional - Collection of validation errors</param>
+            <param name="errorCode">Optional - An error code for this error</param>
+        </member>
+        <member name="M:Westwind.AspNetCore.Errors.ApiException.#ctor(System.Exception,System.Int32,System.String)">
+            <summary>
+            Create a new Api Exception from an existing exception
+            with a status code
+            </summary>
+            <param name="ex"></param>
+            <param name="statusCode"></param>
+        </member>
+        <member name="T:Westwind.AspNetCore.Errors.ApiExceptionFilterAttribute">
+            <inheritdoc />
+            <summary>
+            Unhandled Exception filter attribute for API controllers.
+            Fires back a common JSON response of type ApiErrorResponse
+            </summary>
+        </member>
+        <member name="P:Westwind.AspNetCore.Errors.ApiExceptionFilterAttribute.ShowExceptionDetail">
+            <summary>
+            Global static value that allows you to output detailed
+            error information. Set this during startup in the
+            `IsDevelopment()` startup block.
+            </summary>
+        </member>
+        <member name="P:Westwind.AspNetCore.Errors.ApiExceptionFilterAttribute.OnBeginExceptionProcessed">
+             <summary>
+             Global static interception operation you can use to handle exceptions.
+            
+             Return true to indicate you handled the exception and default processing
+             should not proceed.
+             </summary>
+        </member>
+        <member name="P:Westwind.AspNetCore.Errors.ApiExceptionFilterAttribute.OnEndExceptionProcessed">
+            <summary>
+            Global static interception operation you can use to handle exceptions.
+            This handler is called at the end of the error processing and contains
+            the JSON Error context.Result that was generated and returned.
+            </summary>
+        </member>
+        <member name="P:Westwind.AspNetCore.Errors.ApiExceptionFilterAttribute._dontProcess">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="M:Westwind.AspNetCore.Errors.ApiExceptionFilterAttribute.#ctor(System.Boolean)">
+            <summary>
+            Handles exceptions for API requests and displays an error response
+            </summary>
+            <param name="dontProcess">Optional - can be used to bypass the exception handling temporarily. Useful for debugging at times. Mirrors base exception filter.</param>
+        </member>
+        <member name="T:Westwind.AspNetCore.Messages.ApiResponse">
+            <summary>
+            A base API response class that communicates error status
+            and data property that holds the actual data
+            </summary>
+        </member>
+        <member name="T:Westwind.AspNetCore.Messages.ApiResponse`1">
+            <summary>
+            A base API response class that communicates error status
+            and data property that holds the actual data
+            </summary>
+        </member>
+        <member name="M:Westwind.AspNetCore.Extensions.HttpContextExtensions.MapPath(Microsoft.AspNetCore.Http.HttpContext,System.String,Microsoft.AspNetCore.Hosting.IWebHostEnvironment,System.String,System.Boolean)">
+            <summary>
+            Maps a virtual or relative path to a physical path in a Web site,
+            using the WebRootPath as the base path (ie. the `wwwroot` folder)
+            </summary>
+            <param name="context">HttpContext instance</param>
+            <param name="relativePath">Site relative path using either `~/` or `/` as indicating root</param>
+            <param name="host">Optional - IHostingEnvironment instance. If not passed retrieved from RequestServices DI</param>
+            <param name="basePath">Optional - Optional physical base path. By default host.WebRootPath</param>
+            <param name="useAppBasePath">Optional - if true returns the launch folder rather than the wwwroot folder</param>
+            <returns>physical path of the relative path</returns>
+        </member>
+        <member name="M:Westwind.AspNetCore.Extensions.HttpContextExtensions.ResolveUrl(Microsoft.AspNetCore.Http.HttpContext,System.String)">
+             <summary>
+             Resolves of a virtual Url to a fully qualified Url.
+            
+             * ~/ ~ as base path
+             * / as base path
+             * https:// http:// return as is
+             * Any relative path: returned as is
+             * Empty or null: returned as is
+             </summary>
+             <returns>Updated path</returns>
+        </member>
+        <member name="M:Westwind.AspNetCore.Extensions.HttpContextExtensions.SetUserLocale(Microsoft.AspNetCore.Http.HttpContext,System.String,System.String,System.String,System.Boolean,System.String)">
+            <summary>
+            Sets the culture and UI culture to a specific culture. Allows overriding of currency
+            and optionally disallows setting the UI culture.
+            
+            You can also limit the locales that are allowed in order to minimize
+            resource access for locales that aren't implemented at all.
+            </summary>
+            <param name="culture">
+            2 or 5 letter ietf string code for the Culture to set. 
+            Examples: en-US or en</param>
+            <param name="uiCulture">ietf string code for UiCulture to set</param>
+            <param name="currencySymbol">Override the currency symbol on the culture</param>
+            <param name="setUiCulture">
+            if uiCulture is not set but setUiCulture is true 
+            it's set to the same as main culture
+            </param>
+            <param name="allowedLocales">
+            Names of 2 or 5 letter ietf locale codes you want to allow
+            separated by commas. If two letter codes are used any
+            specific version (ie. en-US, en-GB for en) are accepted.
+            Any other locales revert to the machine's default locale.
+            Useful reducing overhead in looking up resource sets that
+            don't exist and using unsupported culture settings .
+            Example: de,fr,it,en-US
+            </param>
+        </member>
+        <member name="P:Westwind.AspNetCore.Extensions.HttpRequestExtensions.WebRootPath">
+            <summary>
+            Internally cached root path for Web content (not the content root)
+            </summary>
+        </member>
+        <member name="M:Westwind.AspNetCore.Extensions.HttpRequestExtensions.GetRawBodyStringAsync(Microsoft.AspNetCore.Http.HttpRequest,System.Boolean,System.Text.Encoding,System.IO.Stream)">
+            <summary>
+            Retrieve the raw body as a string from the Request.Body stream
+            </summary>
+            <param name="request">Request instance to apply to</param>
+            <param name="enableBuffering">
+            Optional - Enables buffering so the body stream can be read mutliple times
+            In order for this to work this has to be the first read operation on the body stream
+            so this is useful mostly for logging and diagnostic operations that preceed normal
+            body access for POST/PUT operations.
+            </param>
+            <param name="encoding">Optional - Encoding, defaults to UTF8</param>
+            <param name="inputStream">Optional - Pass in the stream to retrieve from. Other Request.Body</param>
+            <returns></returns>
+        </member>
+        <member name="M:Westwind.AspNetCore.Extensions.HttpRequestExtensions.GetRawBodyBytesAsync(Microsoft.AspNetCore.Http.HttpRequest,System.Boolean,System.IO.Stream)">
+            <summary>
+            Retrieves the raw body as a byte array from the Request.Body stream
+            </summary>
+            <param name="request">HttpRequest</param>
+            <param name="enableBuffering">
+            Optional - Enables buffering so the body stream can be read mutliple times
+            In order for this to work this has to be the first read operation on the body stream
+            so this is useful mostly for logging and diagnostic operations that preceed normal
+            body access for POST/PUT operations.
+            </param>
+            <param name="inputStream">Optional - stream to read from. Null for context.Request.Body</param>
+            <returns></returns>
+        </member>
+        <member name="M:Westwind.AspNetCore.Extensions.HttpRequestExtensions.MapPath(Microsoft.AspNetCore.Http.HttpRequest,System.String,Microsoft.AspNetCore.Hosting.IWebHostEnvironment,System.String,System.Boolean)">
+            <summary>
+            Maps a virtual or relative path to a physical path in a Web site,
+            using the WebRootPath as the base path (ie. the `wwwroot` folder)
+            </summary>
+            <param name="request">HttpRequest instance</param>
+            <param name="relativePath">Site relative path using either `~/` or `/` as indicating root</param>
+            <param name="host">Optional - IHostingEnvironment instance. If not passed retrieved from RequestServices DI</param>
+            <param name="basePath">Optional - Optional physical base path. By default host.WebRootPath</param>
+            <param name="useAppBasePath">Optional - if true returns the launch folder rather than the wwwroot folder</param>
+            <returns>physical path of the relative path</returns>
+        </member>
+        <member name="M:Westwind.AspNetCore.Extensions.HttpRequestExtensions.GetUrl(Microsoft.AspNetCore.Http.HttpRequest)">
+            <summary>
+            Returns the absolute Url of the current request as a string.
+            </summary>
+            <param name="request"></param>
+        </member>
+        <member name="M:Westwind.AspNetCore.Extensions.HttpRequestExtensions.GetSiteBaseUrl(Microsoft.AspNetCore.Http.HttpRequest)">
+            <summary>
+            Returns the site base URL for the current request:
+            https://localhost:5200/test/sub -> https://localhost:5200/
+            </summary>
+            <param name="request"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Westwind.AspNetCore.Extensions.HttpRequestExtensions.Params(Microsoft.AspNetCore.Http.HttpRequest,System.String)">
+            <summary>
+            Returns a value based on a key against the Form, Query and Session collections.
+            </summary>
+            <param name="request"></param>
+            <param name="key"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Westwind.AspNetCore.Extensions.HttpRequestExtensions.IsLocal(Microsoft.AspNetCore.Http.HttpRequest)">
+            <summary>
+            Determines if the request is a local request where the local and remote IP addresses match
+            </summary>
+            <param name="req"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Westwind.AspNetCore.Extensions.HttpRequestExtensions.IsFormVar(Microsoft.AspNetCore.Http.HttpRequest,System.String)">
+            <summary>
+            Checks to see if a given form variable exists in the request form collection.
+            </summary>
+            <param name="req"></param>
+            <param name="formVarName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Westwind.AspNetCore.Extensions.HttpRequestExtensions.IsPostback(Microsoft.AspNetCore.Http.HttpRequest)">
+            <summary>
+            Determines whether request is a postback operation
+            </summary>
+            <param name="request"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Westwind.AspNetCore.Extensions.HttpRequestExtensions.UnbindFormVarsToObject(Microsoft.AspNetCore.Http.HttpRequest,System.Object,System.String,System.String)">
+            <summary>
+            Unbinds form variable data to an instantiated object by matching form variable name to a property name
+            and only updating properties that have matching form variables and leaving the rest alone.
+            </summary>
+            <remarks>Only updates immediate instance properties - does not handle nested objects or collections</remarks>
+            <param name="request">ASP.NET HttpRequest object </param>
+            <param name="targetObject">Existing object to update with Form data</param>
+            <param name="propertyExceptions">Optional comma delimited list of properties that shouldn't be updated.</param>
+            <param name="formvarPrefixes">Optional prefix to</param>
+            <returns></returns>
+        </member>
+        <member name="M:Westwind.AspNetCore.Extensions.HttpResponseExtensions.AddMetaRefreshTagHeader(Microsoft.AspNetCore.Http.HttpResponse,System.String,System.Int32)">
+             <summary>
+             Adds a Meta Refresh header to the response that causes the browser to
+             show the current page and then after specified seconds navigate to the
+             url specified.
+            
+             The Url must be fully qualified or relative to the active page.
+             </summary>
+             <param name="response"></param>
+             <param name="url"></param>
+             <param name="seconds"></param>
+        </member>
+        <member name="T:Westwind.AspNetCore.Extensions.IQueryCollectionExtensions">
+             <summary>
+             Extends Query Collections to make it easier to retrieve collection values
+             either individually or multi-values.
+            
+             Based on concepts from Khalid Abuhakmeh:
+             https://khalidabuhakmeh.com/read-and-convert-querycollection-values-in-aspnet
+             </summary>
+        </member>
+        <member name="M:Westwind.AspNetCore.Extensions.IQueryCollectionExtensions.GetAll(Microsoft.AspNetCore.Http.IQueryCollection,System.String,System.String)">
+            <summary>
+            Retrieves multiple selection values for a key
+            and returns them as strings.
+            </summary>
+            <param name="collection"></param>
+            <param name="key"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Westwind.AspNetCore.Extensions.IQueryCollectionExtensions.GetAll``1(Microsoft.AspNetCore.Http.IQueryCollection,System.String,``0)">
+            <summary>
+            Retrieves multiple selection values for a key
+            as an enumerable value.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="collection"></param>
+            <param name="key"></param>
+            <param name="defaultValue">Default value if the value is invalid or missing</param>
+            <returns></returns>
+        </member>
+        <member name="M:Westwind.AspNetCore.Extensions.IQueryCollectionExtensions.Get(Microsoft.AspNetCore.Http.IQueryCollection,System.String,System.String)">
+            <summary>
+            Retrieves a single value and casts it to
+            a non-string value. For string use the non-Generic version
+            </summary>
+            <typeparam name="T">Type t</typeparam>
+            <param name="collection">StringCollection </param>
+            <param name="key">Key to retrieve</param>
+            <param name="defaultValue"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Westwind.AspNetCore.Extensions.IQueryCollectionExtensions.Get``1(Microsoft.AspNetCore.Http.IQueryCollection,System.String,``0)">
+            <summary>
+            Retrieves a single value and casts it to
+            a non-string value. For string use the non-Generic version
+            </summary>
+            <typeparam name="T">Type t</typeparam>
+            <param name="collection"></param>
+            <param name="key"></param>
+            <param name="defaultValue"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Westwind.AspNetCore.Formatters.RawRequestBodyFormatter">
+            <summary>
+            Formatter that allows content of type text/plain and application/octet stream
+            or no content type to be parsed to raw data. Allows for a single input parameter
+            in the form of:
+            
+            public string RawString([FromBody] string data) (text/plain)
+            public byte[] RawData([FromBody] byte[] data)  (application/octet-stream)
+            
+            Add to MVC processing with:
+            
+            services.AddMvc(o =&gt; o.InputFormatters.Insert(0, new RawRequestBodyFormatter()));
+            
+            More info:
+            https://weblog.west-wind.com/posts/2017/Sep/14/Accepting-Raw-Request-Body-Content-in-ASPNET-Core-API-Controllers
+            </summary>
+            
+        </member>
+        <member name="M:Westwind.AspNetCore.Formatters.RawRequestBodyFormatter.CanRead(Microsoft.AspNetCore.Mvc.Formatters.InputFormatterContext)">
+            <summary>
+            Allow text/plain, application/octet-stream and no content type to
+            be processed
+            </summary>
+            <param name="context"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Westwind.AspNetCore.Formatters.RawRequestBodyFormatter.ReadRequestBodyAsync(Microsoft.AspNetCore.Mvc.Formatters.InputFormatterContext)">
+            <summary>
+            Handle text/plain or no content type for string results
+            Handle application/octet-stream for byte[] results
+            </summary>
+            <param name="context"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Westwind.AspNetCore.Middleware.CustomHeadersMiddleware">
+            <summary>
+            Middleware to inject or remove HTTP headers on every request.
+            </summary>
+        </member>
+        <member name="M:Westwind.AspNetCore.Middleware.CustomHeadersMiddleware.CheckforPrimaryRequests(Microsoft.AspNetCore.Http.HttpContext)">
+            <summary>
+            Checks for specific mime types to add/remove headers on
+            </summary>
+            <param name="context"></param>
+            <returns>true if request should continue processing</returns>
+        </member>
+        <member name="M:Westwind.AspNetCore.Middleware.MiddlewareExtensions.UseCustomHeaders(Microsoft.AspNetCore.Builder.IApplicationBuilder,System.Action{Westwind.AspNetCore.Middleware.CustomHeadersToAddAndRemove})">
+             <summary>
+             Enable the Customer Headers middleware and specify the headers to add and remove.
+             </summary>
+             <param name="builder"></param>
+             <param name="addHeadersAction">
+             Action to allow you to specify the headers to add and remove.
+            
+             Example: (opt) =>  opt.HeadersToAdd.Add("header","value"); opt.HeadersToRemove.Add("header");</param>
+             <returns></returns>
+        </member>
+        <member name="T:Westwind.AspNetCore.Properties.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Westwind.AspNetCore.Properties.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Westwind.AspNetCore.Properties.Resources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Westwind.AspNetCore.Properties.Resources.RazorViewEngineNotAvailable">
+            <summary>
+              Looks up a localized string similar to Razor View Engine is not available in this application..
+            </summary>
+        </member>
+        <member name="P:Westwind.AspNetCore.Properties.Resources.ViewNameDoesNotMatchAvailableView">
+            <summary>
+              Looks up a localized string similar to The View {0} could not be found. Use: Same View Folder, Shared (or otherwise configured) or a relative View Path (without .cshtml extension).
+            </summary>
+        </member>
+        <member name="T:Westwind.AspNetCore.Security.AppUserBase">
+             <summary>
+             Helper class that consolidates access to Claims and Authentication
+             features more easily. Subclass this class and add specific properties
+             with Getters to retrieve data out of the user claims, roles
+             and settings.
+             </summary>
+             <remarks>
+             Create an application specific class that inherits from AppUserBase and
+             uses specific claims retrieved as property values:
+            
+             ```cs
+             public class AppUser : AppUserBase
+             {
+               public AppUser(ClaimsPrincipal user) : base(user) { }
+            
+               public string Email => GetClaim("Username");
+               public string Fullname => GetClaim("Fullname");
+               public string UserId => GetClaim("UserId");
+               public bool IsAdmin => HasRole("Admin");
+             }
+             ```
+             retrieves a user from ClaimsPrincipal with your own implementation.
+            
+             ```cs
+             public static class ClaimsPrincipalExtensions
+             {
+                public static AppUser GetAppUser(this ClaimsPrincipal user)
+                {
+                        return new AppUser(user);
+                }
+             }
+             ```
+             </remarks>
+        </member>
+        <member name="P:Westwind.AspNetCore.Security.AppUserBase.User">
+            <summary>
+            The underlying user
+            </summary>
+        </member>
+        <member name="P:Westwind.AspNetCore.Security.AppUserBase.HttpContext">
+            <summary>
+            Optionally set Http Context which is needed for Cookie access
+            to properties
+            </summary>
+        </member>
+        <member name="P:Westwind.AspNetCore.Security.AppUserBase.Claims">
+            <summary>
+            The list of claims for this user
+            </summary>
+        </member>
+        <member name="M:Westwind.AspNetCore.Security.AppUserBase.IsAuthenticated">
+            <summary>
+            Checks if the user is authenticated
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Westwind.AspNetCore.Security.AppUserBase.IsEmpty">
+            <summary>
+            Checks to see if the user identity is set
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Westwind.AspNetCore.Security.AppUserBase.HasRole(System.String)">
+            <summary>
+            Checks if a role exists
+            </summary>
+            <param name="role"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Westwind.AspNetCore.Security.AppUserBase.GetClaim(System.String)">
+            <summary>
+            Helper to retrieve a claim by name on the current logged in user
+            </summary>
+            <param name="claimName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Westwind.AspNetCore.Security.AppUserBase.AddClaim(System.String,System.String)">
+            <summary>
+            Add a claim to the user (use this if multiple claims for the same setting can be set)
+            </summary>
+            <param name="claimName"></param>
+            <param name="value"></param>
+        </member>
+        <member name="M:Westwind.AspNetCore.Security.AppUserBase.AddOrUpdateClaim(System.String,System.String)">
+            <summary>
+            Adds or updates a claim for the user. Use this for unique claims
+            </summary>
+            <param name="claimName"></param>
+            <param name="value"></param>
+        </member>
+        <member name="M:Westwind.AspNetCore.Security.AppUserBase.RemoveClaim(System.String)">
+            <summary>
+            Removes a claim from the claims collection
+            </summary>
+            <param name="claimName">Exact match of the claim's name</param>
+        </member>
+        <member name="M:Westwind.AspNetCore.Security.AppUserBase.LoginUserAsync(Microsoft.AspNetCore.Http.HttpContext,System.Security.Claims.ClaimsIdentity)">
+            <summary>
+            Logins a user with Cookie Authentication
+            </summary>
+            <param name="context"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Westwind.AspNetCore.Security.AppUserBase.LoginUser(Microsoft.AspNetCore.Http.HttpContext,System.Security.Claims.ClaimsIdentity)">
+            <summary>
+            Logs in a user with Cookie Authentication
+            </summary>
+            <param name="context"></param>
+        </member>
+        <member name="M:Westwind.AspNetCore.Security.AppUserBase.LogoutUserAsync(Microsoft.AspNetCore.Http.HttpContext)">
+            <summary>
+            Logs out a user with Cookie Authentication
+            </summary>
+            <param name="context"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Westwind.AspNetCore.Security.AppUserBase.LogoutUser(Microsoft.AspNetCore.Http.HttpContext)">
+            <summary>
+            Logs out a user with Cookie Authentication
+            </summary>
+            <param name="context"></param>
+        </member>
+        <member name="T:Westwind.AspNetCore.Security.DataProtector">
+             <summary>
+             This class uses the .NET Core Data Protection APIs to encrypt
+             values. This is the same class used for encryption of authentication
+             data, cookies etc. and this class provides an easy way to encode strings
+             and return encoded strings that can be use for manual cookie processing.
+            
+             This class is a singleton so there can only be one unique instance per
+             application.
+             </summary>
+        </member>
+        <member name="P:Westwind.AspNetCore.Security.DataProtector.UniqueIdentifier">
+            <summary>
+            A unique identifier for this data 
+            </summary>
+        </member>
+        <member name="M:Westwind.AspNetCore.Security.DataProtector.GetDataProtector(System.String,System.Boolean)">
+            <summary>
+            Internally called to create a Data Protector instance
+            </summary>
+            <param name="uniqueIdentifier"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Westwind.AspNetCore.Security.DataProtector.Protect(System.String,Westwind.AspNetCore.Security.DataProtectionStringEncodingModes)">
+            <summary>
+            Encrypts a string and returns it as a binary BinHex or Base64 string
+            </summary>
+            <param name="dataToProtect"></param>
+            <param name="stringEncodingMode"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Westwind.AspNetCore.Security.DataProtector.UnProtect(System.String,Westwind.AspNetCore.Security.DataProtectionStringEncodingModes)">
+            <summary>
+            Decrypts a previously protected strings from BinHex or Base64 binary data
+            and returns the orignal string data.
+            </summary>
+            <param name="protectedStringData"></param>
+            <param name="stringEncodingMode"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Westwind.AspNetCore.Security.JwtHelper.GetJwtToken(System.String,System.String,System.String,System.String,System.TimeSpan,System.Security.Claims.Claim[])">
+            <summary>
+            Returns a Jwt Token from basic input parameters
+            </summary>
+            <param name="username"></param>
+            <param name="uniqueKey"></param>
+            <param name="issuer"></param>
+            <param name="audience"></param>
+            <param name="expiration"></param>
+            <param name="additionalClaims"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Westwind.AspNetCore.Security.JwtHelper.GetJwtTokenString(System.String,System.String,System.String,System.String,System.TimeSpan,System.Security.Claims.Claim[])">
+            <summary>
+            Returns a token string from base claims
+            </summary>
+            <param name="username"></param>
+            <param name="uniqueKey"></param>
+            <param name="issuer"></param>
+            <param name="audience"></param>
+            <param name="expiration"></param>
+            <param name="additionalClaims"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Westwind.AspNetCore.Security.JwtHelper.GetJwtTokenString(System.IdentityModel.Tokens.Jwt.JwtSecurityToken)">
+            <summary>
+            Converts an existing Jwt Token to a string
+            </summary>
+            <param name="token"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Westwind.AspNetCore.Security.JwtHelper.GetSymetricSecurityKey(System.String)">
+            <summary>
+            Returns an issuer key
+            </summary>
+            <param name="issuerKey"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Westwind.AspNetCore.Security.UserState">
+             <summary>
+             User information container that can easily 'serialize'
+             to a string and back, that can be stored easily in
+             single cookie or in a single User Claim value.
+            
+             Meant to hold basic logon information
+             to avoid trips to the database for common information required
+             by an app to validate and display user info.
+            
+             The **UserId** (or Int/Guid) value should always be set with
+             a value to indicate that this object is not empty.
+            
+             I use this class a lot to attach to serialize as a singl
+             User Claim in User Claims, or Forms Authentication tickets
+             </summary>
+        </member>
+        <member name="P:Westwind.AspNetCore.Security.UserState.Name">
+            <summary>
+            The display name for the userId
+            </summary>
+        </member>
+        <member name="P:Westwind.AspNetCore.Security.UserState.Email">
+            <summary>
+            The user's email address or login acount
+            </summary>
+        </member>
+        <member name="P:Westwind.AspNetCore.Security.UserState.UserId">
+            <summary>
+            The user's user Id as a string
+            </summary>
+        </member>
+        <member name="P:Westwind.AspNetCore.Security.UserState.IsAdmin">
+             <summary>
+             The users admin status - must be explicitly set.
+            
+             Also implicitly checks if the userstate record
+             to avoid scenarios where applications might not
+             be explicitly checking both for authentication and admin
+             </summary>
+        </member>
+        <member name="P:Westwind.AspNetCore.Security.UserState.UserIdInt">
+            <summary>
+            Returns the User Id as an int if convertiable
+            </summary>
+        </member>
+        <member name="P:Westwind.AspNetCore.Security.UserState.UserIdGuid">
+            <summary>
+            Returns the User Id as a GUID if convertiable
+            </summary>
+        </member>
+        <member name="P:Westwind.AspNetCore.Security.UserState.SecurityToken">
+            <summary>
+            A unique id created for this entry that can be used to
+            identify the user outside of the UserState context
+            </summary>
+        </member>
+        <member name="M:Westwind.AspNetCore.Security.UserState.ToString">
+            <summary>
+            Exports a short string list of Id, Email, Name separated by |
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Westwind.AspNetCore.Security.UserState.FromString(System.String)">
+            <summary>
+            Imports Id, Email and Name from a | separated string
+            </summary>
+            <param name="itemString"></param>
+        </member>
+        <member name="M:Westwind.AspNetCore.Security.UserState.CreateFromString(System.String)">
+             <summary>
+             Creates an instance of a userstate object from serialized
+             data.
+            
+             IsEmpty() will return true if data was not loaded. A
+             UserData object is always returned.
+             </summary>
+             <param name="userData"></param>
+             <returns></returns>
+        </member>
+        <member name="M:Westwind.AspNetCore.Security.UserState.CreateFromString(System.String,System.Type)">
+             <summary>
+             Creates an instance of a userstate object from serialized
+             data.
+            
+             IsEmpty() will return true if data was not loaded. A
+             UserData object is always returned.
+             </summary>
+             <param name="userData"></param>
+             <param name="userStateType"></param>
+             <returns></returns>
+        </member>
+        <member name="M:Westwind.AspNetCore.Security.UserState.CreateFromString``1(System.String)">
+             <summary>
+             Creates an instance of a userstate object from serialized
+             data.
+            
+             IsEmpty() will return true if data was not loaded. A
+             UserData object is always returned.
+             </summary>
+             <param name="userData"></param>
+             <returns></returns>
+        </member>
+        <member name="M:Westwind.AspNetCore.Security.UserState.CreateFromFormsAuthTicket(Microsoft.AspNetCore.Http.HttpContext)">
+             <summary>
+             Creates a UserState object from authentication information in the
+             Forms Authentication ticket.
+            
+             IsEmpty() will return false if no data was loaded but
+             a Userdata object is always returned
+             </summary>
+             <returns></returns>
+        </member>
+        <member name="M:Westwind.AspNetCore.Security.UserState.CreateFromUserClaims``1(Microsoft.AspNetCore.Http.HttpContext)">
+             <summary>
+             Creates a UserState object from authentication information in the
+             Forms Authentication ticket.
+            
+             IsEmpty() will return false if no data was loaded but
+             a Userdata object is always returned
+             </summary>
+             <returns></returns>
+        </member>
+        <member name="M:Westwind.AspNetCore.Security.UserState.CreateFromUserClaims(Microsoft.AspNetCore.Http.HttpContext)">
+             <summary>
+             Creates a UserState object from authentication information in the
+             Forms Authentication ticket.
+            
+             IsEmpty() will return false if no data was loaded but
+             a Userdata object is always returned
+             </summary>
+             <param name="context">Http context that holds Identity and User Claims</param>
+             <returns></returns>
+        </member>
+        <member name="M:Westwind.AspNetCore.Security.UserState.CreateFromUserClaims(Microsoft.AspNetCore.Http.HttpContext,System.Type)">
+             <summary>
+             Creates a UserState object from authentication information in the
+             Forms Authentication ticket.
+            
+             IsEmpty() will return false if no data was loaded but
+             a Userdata object is always returned
+             </summary>
+             <param name="context">Http context that holds Identity and User Claims</param>
+             <param name="userStateType">UserState type to deserialize into</param>
+             <returns></returns>
+        </member>
+        <member name="M:Westwind.AspNetCore.Security.UserState.CreateFromCookie(System.String,Microsoft.AspNetCore.Http.HttpContext,System.Type)">
+            <summary>
+            Retrieves userstate from a given cookie
+            </summary>
+            <param name="cookieName"></param>
+            <param name="context"></param>
+            <param name="userStateType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Westwind.AspNetCore.Security.UserState.CreateFromCookie``1(System.String,Microsoft.AspNetCore.Http.HttpContext)">
+            <summary>
+            Retrieves userstate from a given cookie
+            </summary>
+            <param name="cookieName"></param>
+            <param name="context"></param>
+            <param name="userStateType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Westwind.AspNetCore.Security.UserState.IsEmpty">
+            <summary>
+            Determines whether UserState instance
+            holds user information - specifically
+            whether one of the UserID values is set.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Westwind.AspNetCore.Security.UserState.Clear">
+            <summary>
+            Initializes the data to empty defaults
+            </summary>
+        </member>
+        <member name="T:Westwind.AspNetCore.Services.Gravatar">
+            <summary>
+            Implements the Gravatar API for retrieving a Gravatar image to display
+            </summary>
+        </member>
+        <member name="M:Westwind.AspNetCore.Services.Gravatar.GetGravatarLink(System.String,System.Int32,System.String,System.String)">
+            <summary>
+            Returns a Gravatar image url for an email address
+            </summary>
+            <param name="email">Email address to display Gravatar for</param>
+            <param name="Size">Size in pixels (square image) (80)</param>
+            <param name="rating">Parental Guidance rating of image (PG)</param>
+            <param name="defaultImageUrl">Url to image if no match is found. 
+             If not passed gravatar provides default image</param>
+        </member>
+        <member name="M:Westwind.AspNetCore.Services.Gravatar.GetGravatarImage(System.String,System.Int32,System.String,System.String,System.String)">
+            <summary>
+            Returns a Gravatar Image Tag that can be directly embedded into
+            an HTML document.
+            </summary>
+            <param name="Email">Email address to display Gravatar for</param>
+            <param name="Size">Size in pixels (square image) (80)</param>
+            <param name="Rating">Parental Guidance rating of image (PG)</param>
+            <param name="ExtraImageAttributes">Any extra attributes to stick on the img tag</param>
+            <param name="DefaultImageUrl">Url to image if no match is found. 
+             If not passed gravatar provides default image</param>
+            <returns></returns>
+        </member>
+        <member name="T:Westwind.AspNetCore.Utilities.ScriptVariables">
+             <summary>
+             ScriptVariables is a utility class that lets you safely render server side
+             variables/values into JavaScript code so it can be used by client side code.
+            
+             It works by creating a JavaScript object that is rendered into a script block
+             based on server side values you add to this object. Each key and value pair is
+             then rendered into the page as part of a client side Javascript object using the
+             `.ToString()` or `.ToHtmlString()` methods.
+            
+             Definitions automatically handle:
+            
+             * Variable name declaration
+             * Safe Serialization of values
+             * Optional pre and post script code
+             * Optional wrapping of script in script tags
+            
+             This component supports:&lt;&lt;ul&gt;&gt;
+             &lt;&lt;li&gt;&gt; Creating individual client side variables
+             &lt;&lt;li&gt;&gt; Dynamic values that are 'evaluated' in OnPreRender to
+             pick up a value
+             &lt;&lt;li&gt;&gt; Creating properties of ClientIDs for a given container
+             &lt;&lt;li&gt;&gt; Changing the object values and POSTing them back on
+             Postback
+             &lt;&lt;/ul&gt;&gt;
+            
+             You create a script variables instance and add new keys to it:
+             &lt;&lt;code lang="C#"&gt;&gt;
+             ScriptVariables scriptVars = new ScriptVariables(this,"scriptVars");
+            
+             // Simple value
+             scriptVars.Add("userToken", UserToken);
+            
+             AmazonBook tbook = new AmazonBook();
+             tbook.Entered = DateTime.Now;
+            
+             // Complex value marshalled
+             scriptVars.Add("emptyBook", tbook);
+            
+             scriptVars.AddDynamic("author", txtAuthor,"Text");
+            
+             // Cause all client ids to be rendered as scriptVars.formFieldId vars (Id
+             postfix)
+             scriptVars.AddClientIds(Form,true);
+             &lt;&lt;/code&gt;&gt;
+            
+             In client code you can then access these variables:
+             &lt;&lt;code lang="JavaScript"&gt;&gt;$( function() {
+             	alert(scriptVars.book.Author);
+             	alert(scriptVars.author);
+             	alert( $("#" + scriptVars.txtAmazonUrlId).val() );
+             });&lt;&lt;/code&gt;&gt;
+             </summary>
+        </member>
+        <member name="F:Westwind.AspNetCore.Utilities.ScriptVariables.ScriptVars">
+            <summary>Edit
+            Internally holds all script variables declared
+            </summary>
+        </member>
+        <member name="P:Westwind.AspNetCore.Utilities.ScriptVariables.ClientObjectName">
+             <summary>
+             The name of the object generated in client script code
+            
+             Can be either single object name like `serverVars` or a complex
+             name like `window.global.authData`.
+            
+             If a single variable name is used a `var` declaration is prefixed
+             unless you explicitly opt out via noVar
+            
+             If using a complex name make sure the object hierarchy above
+             exists so you can assign the new object to it (ie. in the aboove
+             window.global has to exist in order to assing window.global.authData)
+             </summary>
+        </member>
+        <member name="P:Westwind.AspNetCore.Utilities.ScriptVariables.UseCamelCase">
+            <summary>
+            Determines whether script variables that objects or collections are
+            automatically serialized using camelCase names.
+            </summary>
+        </member>
+        <member name="P:Westwind.AspNetCore.Utilities.ScriptVariables.NoVar">
+             <summary>
+             If true, no `var` prefix is added to the single variable name
+             used in ClientObjectName. This is useful when assigning to
+             pre-existing objects or for creating 'global' objects.
+            
+             Applies only ClientObjectName values that don't have a .
+             in the name as . implies a prexisting object structure.
+             </summary>
+        </member>
+        <member name="F:Westwind.AspNetCore.Utilities.ScriptVariables.sbPrefixScriptCode">
+            <summary>
+            Internally tracked prefix code that is rendered before the
+            embedded variable in .ToString().
+            </summary>
+        </member>
+        <member name="F:Westwind.AspNetCore.Utilities.ScriptVariables.sbPostFixScriptCode">
+            <summary>
+            Internally tracked postfix code that is rendered after the
+            embedded variable in .ToString().
+            </summary>
+        </member>
+        <member name="M:Westwind.AspNetCore.Utilities.ScriptVariables.#ctor(System.String)">
+            <summary>
+            Constructor that optionally accepts the name of the
+            variable that is to be created
+            </summary>
+            <param name="clientObjectName">Name of the JavaScript variable to create. Can be a single variable name, or a previous existing object or subobject name. Example: serverVars, window.global.authData. Note if you specify a sub-object make sure the object hierarchy above exists.</param>
+        </member>
+        <member name="M:Westwind.AspNetCore.Utilities.ScriptVariables.Serialize(System.Object,System.Boolean)">
+            <summary>
+            Serializes value or object to JSON using:
+            * Indented formatting for objects
+            * Dates formatted as `new Data(3123312312)`
+            </summary>
+            <param name="value">Value to serialize</param>
+            <param name="useCamelCase">If true serializes to camelCase</param>
+            <returns></returns>
+        </member>
+        <member name="M:Westwind.AspNetCore.Utilities.ScriptVariables.Add(System.String,System.Object)">
+             <summary>
+             Adds a property and value to the client side object to be rendered into
+             JavaScript code. VariableName becomes a property on the object and the
+             value will be properly converted into JavaScript Compatible JSON text.
+             <seealso>Class ScriptVariables</seealso>
+             </summary>
+             <param name="variableName">
+             The name of the property created on the client object.
+             </param>
+             <param name="value">
+             The value that is to be assigned. Can be any simple type and most complex
+             objects that can be serialized into JSON.
+             </param>
+             <example>
+             &amp;lt;&amp;lt;code
+             lang=&amp;quot;C#&amp;quot;&amp;gt;&amp;gt;ScriptVariables scriptVars = new
+              ScriptVariables(this,&amp;quot;serverVars&amp;quot;);
+            
+             // Add simple values
+             scriptVars.Add(&amp;quot;name&amp;quot;,&amp;quot;Rick&amp;quot;);
+             scriptVars.Add(&amp;quot;pageLoadTime&amp;quot;,DateTime.Now);
+            
+             // Add objects
+             AmazonBook amazon = new AmazonBook();
+             bookEntity book = amazon.New();
+            
+             scripVars.Add(&amp;quot;book&amp;quot;,book);
+             &amp;lt;&amp;lt;/code&amp;gt;&amp;gt;
+             </example>
+        </member>
+        <member name="M:Westwind.AspNetCore.Utilities.ScriptVariables.Add(System.Collections.Generic.IDictionary{System.String,System.Object})">
+            <summary>
+            Adds an entire dictionary of values
+            </summary>
+            <param name="values"></param>
+        </member>
+        <member name="M:Westwind.AspNetCore.Utilities.ScriptVariables.AddScriptBefore(System.String)">
+            <summary>
+            Any custom JavaScript code that is to immediately preceed the
+            client object declaration. This allows setting up of namespaces
+            if necesary for scoping.
+            </summary>
+            <param name="scriptCode"></param>
+        </member>
+        <member name="M:Westwind.AspNetCore.Utilities.ScriptVariables.AddScriptAfter(System.String)">
+            <summary>
+            Any custom JavaScript code that is to immediately follow the
+            client object declaration. This allows setting up of namespaces
+            if necesary for scoping.
+            </summary>
+            <param name="scriptCode"></param>
+        </member>
+        <member name="M:Westwind.AspNetCore.Utilities.ScriptVariables.ToString">
+            <summary>
+            Returns the rendered JavaScript as a string
+            </summary>
+            <returns>string</returns>
+        </member>
+        <member name="M:Westwind.AspNetCore.Utilities.ScriptVariables.ToString(System.Boolean)">
+             <summary>
+             Returns the rendered JavaScript for the generated object and name.
+             Note this method returns only the generated object, not the
+             related code to save updates.
+            
+             You can use this method with MVC Views to embedd generated JavaScript
+             into the the View page.
+             <param name="addScriptTags">If provided wraps the script text with script tags</param>
+             <param name="noVar">If true doesn't previx single variable with 'var'</param>
+             </summary>
+        </member>
+        <member name="M:Westwind.AspNetCore.Utilities.ScriptVariables.ToHtmlString(System.Boolean)">
+             <summary>
+             Returns the script as an HTML string. Use this version
+             with AsP.NET MVC to force raw unencoded output in Razor:
+            
+             @scriptVars.ToHtmlString()
+             </summary>
+             <param name="addScriptTags"></param>
+             <param name="noVar">If true doesn't previx single variable with 'var'</param>
+             <returns></returns>
+        </member>
+        <member name="M:Westwind.AspNetCore.Utilities.WebUtils.EncodeJsString(System.String)">
+             <summary>
+             Encodes a string to be represented as a string literal. The format
+             is essentially a JSON string that is returned in double quotes.
+            
+             The string returned includes outer quotes:
+             "Hello \"Rick\"!\r\nRock on"
+             </summary>
+             <param name="text">Text to encode</param>
+             <returns>JSON encoded string</returns>
+        </member>
+        <member name="M:Westwind.AspNetCore.Utilities.WebUtils.DecodeJsString(System.String)">
+            <summary>
+            Parses a JSON string into a string value
+            </summary>
+            <param name="encodedString">JSON string</param>
+            <returns>unencoded string</returns>
+        </member>
+        <member name="M:Westwind.AspNetCore.Utilities.WebUtils.EncodeJsDate(System.DateTime,Westwind.AspNetCore.Utilities.JsonDateEncodingModes)">
+            <summary>
+            Converts a .NET date to a JavaScript JSON date value.
+            </summary>
+            <param name="date">.Net Date</param>
+            <returns></returns>
+        </member>
+        <member name="M:Westwind.AspNetCore.Utilities.WebUtils.UnicodeEscapeMatchEvaluator(System.Text.RegularExpressions.Match)">
+            <summary>
+            Matchevaluated to unescape string encoded Unicode character in the format of \u03AF
+            </summary>
+            <param name="match"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Westwind.AspNetCore.Utilities.JsonDateEncodingModes">
+            <summary>
+            Enumeration that determines how JavaScript dates are
+            generated in JSON output
+            </summary>
+        </member>
+        <member name="T:Westwind.AspNetCore.Views.ViewRenderer">
+            <summary>
+            Allows you to render a view to string.
+            </summary>
+        </member>
+        <member name="M:Westwind.AspNetCore.Views.ViewRenderer.RenderViewToStringAsync(System.String,System.Object,Microsoft.AspNetCore.Mvc.ControllerContext,System.Boolean)">
+            <summary>
+            Renders a view to string.
+            </summary>
+            <param name="viewName">Name of the view to render. Use Controller relative view name syntax</param>
+            <param name="model">Model data to pass in</param>
+            <param name="controllerContext">A controller context needed to process this View</param>
+            <param name="isPartial">Renders either a partial or main page (default)</param>
+            <returns></returns>
+            <exception cref="T:System.ArgumentException"></exception>
+        </member>
+        <member name="M:Westwind.AspNetCore.Views.ViewRenderer.CreateControllerContext(System.String)">
+            <summary>
+            Creates a controller context from a base Url and without an Http Context
+            </summary>
+            <param name="baseUrl"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Westwind.Web.FormVariableBinder">
+             <summary>
+             The class that provides FormVariable to Model binding by matching
+             FormVariable names to the model's properties including child
+             properties. You can specify a
+            
+             The base behavior is similar to ASP.NET MVC's ModelBinder's
+             binding operation minus the validation features.
+             </summary>
+             <remarks>
+             Note on Child Property Separators:
+             WebForms doesn't support '.' characters in ID= values so
+             you will need to specify a FormVarPropertySeparator. A good
+             value to use is '__' (two underscores) to allow for underscores
+             in actual properties. If you know your properties don't have underscores
+             then a single '_' will also work. The separator is converted to . when
+             parsing for child property names.
+             </remarks>
+        </member>
+        <member name="P:Westwind.Web.FormVariableBinder.Model">
+            <summary>
+            An object to bind to
+            </summary>
+        </member>
+        <member name="P:Westwind.Web.FormVariableBinder.FormVarPropertySeparator">
+            <summary>
+            The character used as a separator in the HTML form for child properties
+            (ie. Address.Street or Address.Phone.Home)
+            Default value is a .
+            </summary>
+        </member>
+        <member name="P:Westwind.Web.FormVariableBinder.Prefixes">
+            <summary>
+            An optional prefix on form variables to unbind.
+            Can also specify multiple prefixes separated by commas.
+            </summary>
+        </member>
+        <member name="P:Westwind.Web.FormVariableBinder.PropertyExclusionList">
+             <summary>
+             List of exceptions that aren't to be bound. Uses the Form variable name.
+            
+             Values in the list can either be:
+             * Full key name that includes the Prefix (ie. "Product.Price")
+             * Partial key name that has stripped the Prefix (ie. "Price")
+             </summary>
+        </member>
+        <member name="P:Westwind.Web.FormVariableBinder.PropertyInclusionList">
+             <summary>
+             Explicit List of properties that should be unbound.
+            
+             If you specify **any** values in this list **only** these
+             keys will be checked for in the Request.Form collection - all
+             others are excluded regardless of the exclusion list.
+            
+             Values in the list can either be:
+             * Full key name that includes the Prefix (ie. "Product.Price")
+             * Partial key name that has stripped the Prefix (ie. "Price")
+             </summary>
+        </member>
+        <member name="P:Westwind.Web.FormVariableBinder.BindingErrors">
+            <summary>
+            Binding Errors that occur on unbinding into the model
+            </summary>
+        </member>
+        <member name="M:Westwind.Web.FormVariableBinder.#ctor(Microsoft.AspNetCore.Http.HttpRequest,System.Object,System.String,System.String,System.String)">
+            <summary>
+            Initialize the binder with property values
+            </summary>
+            <param name="request">HttpRequest object from which Form Variables are retrieved</param>
+            <param name="model">The object to unbind to</param>
+            <param name="propertyExclusions">Comma seperated list of properties to exclude</param>
+            <param name="prefixes">Comma seperated list of prefixes that should be parsed.</param>
+            <param name="propertyInclusionList">Comma separated list of explicit properties to include. Only these properties are used if specified.</param>
+        </member>
+        <member name="M:Westwind.Web.FormVariableBinder.Unbind">
+            <summary>
+            Unbinds form variables into the specified target object
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Westwind.Web.FormVariableBinder.Unbind(Microsoft.AspNetCore.Http.HttpRequest,System.Object,System.String,System.String)">
+            <summary>
+            Unbinds form variable data into a model object.
+            </summary>
+            <param name="model">Object to unbind to</param>
+            <param name="propertyExceptions">Properties to skip</param>
+            <param name="formvarPrefixes">Form Variable prefixes to include. Prefix is stripped. (txtName maps to Name)</param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

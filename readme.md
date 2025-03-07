@@ -20,6 +20,11 @@ or the `dotnet` command line:
 dotnet add package westwind.aspnetcore
 ```
 
+### Documentation
+A class reference for the library can be found here:
+
+* [Westwind.AspNetCore Class Reference Documenation](https://docs.west-wind.com/westwind.aspnetcore)
+
 ### Features
 
 #### MVC Functionality

@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net8.0;net6.0;net9.0;</TargetFrameworks>
+    <TargetFrameworks>net8.0;net9.0;</TargetFrameworks>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Nullable>disable</Nullable>
     <Version>4.0.10</Version>
@@ -14,7 +14,7 @@
   <PropertyGroup>
     <DebugType>embedded</DebugType>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <PackageOutputPath>./nupkg</PackageOutputPath>
+    <PackageOutputPath>./nupkg</PackageOutputPath>    
 
     <PackageCopyright>Rick Strahl, West Wind Technologies 2017-2025</PackageCopyright>
     <PackageTags>Westwind AspNetCore Web</PackageTags>
@@ -25,6 +25,8 @@
     <PackageIcon>icon.png</PackageIcon>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>    
   </PropertyGroup>
 
   <ItemGroup>
