@@ -67,15 +67,29 @@ public static class HttpContextExtensions
     /// * Any relative path: returned as is
     /// * Empty or null: returned as is
     /// </summary>
+    /// <remarks>Requires that you have access to an active Request</remarks>
+    /// <param name="context">The HttpContext to work with (extension property)</param>
+    /// <param name="url">Url to resolve</param>
+    /// <param name="returnAbsoluteUrl">If true returns an absolute Url</param>
     /// <returns>Updated path</returns>
-    public static string ResolveUrl(this HttpContext context, string url)
+    public static string ResolveUrl(this HttpContext context, string url, bool returnAbsoluteUrl = false)
     {
         if (string.IsNullOrEmpty(url) ||
             url.StartsWith("http://", StringComparison.OrdinalIgnoreCase) ||
             url.StartsWith("https://", StringComparison.OrdinalIgnoreCase) )
             return url;
 
-        var basepath = context.Request.GetSiteBaseUrl();
+        string basepath = string.Empty;
+        basepath = context.Request.PathBase.Value ?? string.Empty;
+        if (string.IsNullOrEmpty(basepath) || basepath == "/")
+            basepath = "/";
+        else 
+            basepath = "/" + basepath.Trim('/') + "/"; // normalize
+
+        if (returnAbsoluteUrl)
+        {
+            basepath = $"{context.Request.Scheme}://{context.Request.Host}/{basepath.TrimStart('/')}";
+        }
 
         if (url.StartsWith("~/"))
             url = basepath + url.Substring(2);
@@ -85,7 +99,7 @@ public static class HttpContextExtensions
         // no leading path, ./ or ../
         // any relative Urls we can't do anything with
         // so return them as is and hope for the best
-
+        
         return url;
     }
 
