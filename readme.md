@@ -3,7 +3,7 @@
 
 [![NuGet Pre Release](https://img.shields.io/nuget/vpre/westwind.aspnetcore.svg)](https://www.nuget.org/packages?q=Westwind.aspnetcore)
 
-![](icon.png)
+![](https://raw.githubusercontent.com/RickStrahl/Westwind.AspNetCore/master/icon.png)
 
 This is a small package that provides a number of convenience helper and extension classes that facilitate common operations in ASP.NET Core API and MVC applications and ASP.NET Core in general.
 
@@ -119,9 +119,10 @@ All source code is **&copy; West Wind Technologies**, regardless of changes made
 There's no charge to use, integrate or modify the code for this project. You are free to use it in personal, commercial, government and any other type of application and you are free to modify the code for use in your own projects.
 
 ### Give back
-If you find this library useful, consider making a small donation:
+If you find this library useful, please consider *starring* the repository and/or consider making a small donation:
 
-<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=BA3NHHFHTMXD8" 
+* [Sponsor my work on GitHub Sponsors](https://github.com/sponsors/RickStrahl)
+* <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=BA3NHHFHTMXD8" 
     title="Find this library useful? Consider making a small donation." alt="Make Donation" style="text-decoration: none;">
 	<img src="https://weblog.west-wind.com/images/donation.png" />
 </a>
