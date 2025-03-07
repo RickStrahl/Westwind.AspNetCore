@@ -3,6 +3,8 @@
 
 [![NuGet Pre Release](https://img.shields.io/nuget/vpre/westwind.aspnetcore.svg)](https://www.nuget.org/packages?q=Westwind.aspnetcore)
 
+![](icon.png)
+
 This is a small package that provides a number of convenience helper and extension classes that facilitate common operations in ASP.NET Core API and MVC applications and ASP.NET Core in general.
 
 You can use this package as is or use the source code to pick and choose pieces to add to your own applications - most features are self-contained and easily moved and integrated.
