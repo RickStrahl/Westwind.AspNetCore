@@ -277,6 +277,9 @@ namespace Westwind.AspNetCore.Utilities
         ///
         /// You can use this method with MVC Views to embedd generated JavaScript
         /// into the the View page.
+        ///
+        /// Note for embedding in RazorViews use `ToHtmlString()` to avoid
+        /// auto-encoding of the script block.
         /// <param name="addScriptTags">If provided wraps the script text with script tags</param>
         /// <param name="noVar">If true doesn't previx single variable with 'var'</param>
         /// </summary>
@@ -339,8 +342,9 @@ namespace Westwind.AspNetCore.Utilities
 
 
         /// <summary>
-        /// Returns the script as an HTML string. Use this version
-        /// with AsP.NET MVC to force raw unencoded output in Razor:
+        /// Returns the script as an MVC/Razor HTML string so it embeds
+        /// properly as raw text. Use this version  in Razor views to
+        /// avoid having to use `Html.Raw()`.      
         ///
         /// @scriptVars.ToHtmlString()
         /// </summary>
@@ -352,14 +356,5 @@ namespace Westwind.AspNetCore.Utilities
             return new HtmlString(ToString(addScriptTags));
         }
 
-    }
-
-
-    public enum AllowUpdateTypes
-    {
-        None,
-        ItemsOnly,
-        PropertiesOnly,
-        All
     }
 }

@@ -3,10 +3,10 @@
     <TargetFrameworks>net8.0;net9.0;</TargetFrameworks>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Nullable>disable</Nullable>
-    <Version>4.0.10</Version>
+    <Version>4.0.11</Version>
     <Authors>Rick Strahl</Authors>
     <Company>West Wind Technologies</Company>
-    <Product>West Wind AspNet Core Toolkit</Product>
+    <Product>West Wind AspNet Core Helpers</Product>
     <Title>Westwind Web AspNet Core Support Library</Title>
     <Copyright>(c) West Wind Technologies, 2017-2025</Copyright>
   </PropertyGroup>
@@ -26,7 +26,8 @@
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     <PackageReadmeFile>README.md</PackageReadmeFile>
 
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>    
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);CS1591;CS1572;CS1573</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
@@ -34,7 +35,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.6.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.6.1" />
     <PackageReference Include="Westwind.Utilities" Version="5.1.6.2" />
   </ItemGroup>
   
@@ -46,11 +47,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="icon.png" Pack="true" PackagePath="" />
-    <None Include="LICENSE.md" Pack="true" PackagePath="" />
-    <None Include="README.md" Pack="true" PackagePath="" />
+    <None Include="../icon.png" Pack="true" PackagePath="" />
+    <None Include="../LICENSE.md" Pack="true" PackagePath="" />
+    <None Include="../README.md" Pack="true" PackagePath="" />
   </ItemGroup>
-
 
   <ItemGroup>
     <Folder Include="nupkg\" />
