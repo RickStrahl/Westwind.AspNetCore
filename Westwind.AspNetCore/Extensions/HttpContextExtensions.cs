@@ -10,6 +10,7 @@ namespace Westwind.AspNetCore.Extensions;
 public static class HttpContextExtensions
 {
     static string WebRootPath { get; set; }
+
     static string ContentRootPath { get; set; }
 
 

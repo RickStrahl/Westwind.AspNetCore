@@ -68,8 +68,7 @@ namespace Westwind.AspNetCore.Extensions
         /// <summary>
         /// Retrieves a single value and casts it to
         /// a non-string value. For string use the non-Generic version
-        /// </summary>
-        /// <typeparam name="T">Type t</typeparam>
+        /// </summary>        
         /// <param name="collection">StringCollection </param>
         /// <param name="key">Key to retrieve</param>
         /// <param name="defaultValue"></param>
