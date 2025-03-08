@@ -64,26 +64,46 @@ public static class HttpContextExtensions
     /// * ~/ ~ as base path
     /// * / as base path
     /// * https:// http:// return as is
-    /// * Any relative path: returned as is
+    /// * Any relative path: resolved based on current Request path
+    ///   In this scenario ./ or ../ are left as is but prefixed by Request path.
     /// * Empty or null: returned as is
     /// </summary>
     /// <remarks>Requires that you have access to an active Request</remarks>
     /// <param name="context">The HttpContext to work with (extension property)</param>
     /// <param name="url">Url to resolve</param>
-    /// <param name="returnAbsoluteUrl">If true returns an absolute Url</param>
+    /// <param name="basepath">
+    /// Optionally provide the base path to normalize for.
+    /// Format: `/` or `/docs/`
+    /// </param>    
+    /// <param name="returnAbsoluteUrl">If true returns an absolute Url( ie. `http://` or `https://`)</param>
+    /// <param name="ignoreRelativePaths">
+    /// If true doesn't resolve any relative paths by not prepending the base path.
+    /// If false are returned as is.
+    /// </param>
+    /// <param name="ignoreRootPaths">
+    /// If true doesn't resolve any root (ie. `/` based paths) by not prepending the base path.
+    /// If false are returned as is
+    /// </param>
     /// <returns>Updated path</returns>
-    public static string ResolveUrl(this HttpContext context, string url, bool returnAbsoluteUrl = false)
+    public static string ResolveUrl(this HttpContext context,
+                                    string url,
+                                    string basepath = null,
+                                    bool returnAbsoluteUrl = false,
+                                    bool ignoreRelativePaths = false,
+                                    bool ignoreRootPaths = false)
     {
         if (string.IsNullOrEmpty(url) ||
             url.StartsWith("http://", StringComparison.OrdinalIgnoreCase) ||
-            url.StartsWith("https://", StringComparison.OrdinalIgnoreCase) )
+            url.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
             return url;
 
-        string basepath = string.Empty;
-        basepath = context.Request.PathBase.Value ?? string.Empty;
+        // final base path format will be: / or /docs/
+        if (basepath == null)
+            basepath = context.Request.PathBase.Value ?? string.Empty;
+
         if (string.IsNullOrEmpty(basepath) || basepath == "/")
             basepath = "/";
-        else 
+        else
             basepath = "/" + basepath.Trim('/') + "/"; // normalize
 
         if (returnAbsoluteUrl)
@@ -93,13 +113,26 @@ public static class HttpContextExtensions
 
         if (url.StartsWith("~/"))
             url = basepath + url.Substring(2);
-        else if (url.StartsWith("~") || url.StartsWith("/"))
-            url = basepath + url.Substring(1);        
+        else if (url.StartsWith("~"))
+            url = basepath + url.Substring(1);
+        // translate root paths
+        else if (url.StartsWith("/"))
+       {
+            if(!ignoreRootPaths && !url.StartsWith(basepath, StringComparison.OrdinalIgnoreCase))
+            {
+                url = basepath + url.Substring(1);
+            }
+            // else pass through as is
+        }
+        // translate relative paths
+        else if (!ignoreRelativePaths)
+        {
+            url = basepath + context.Request.Path.Value?.Trim('/') + "/" + url.TrimStart('/');
+        }
 
-        // no leading path, ./ or ../
         // any relative Urls we can't do anything with
         // so return them as is and hope for the best
-        
+
         return url;
     }
 

@@ -172,7 +172,97 @@ namespace Westwind.AspNetCore.Utilities
             return val.ToString();
         }
         #endregion
+
+
+        /// <summary>
+        /// Resolves of a virtual Url to a fully qualified Url. This version
+        /// requires that you provide a basePath, and if returning an absolute
+        /// Url a host name.
+        ///
+        /// * ~/ ~ as base path
+        /// * / as base path
+        /// * https:// http:// return as is
+        /// * Any relative path: returned as is
+        /// * Empty or null: returned as is
+        /// </summary>
+        /// <remarks>Requires that you have access to an active Request</remarks>
+        /// <param name="context">The HttpContext to work with (extension property)</param>
+        /// <param name="url">Url to resolve</param>
+        /// <param name="basepath">
+        /// Optionally provide the base path to normalize for.
+        /// Format: `/` or `/docs/`
+        /// </param>
+        /// <params name="currentpath">
+        /// If you want to resolve relative paths you need to provide
+        /// the current request path (should be a path not a page!)
+        /// </params>
+        /// <param name="returnAbsoluteUrl">If true returns an absolute Url( ie. `http://` or `https://`)</param>
+        /// <param name="ignoreRelativePaths">
+        /// If true doesn't resolve any relative paths by not prepending the base path.
+        /// If false are returned as is.
+        /// </param>
+        /// <param name="ignoreRootPaths">
+        /// If true doesn't resolve any root (ie. `/` based paths) by not prepending the base path.
+        /// If false are returned as is
+        /// </param>
+        /// <returns>Updated path</returns>
+        public static string ResolveUrl(
+            string url,
+            string basepath = "/",
+            string currentPathForRelativeLinks = null,
+            bool returnAbsoluteUrl = false,           
+            bool ignoreRootPaths = false,
+            string absoluteHostName = null,
+            string absoluteScheme = "https://")
+        {
+            if (string.IsNullOrEmpty(url) ||
+                url.StartsWith("http://", StringComparison.OrdinalIgnoreCase) ||
+                url.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
+                return url;
+
+            // final base path format will be: / or /docs/
+            if (string.IsNullOrEmpty(basepath))
+                basepath = "/";
+
+
+            if (string.IsNullOrEmpty(basepath) || basepath == "/")
+                basepath = "/";
+            else
+                basepath = "/" + basepath.Trim('/') + "/"; // normalize
+
+            if (returnAbsoluteUrl)
+            {
+                if (string.IsNullOrEmpty(absoluteHostName))
+                    throw new ArgumentException("Host name is required if you return absolute Urls");
+
+                basepath = $"{absoluteScheme}://{absoluteHostName}/{basepath.TrimStart('/')}";
+            }
+
+            if (url.StartsWith("~/"))
+                url = basepath + url.Substring(2);
+            else if (url.StartsWith("~"))
+                url = basepath + url.Substring(1);
+            // translate root paths
+            else if (url.StartsWith("/"))
+            {
+                if (!ignoreRootPaths && !url.StartsWith(basepath, StringComparison.OrdinalIgnoreCase))
+                {
+                    url = basepath + url.Substring(1);
+                }
+                // else pass through as is
+            }
+            else if (!string.IsNullOrEmpty(currentPathForRelativeLinks))
+            {
+                url = basepath + currentPathForRelativeLinks.Trim('/') + "/" + url.TrimStart('/');
+            }
+
+            // any relative Urls we can't do anything with
+            // so return them as is and hope for the best
+
+            return url;
+        }
     }
+
 
     /// <summary>
     /// Enumeration that determines how JavaScript dates are
