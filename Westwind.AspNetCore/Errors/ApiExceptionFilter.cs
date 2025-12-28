@@ -52,8 +52,9 @@ namespace Westwind.AspNetCore.Errors
         /// <param name="dontProcess">Optional - can be used to bypass the exception handling temporarily. Useful for debugging at times. Mirrors base exception filter.</param>
         public ApiExceptionFilterAttribute(bool dontProcess = false)
         {
-            _dontProcess = dontProcess;
+            _dontProcess = dontProcess;            
         }
+
         public override void OnException(ExceptionContext context)
         {
             // allow interception via static event handler
@@ -68,8 +69,7 @@ namespace Westwind.AspNetCore.Errors
             if (context.Exception is Westwind.AspNetCore.Errors.ApiException)
             {
                 // handle explicit 'known' API errors
-                var ex = context.Exception as ApiException;
-                context.Exception = null;
+                var ex = context.Exception as ApiException;               
                 apiError = new ApiError(ex.Message);
                 apiError.errors = ex.Errors;
                 apiError.errorCode = ex.ErrorCode;
