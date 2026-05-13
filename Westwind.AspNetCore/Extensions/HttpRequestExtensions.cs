@@ -184,6 +184,23 @@ namespace Westwind.AspNetCore.Extensions
         }
 
         /// <summary>
+        /// Returns the client IP Address for a request.
+        ///
+        /// Checks proxy forwarding first, the actual ip
+        /// and returns null.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public static string GetClientIpAddress(this HttpRequest request)
+        {
+            if (request == null) return null;
+
+            return request.Headers["X-Forwarded-For"].FirstOrDefault() ??
+                   request.HttpContext?.Connection?.RemoteIpAddress?.ToString() ??
+                   null;
+        }
+
+        /// <summary>
         /// Returns a value based on a key against the Form, Query and Session collections.
         /// </summary>
         /// <param name="request"></param>
