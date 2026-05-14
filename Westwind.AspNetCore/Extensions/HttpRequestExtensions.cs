@@ -184,20 +184,111 @@ namespace Westwind.AspNetCore.Extensions
         }
 
         /// <summary>
-        /// Returns the client IP Address for a request.
+        /// Returns the client IPv4 Address for a request.
         ///
         /// Checks proxy forwarding first, the actual ip
         /// and returns null.
         /// </summary>
-        /// <param name="context"></param>
-        /// <returns></returns>
-        public static string GetClientIpAddress(this HttpRequest request)
+        /// <param name="request">The HttpRequest instance.</param>
+        /// <param name="checkForProxy">
+        /// Indicates whether to check for proxy headers.
+        /// 
+        /// Default returns the un-translated connection's IP Address
+        /// returned by the Web server.
+        ///
+        /// When true, checks the Proxy forwarding headers 
+        /// `X-Forwarded-For`, `Forwarded` and `X-Real-IP`
+        /// in that order and returns the 1st valid IP address found.
+        /// </param>
+        /// <returns>IP Address or null</returns>
+        public static string GetClientIpAddress(this HttpRequest request, bool checkForProxy = false)
         {
             if (request == null) return null;
 
-            return request.Headers["X-Forwarded-For"].FirstOrDefault() ??
-                   request.HttpContext?.Connection?.RemoteIpAddress?.ToString() ??
-                   null;
+            string ip = NormalizeIpAddress(request.HttpContext?.Connection?.RemoteIpAddress);
+            if (!checkForProxy)
+                return ip;
+
+            string proxy = GetForwardedIpAddress(request.Headers["X-Forwarded-For"].FirstOrDefault());
+            if (!string.IsNullOrEmpty(proxy))
+                return proxy;
+
+            proxy = GetForwardedIpAddress(request.Headers["Forwarded"].FirstOrDefault(), true);
+            if (!string.IsNullOrEmpty(proxy))
+                return proxy;
+
+            proxy = GetForwardedIpAddress(request.Headers["X-Real-IP"].FirstOrDefault());
+            return proxy ?? ip;
+        }
+
+
+        /// <summary>
+        /// Handle various forwarding headers and their custom parsing
+        /// of multiple proxy chain values
+        /// </summary>
+        /// <param name="headerValue">The value of the forwarding header.</param>
+        /// <param name="isForwardedHeader">Indicates if the header is the `Forwarded` header.</param>
+        /// <returns>The extracted IP address or null if none found.</returns>
+        private static string GetForwardedIpAddress(string headerValue, bool isForwardedHeader = false)
+        {
+            if (string.IsNullOrWhiteSpace(headerValue))
+                return null;
+
+            foreach (var value in headerValue.Split(','))
+            {
+                string candidate = value?.Trim();
+                if (string.IsNullOrWhiteSpace(candidate))
+                    continue;
+
+                if (isForwardedHeader)
+                {
+                    candidate = candidate.Split(';')
+                        .Select(segment => segment?.Trim())
+                        .FirstOrDefault(segment => segment != null && segment.StartsWith("for=", StringComparison.OrdinalIgnoreCase));
+
+                    if (string.IsNullOrWhiteSpace(candidate))
+                        continue;
+
+                    candidate = candidate.Substring(4).Trim();
+                }
+
+                candidate = candidate.Trim('"');
+
+                if (candidate.StartsWith("[", StringComparison.Ordinal) && candidate.Contains("]", StringComparison.Ordinal))
+                    candidate = candidate.Substring(1, candidate.IndexOf(']') - 1);
+                else if (candidate.Count(ch => ch == ':') == 1)
+                {
+                    var parts = candidate.Split(':');
+                    if (parts.Length == 2 && IPAddress.TryParse(parts[0], out _))
+                        candidate = parts[0];
+                }
+
+
+                if (string.Equals(candidate, "unknown", StringComparison.OrdinalIgnoreCase))
+                    continue;
+
+                if (IPAddress.TryParse(candidate, out var address))
+                    return NormalizeIpAddress(address);
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Return as IPv4 address if the address is an IPv4-mapped IPv6 address,
+        /// otherwise return the original address as a string.
+        /// </summary>
+        /// <param name="address"></param>
+        /// <returns></returns>
+        private static string NormalizeIpAddress(IPAddress address)
+        {
+            if (address == null)
+                return null;
+
+            if (address.IsIPv4MappedToIPv6)
+                address = address.MapToIPv4();
+
+            return address.ToString();
         }
 
         /// <summary>

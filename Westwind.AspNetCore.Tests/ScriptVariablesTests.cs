@@ -1,8 +1,6 @@
 ﻿using System;
 using Microsoft.AspNetCore.Html;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using Westwind.AspNetCore.Utilities;
 
 namespace Westwind.AspNetCore.Tests
