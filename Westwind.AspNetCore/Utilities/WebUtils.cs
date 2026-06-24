@@ -216,8 +216,7 @@ namespace Westwind.AspNetCore.Utilities
             string absoluteScheme = "https://")
         {
             if (string.IsNullOrEmpty(url) ||
-                url.StartsWith("http://", StringComparison.OrdinalIgnoreCase) ||
-                url.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
+                url.StartsWithAny(StringComparison.OrdinalIgnoreCase, "#", "http://", "https://", "mailto:", "javascript:","tel:"))              
                 return url;
 
             // final base path format will be: / or /docs/
@@ -261,6 +260,41 @@ namespace Westwind.AspNetCore.Utilities
 
             return url;
         }
+
+
+        /// <summary>
+        /// Resolves all relative Urls (/ and ~/) in an HTML string to absolute Urls
+        /// based on the basePath provided.
+        /// </summary>
+        /// <param name="html">Input Html fragment or document</param>
+        /// <param name="basePath">A base path to resolve relative URLs to</param>
+        /// <returns></returns>
+        public static string ResolveUrls(string html, string basePath)
+        {
+            if (string.IsNullOrEmpty(html) || string.IsNullOrEmpty(basePath))
+                return html;
+           
+            basePath = StringUtils.TerminateString(basePath, "/");
+
+            return Regex.Replace(
+                html,
+                @"(?<attr>\b(?:src|href|action|poster)\s*=\s*)(?<quote>[""'])(?<url>[^""']+)(\k<quote>)",
+                match =>
+                {
+                    var attr = match.Groups["attr"].Value;
+                    var quote = match.Groups["quote"].Value;
+                    var url = match.Groups["url"].Value;
+
+                    var resolved = ResolveUrl(url, basePath);
+
+                    return $"{attr}{quote}{resolved}{quote}";
+                },
+                RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+        }
+
+      
+
+
     }
 
 

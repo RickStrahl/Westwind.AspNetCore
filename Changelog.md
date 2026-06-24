@@ -1,11 +1,26 @@
 # Westwind.AspNetCore Change Log
 <small>[Nuget](https://www.nuget.org/packages/Westwind.AspNetCore/) &bull; [Github](https://github.com/RickStrahl/Westwind.AspNetCore)</small>
 
+### Version 4.1.9
+
+* **Add HttpContext.ResolveUrls() Extension Method**  
+Resolves all relative URLs in an Html fragment string to the provided base path Url.
+
+* **Add HttpContext.GetClientIpAddress() Extension Method**  
+Added this extension method to retrieve the client IP address from the HttpContext. This method checks for the `X-Forwarded-For` header and falls back to the remote IP address if not present.
+
+
+* **Add NoVar Variable to ScriptVariables Component**  
+Add option to not create a `var` for for the generated Json object in the `ScriptVariables` component. This allows for assigning values to existing objects and the global window object instead of creating a scoped variable.
+
+* **HttpRequestExtensions.GetSiteBaseUrl()**   
+Retrieves the base path of the current Web site. Extracts the base path plus a virtual if one is configured.
+
+* **HttpContextExtensions.SetUserLocale()**   
+Sets the request's User Culture and Ui Culture. There are optional overrides for currency and allowed locales before using the default fallback.
+
 
 ### Version 3.9.2
-
-* **Add TokenIdentifier to UserTokenManager**  
-Add an extra field and retrieval mechanism to retrieve a token based on a separate token. This can be useful in local/desktop authentication scenarios where you provide a token identifier that you can query for via an API until the auth operation is complete.
 
 * **Fix: UserState.IsAdmin**  
 UserState IsAdmin flag now explicitly checks for authentication in addition to the flags value, when returning its state to avoid potential issues with multi-factor authentication where flag may be set before two-factor has completed.
