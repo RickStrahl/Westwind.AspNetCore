@@ -1,82 +1,75 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.AspNetCore.Mvc.ActionConstraints;
+using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
-using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.AspNetCore.Mvc.Controllers;
 
 
 namespace Westwind.AspNetCore;
 
 /// <summary>
-/// Convention that allows routes to be inherited from base controller classes.
+/// Runs after the full route table is built. Removes descriptors for base
+/// controller actions when a subclass is also registered, eliminating the
+/// ambiguous-route conflict (duplicate routes).
 ///
-/// By default ASP.NET Core does not inherit route attributes from base classes,
-/// so this convention walks the controller actions and adds route selectors for
-/// any inherited route attributes.
+/// Register in Program.cs:
+///   var convention = new InheritedControllerRouteConvention();
+///   services.AddSingleton&lt;IActionDescriptorProvider&gt;(convention);
 /// </summary>
-public class InheritedControllerRouteConvention : IApplicationModelConvention
+public class InheritedControllerRouteConvention :  IActionDescriptorProvider
 {
+ 
     /// <summary>
-    /// Optionally lets you specify the parent controller types on which you
-    /// want inherited routes to apply to.
+    /// Optionally restrict which inherited concrete controller base types 
+    /// we want to allow base class routes to work on.
+    /// If empty, all inherited concrete controller base types are processed.    
     /// </summary>
-    public List<Type> ParentControllerTypes { get; set; } = [];
+    public List<Type> ChildControllerTypes { get; set; } = [];
 
-    public void Apply(ApplicationModel application)
+
+    public int Order => 0;
+
+    public void OnProvidersExecuting(ActionDescriptorProviderContext context) { }
+
+
+    /// <summary>
+    /// This method finds all base controller types or those of the type(s)
+    /// specified in <see cref="ChildControllerTypes"/>
+    /// and removes any [Route()] attributes on the child controllers
+    /// to fix the duplication of routes that break inherited controller routing.
+    /// </summary>
+    /// <param name="context"></param>
+    public void OnProvidersExecuted(ActionDescriptorProviderContext context)
     {
-        foreach (var controller in application.Controllers)
-        {
-            // if provided only check the controllers that are derived
-            if (ParentControllerTypes.Count > 0 && !ParentControllerTypes.Contains(controller.ControllerType.AsType()))
-                continue;
+        var descriptors = context.Results
+            .OfType<ControllerActionDescriptor>()
+            .ToList();
 
-            // Walk every action on this controller
-            foreach (var action in controller.Actions)
-            {
-                // Is this method declared on a base class, not the concrete controller?
-                bool isInherited = action.ActionMethod.DeclaringType != controller.ControllerType.AsType();
+        var controllerTypes = descriptors
+            .Select(d => d.ControllerTypeInfo.AsType())
+            .Distinct()
+            .ToList();
 
-                if (!isInherited)
-                    continue;
+        // Find child types to process (all, or the restricted list)
+        var childTypes = ChildControllerTypes.Count > 0
+            ? controllerTypes.Where(t => ChildControllerTypes.Contains(t)).ToList()
+            : controllerTypes;
 
-                // Look for custom route attributes on the *base* method
-                // (the ones the framework skipped because of the DeclaringType check)
-                var routeAttributes = action.ActionMethod
-                    .GetCustomAttributes(inherit: true)  // <-- inherit: true is key
-                    .OfType<IRouteTemplateProvider>()
-                    .ToList();
+        // Base types are those that a processed child inherits from and that are
+        // also directly registered as controllers
+        var baseTypesToSuppress = controllerTypes
+            .Where(t => childTypes.Any(child => IsSubclassOf(child, t)))
+            .ToList();
 
-                if (!routeAttributes.Any())
-                    continue;
+        var toRemove = descriptors
+            .Where(d => baseTypesToSuppress.Any(bt => d.ControllerTypeInfo.AsType() == bt))
+            .ToList();
 
-                // If the action has no selectors with routes, add them from base class attrs
-                var hasExistingRoute = action.Selectors
-                    .Any(s => s.AttributeRouteModel != null);
-
-                if (hasExistingRoute)
-                    continue; // already wired up, leave it alone
-
-                // Clear empty selectors and add one per route attribute found
-                action.Selectors.Clear();
-                foreach (var routeAttr in routeAttributes)
-                {
-                    var selector = new SelectorModel
-                    {
-                        AttributeRouteModel = new AttributeRouteModel(routeAttr)
-                    };
-
-                    // Copy HTTP method constraints from verb attributes
-                    if (routeAttr is IActionHttpMethodProvider httpProvider)
-                    {
-                        foreach (var method in httpProvider.HttpMethods)
-                            selector.ActionConstraints.Add(
-                                new HttpMethodActionConstraint(new[] { method }));
-                    }
-
-                    action.Selectors.Add(selector);
-                }
-            }
-        }
+        foreach (var d in toRemove)
+            context.Results.Remove(d);
     }
+
+    private static bool IsSubclassOf(Type child, Type parent) => child != parent && parent.IsAssignableFrom(child);
+
 }

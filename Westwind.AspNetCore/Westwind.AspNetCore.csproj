@@ -3,7 +3,7 @@
     <TargetFrameworks>net10.0;net9.0</TargetFrameworks>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Nullable>disable</Nullable>
-    <Version>4.1.9</Version>
+    <Version>4.1.10</Version>
     <Authors>Rick Strahl</Authors>
     <Company>West Wind Technologies</Company>
     <Product>West Wind AspNet Core Helpers</Product>
